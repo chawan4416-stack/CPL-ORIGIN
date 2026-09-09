@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>CPL</title>
   <style>
-    :root{--bg:#0d0f10;--card:#171a1b;--line:#2a2e30;--text:#f4f5f5;--muted:#92999b;--accent:#65d98a;--brown:#72543d}
+    :root{--bg:#0d0f10;--card:#171a1b;--line:#2a2e30;--text:#f4f5f5;--muted:#92999b;--accent:#65d98a}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}button,input,select{font:inherit}button{cursor:pointer}
     .app{max-width:680px;margin:0 auto;padding:20px 16px 40px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{font-size:30px;font-weight:800;letter-spacing:.04em}.ver{font-size:12px;color:var(--muted)}
-    .screen{display:none}.screen.active{display:block}.home-title{font-size:24px;font-weight:700;margin:12px 0 18px}.cards{display:grid;gap:12px}.card{border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--card);min-height:92px}.card.green{border-color:#315f42}.card.brown{border-color:#624a39}.card h2{font-size:17px;margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:13px}.count{font-size:30px;font-weight:800;margin-top:8px}.btn{width:100%;border:0;border-radius:14px;padding:15px 16px;background:var(--accent);color:#07100a;font-weight:800}.btn.secondary{background:#242829;color:var(--text)}.back{border:0;background:none;color:var(--muted);padding:4px 0 18px}.section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.section h2{font-size:18px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field input,.field select{width:100%;background:#0f1112;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:12px;min-height:46px}.horse-title{font-size:20px;font-weight:800;margin-bottom:12px}.choice{display:flex;flex-wrap:wrap;gap:7px}.choice button{border:1px solid var(--line);background:#101314;color:#dfe2e2;border-radius:10px;padding:9px 10px}.choice button.selected{background:var(--accent);color:#07100a;border-color:var(--accent);font-weight:800}.footer-actions{display:grid;gap:10px;margin-top:18px}.notice{text-align:center;color:var(--muted);font-size:13px;padding:12px}.success{text-align:center;padding:55px 20px}.success .mark{font-size:52px;color:var(--accent);margin-bottom:15px}.success h2{margin:0 0 8px}.small{font-size:12px;color:var(--muted)}
+    .screen{display:none}.screen.active{display:block}.home-title{font-size:24px;font-weight:700;margin:12px 0 18px}.cards{display:grid;gap:12px}.card{border:1px solid var(--line);border-radius:18px;padding:18px;background:var(--card);min-height:92px}.card.green{border-color:#315f42}.card.brown{border-color:#624a39}.card h2{font-size:17px;margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:13px}.card.disabled{opacity:.7}.count{font-size:30px;font-weight:800;margin-top:8px}.btn{width:100%;border:0;border-radius:14px;padding:15px 16px;background:var(--accent);color:#07100a;font-weight:800}.btn.secondary{background:#242829;color:var(--text)}.btn:disabled{opacity:.45;cursor:default}.back{border:0;background:none;color:var(--muted);padding:4px 0 18px}.section{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}.field input,.field select{width:100%;background:#0f1112;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:12px;min-height:46px}.horse-title{font-size:20px;font-weight:800;margin-bottom:12px}.choice{display:flex;flex-wrap:wrap;gap:7px}.choice button{border:1px solid var(--line);background:#101314;color:#dfe2e2;border-radius:10px;padding:9px 10px}.choice button.selected{background:var(--accent);color:#07100a;border-color:var(--accent);font-weight:800}.footer-actions{display:grid;gap:10px;margin-top:18px}.notice{text-align:center;color:var(--muted);font-size:13px;padding:12px}.error{display:none;background:#251819;border:1px solid #5a3032;border-radius:12px;color:#f2c8ca;padding:12px;font-size:13px;margin-top:12px}.error.show{display:block}.success{text-align:center;padding:55px 20px}.success .mark{font-size:52px;color:var(--accent);margin-bottom:15px}.success h2{margin:0 0 8px}.small{font-size:12px;color:var(--muted)}.master-group{margin-bottom:18px}.master-group:last-child{margin-bottom:0}.master-group h3{font-size:14px;margin:0 0 8px}.master-options{display:flex;flex-wrap:wrap;gap:7px}.master-option{border:1px solid var(--line);border-radius:10px;padding:8px 10px;color:var(--text);font-size:13px;background:#101314}
     @media(max-width:420px){.grid{grid-template-columns:1fr}.app{padding-left:13px;padding-right:13px}}
   </style>
 </head>
@@ -21,8 +21,8 @@
     <div class="home-title">HOME</div>
     <div class="cards">
       <div class="card green" onclick="show('input')"><h2>今日の研究</h2><p>レース結果を記録する</p></div>
-      <div class="card brown" onclick="show('input')"><h2>馬体研究室</h2><p>Ver1.0ではデータ収集を優先</p></div>
-      <div class="card"><h2>Master</h2><p>現在の馬体評価項目を確認</p></div>
+      <div class="card brown disabled"><h2>馬体研究室</h2><p>研究機能はVer1.1以降</p></div>
+      <div class="card" onclick="show('master')"><h2>Master</h2><p>現在の馬体評価項目を確認</p></div>
       <div class="card"><p>累計登録レース</p><div class="count" id="raceCount">—</div></div>
     </div>
   </section>
@@ -34,40 +34,75 @@
       <div class="field"><label>日付</label><input id="DATE" type="date"></div>
       <div class="field"><label>競馬場</label><select id="RACECOURSE"></select></div>
       <div class="field"><label>レース</label><input id="RACE_NUMBER" type="number" min="1" max="12" inputmode="numeric"></div>
-      <div class="field"><label>コース</label><input id="COURSE" placeholder="例：芝1800m" inputmode="text"></div>
+      <div class="field"><label>コース</label><input id="COURSE" placeholder="例：Aコース" inputmode="text"></div>
       <div class="field"><label>芝・ダート</label><select id="SURFACE"></select></div>
       <div class="field"><label>距離</label><input id="DISTANCE" type="number" min="1" inputmode="numeric" placeholder="m"></div>
       <div class="field"><label>馬場</label><select id="TRACK_CONDITION"></select></div>
       <div class="field"><label>頭数</label><input id="FIELD_SIZE" type="number" min="1" max="30" inputmode="numeric"></div>
     </div></div>
     <div id="horses"></div>
-    <div class="footer-actions"><button class="btn" onclick="submit()">保存する</button><div class="notice">1レース＝1回の保存</div></div>
+    <div class="footer-actions"><button id="saveButton" class="btn" onclick="submit()">保存する</button><div class="notice">1レース＝1回の保存</div><div id="error" class="error"></div></div>
   </section>
 
-  <section id="done" class="screen"><div class="success"><div class="mark">✓</div><h2>保存しました</h2><p class="small" id="doneCount"></p><div class="footer-actions"><button class="btn" onclick="resetAndInput()">次のレースを入力</button><button class="btn secondary" onclick="show('home')">HOMEへ</button></div></div></section>
+  <section id="master" class="screen">
+    <button class="back" onclick="show('home')">← HOME</button>
+    <div class="home-title">Master</div>
+    <div class="section" id="masterBody"></div>
+    <div class="notice">参照専用</div>
+  </section>
+
+  <section id="done" class="screen"><div class="success"><div class="mark">✓</div><h2>保存しました</h2><div class="footer-actions"><button class="btn" onclick="resetAndInput()">次のレースを入力</button><button class="btn secondary" onclick="show('home')">HOMEへ</button></div></div></section>
 </div>
 <script>
-let APP=null; const horseDefs=[['FIRST','1着'],['SECOND','2着'],['THIRD','3着']];
+let APP=null; let saving=false;
+const horseDefs=[['FIRST','1着'],['SECOND','2着'],['THIRD','3着']];
 const bodyFields=[['CHEST','胸前'],['HINDQUARTER','トモ'],['GAIT','歩様'],['BALANCE','前後バランス'],['TONE','ハリ'],['ABDOMEN','腹回り']];
 function $(id){return document.getElementById(id)}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
 function optionList(id,arr,placeholder){$(id).innerHTML=(placeholder?'<option value="">'+placeholder+'</option>':'')+arr.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('')}
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function renderHorse(prefix,title,body){
+function renderHorse(prefix,title){
   let html='<div class="section"><div class="horse-title">'+title+'</div><div class="grid"><div class="field"><label>人気</label><input id="'+prefix+'_POPULARITY" type="number" min="1" inputmode="numeric"></div><div class="field"><label>単勝オッズ</label><input id="'+prefix+'_ODDS" type="number" min="0" step="0.1" inputmode="decimal"></div></div><div class="grid" style="margin-top:12px">';
   bodyFields.forEach(([key,label])=>{html+='<div class="field"><label>'+label+'</label><div class="choice" id="'+prefix+'_'+key+'"></div></div>'});
   return html+'</div></div>';
 }
 function bindChoices(prefix,key,values){const el=$(prefix+'_'+key);el.innerHTML=values.map(v=>'<button type="button" data-value="'+esc(v)+'">'+esc(v)+'</button>').join('');el.querySelectorAll('button').forEach(b=>b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')})}
 function valueOf(prefix,key){const el=$(prefix+'_'+key);const b=el.querySelector('.selected');return b?b.dataset.value:''}
-function init(data){APP=data;$('version').textContent=data.version; $('raceCount').textContent=data.raceCount; optionList('RACECOURSE',data.racecourses,'選択');optionList('SURFACE',data.surfaces,'選択');optionList('TRACK_CONDITION',data.trackConditions,'選択');
+function renderMaster(body){$('masterBody').innerHTML=bodyFields.map(([key,label])=>'<div class="master-group"><h3>'+label+'</h3><div class="master-options">'+body[key].map(v=>'<div class="master-option">'+esc(v)+'</div>').join('')+'</div></div>').join('')}
+function init(data){
+  APP=data;$('version').textContent=data.version;$('raceCount').textContent=data.raceCount;
+  optionList('RACECOURSE',data.racecourses,'選択');optionList('SURFACE',data.surfaces,'選択');optionList('TRACK_CONDITION',data.trackConditions,'選択');
   const today=new Date();$('DATE').value=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
-  $('horses').innerHTML=horseDefs.map(([p,t])=>renderHorse(p,t,data.body)).join('');horseDefs.forEach(([p])=>bodyFields.forEach(([k])=>bindChoices(p,k,data.body[k])));
+  $('horses').innerHTML=horseDefs.map(([p,t])=>renderHorse(p,t)).join('');horseDefs.forEach(([p])=>bodyFields.forEach(([k])=>bindChoices(p,k,data.body[k])));
+  renderMaster(data.body);
 }
 function collect(){const r={};['DATE','RACECOURSE','RACE_NUMBER','COURSE','SURFACE','DISTANCE','TRACK_CONDITION','FIELD_SIZE'].forEach(k=>r[k]=$(k).value);horseDefs.forEach(([p])=>{['POPULARITY','ODDS'].forEach(k=>r[p+'_'+k]=$(p+'_'+k).value);bodyFields.forEach(([k])=>r[p+'_'+k]=valueOf(p,k))});return r}
-function submit(){const p=collect();google.script.run.withSuccessHandler(res=>{$('doneCount').textContent='累計登録レース '+res.raceCount+'件';$('raceCount').textContent=res.raceCount;show('done')}).withFailureHandler(e=>alert(e.message||'保存に失敗しました。')).submitRace(p)}
-function resetAndInput(){document.querySelectorAll('#input input').forEach(x=>{if(x.type!=='date')x.value=''});document.querySelectorAll('#input select').forEach(x=>x.selectedIndex=0);document.querySelectorAll('.choice .selected').forEach(x=>x.classList.remove('selected'));$('DATE').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);show('input')}
-google.script.run.withSuccessHandler(init).withFailureHandler(e=>alert(e.message||'初期化に失敗しました。')).getAppData();
+function setError(message){$('error').textContent=message||'';$('error').classList.toggle('show',!!message)}
+function clientValidate(p){
+  const raceLabels={DATE:'日付',RACECOURSE:'競馬場',RACE_NUMBER:'レース番号',COURSE:'コース',SURFACE:'芝・ダート',DISTANCE:'距離',TRACK_CONDITION:'馬場',FIELD_SIZE:'頭数'};
+  for(const k in raceLabels) if(!String(p[k]??'').trim()) return raceLabels[k]+'を入力してください。';
+  if(Number(p.RACE_NUMBER)<=0) return 'レース番号を正しく入力してください。';
+  if(Number(p.DISTANCE)<=0) return '距離を正しく入力してください。';
+  if(Number(p.FIELD_SIZE)<=0) return '頭数を正しく入力してください。';
+  for(const [prefix,title] of horseDefs){
+    for(const key of ['POPULARITY','ODDS']) if(!String(p[prefix+'_'+key]??'').trim()) return title+'の入力が不足しています。';
+    if(Number(p[prefix+'_POPULARITY'])<=0) return title+'の人気を正しく入力してください。';
+    if(Number(p[prefix+'_ODDS'])<0 || !Number.isFinite(Number(p[prefix+'_ODDS']))) return title+'の単勝オッズを正しく入力してください。';
+    for(const [key,label] of bodyFields) if(!String(p[prefix+'_'+key]??'').trim()) return title+'の'+label+'を選択してください。';
+  }
+  return '';
+}
+function submit(){
+  if(saving) return;
+  const p=collect(); const error=clientValidate(p); if(error){setError(error);return;}
+  setError('');saving=true;$('saveButton').disabled=true;
+  google.script.run.withSuccessHandler(res=>{saving=false;$('saveButton').disabled=false;$('raceCount').textContent=res.raceCount;show('done')}).withFailureHandler(e=>{saving=false;$('saveButton').disabled=false;setError(e&&e.message?e.message:'保存に失敗しました。')}).submitRace(p);
+}
+function resetAndInput(){
+  document.querySelectorAll('#input input').forEach(x=>{if(x.type!=='date')x.value=''});document.querySelectorAll('#input select').forEach(x=>x.selectedIndex=0);document.querySelectorAll('.choice .selected').forEach(x=>x.classList.remove('selected'));setError('');
+  $('DATE').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);show('input');
+}
+google.script.run.withSuccessHandler(init).withFailureHandler(e=>{setError(e&&e.message?e.message:'初期化に失敗しました。')}).getAppData();
 </script>
 </body>
 </html>
