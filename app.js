@@ -4,7 +4,7 @@
   const bodyFields = [
     ['胸前','CHEST'],['トモ','HINDQUARTER'],['歩様','GAIT'],['前後バランス','BALANCE'],['ハリ','TONE'],['腹回り','ABDOMEN']
   ];
-  const state = { masters: {}, saving: false };
+  const state = { masters: {}, saving: false, initializing: false };
   const hasConfig = window.CPL_SUPABASE_URL && !window.CPL_SUPABASE_URL.includes('YOUR_PROJECT') && window.CPL_SUPABASE_KEY && !window.CPL_SUPABASE_KEY.includes('YOUR_');
   if (!hasConfig) {
     $('configError').textContent = 'Supabase設定がまだ入っていません。';
@@ -34,7 +34,7 @@
   }
   async function loadMasters() {
     const { data, error } = await client.from('master_options').select('category,field_key,option_value,sort_order').eq('active', true).order('sort_order');
-    if (error) throw error;
+    if (error) throw new Error(`Master読み込み失敗: ${error.message}`);
     state.masters = {};
     data.forEach(row => (state.masters[row.field_key] ||= []).push(row));
     $('racecourse').innerHTML = options('RACECOURSE');
@@ -49,10 +49,10 @@
   }
   async function refreshStats() {
     const { count, error } = await client.from('races').select('*', { count:'exact', head:true });
-    if (error) throw error;
+    if (error) throw new Error(`レース件数取得失敗: ${error.message}`);
     $('raceCount').textContent = count ?? 0;
     const { data, error: latestError } = await client.from('races').select('created_at').order('created_at',{ascending:false}).limit(1).maybeSingle();
-    if (latestError) throw latestError;
+    if (latestError) throw new Error(`最終更新取得失敗: ${latestError.message}`);
     $('lastUpdate').textContent = data ? new Date(data.created_at).toLocaleDateString('ja-JP') : '—';
   }
   function collectResults() {
@@ -68,7 +68,7 @@
   }
   $('login').addEventListener('click', async () => {
     const { error } = await client.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.origin + location.pathname } });
-    if (error) $('configError').textContent = error.message;
+    if (error) $('configError').textContent = `Googleログイン失敗: ${error.message}`;
   });
   $('logout').addEventListener('click', () => client.auth.signOut());
   document.addEventListener('click', e => {
@@ -89,15 +89,33 @@
       const { error: saveError } = await client.rpc('save_race', { p_race:race, p_results:results });
       if (saveError) throw saveError;
       $('raceForm').reset(); show('savedView'); await refreshStats();
-    } catch (err) { $('formError').textContent = '保存できませんでした。入力内容を確認してください。'; console.error(err); }
+    } catch (err) { $('formError').textContent = `保存できませんでした: ${err?.message || '不明なエラー'}`; console.error(err); }
     finally { state.saving = false; $('saveButton').disabled = false; }
   });
   async function init() {
-    const { data:{ session } } = await client.auth.getSession();
-    if (!session) { show('loginView'); return; }
+    if (state.initializing) return;
+    state.initializing = true;
+    const { data:{ session }, error: sessionError } = await client.auth.getSession();
+    if (sessionError) {
+      $('configError').textContent = `セッション取得失敗: ${sessionError.message}`;
+      $('configError').classList.remove('hidden');
+      state.initializing = false;
+      return;
+    }
+    if (!session) { $('logout').classList.add('hidden'); show('loginView'); state.initializing = false; return; }
     $('logout').classList.remove('hidden');
-    try { await loadMasters(); await refreshStats(); show('homeView'); }
-    catch (err) { $('configError').textContent = `初期化に失敗しました。${err?.message || ''}`; $('configError').classList.remove('hidden'); console.error(err); }
+    try {
+      await loadMasters();
+      await refreshStats();
+      $('configError').classList.add('hidden');
+      show('homeView');
+    } catch (err) {
+      $('configError').textContent = `初期化に失敗しました。${err?.message || '不明なエラー'}`;
+      $('configError').classList.remove('hidden');
+      console.error(err);
+    } finally {
+      state.initializing = false;
+    }
   }
   client.auth.onAuthStateChange((_event, session) => { if (session) init(); });
   init();
