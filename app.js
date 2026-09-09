@@ -2,7 +2,7 @@
   const $ = (id) => document.getElementById(id);
   const views = ['loginView','homeView','inputView','masterView','savedView'];
   const bodyFields = [
-    ['胸前','chest'],['トモ','hindquarter'],['歩様','gait'],['前後バランス','balance'],['ハリ','tone'],['腹回り','abdomen']
+    ['胸前','CHEST'],['トモ','HINDQUARTER'],['歩様','GAIT'],['前後バランス','BALANCE'],['ハリ','TONE'],['腹回り','ABDOMEN']
   ];
   const state = { masters: {}, saving: false };
   const hasConfig = window.CPL_SUPABASE_URL && !window.CPL_SUPABASE_URL.includes('YOUR_PROJECT') && window.CPL_SUPABASE_KEY && !window.CPL_SUPABASE_KEY.includes('YOUR_');
@@ -35,6 +35,7 @@
   async function loadMasters() {
     const { data, error } = await client.from('master_options').select('category,field_key,option_value,sort_order').eq('active', true).order('sort_order');
     if (error) throw error;
+    state.masters = {};
     data.forEach(row => (state.masters[row.field_key] ||= []).push(row));
     $('racecourse').innerHTML = options('RACECOURSE');
     $('surface').innerHTML = options('SURFACE');
@@ -47,15 +48,17 @@
     $('masterList').innerHTML = keys.map(k => `<div class="card master-card"><h2>${esc(k)}</h2><div class="chips">${(state.masters[k] || []).map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>`).join('');
   }
   async function refreshStats() {
-    const { count } = await client.from('races').select('*', { count:'exact', head:true });
+    const { count, error } = await client.from('races').select('*', { count:'exact', head:true });
+    if (error) throw error;
     $('raceCount').textContent = count ?? 0;
-    const { data } = await client.from('races').select('created_at').order('created_at',{ascending:false}).limit(1).maybeSingle();
+    const { data, error: latestError } = await client.from('races').select('created_at').order('created_at',{ascending:false}).limit(1).maybeSingle();
+    if (latestError) throw latestError;
     $('lastUpdate').textContent = data ? new Date(data.created_at).toLocaleDateString('ja-JP') : '—';
   }
   function collectResults() {
     return [...document.querySelectorAll('.result-card')].map(card => {
       const get = k => card.querySelector(`[data-field="${k}"]`).value;
-      return { finish_position:Number(card.dataset.position), popularity:Number(get('popularity')), win_odds:Number(get('win_odds')), chest:get('chest'), hindquarter:get('hindquarter'), gait:get('gait'), balance:get('balance'), tone:get('tone'), abdomen:get('abdomen') };
+      return { finish_position:Number(card.dataset.position), popularity:Number(get('popularity')), win_odds:Number(get('win_odds')), chest:get('CHEST'), hindquarter:get('HINDQUARTER'), gait:get('GAIT'), balance:get('BALANCE'), tone:get('TONE'), abdomen:get('ABDOMEN') };
     });
   }
   function validate(race, results) {
@@ -94,7 +97,7 @@
     if (!session) { show('loginView'); return; }
     $('logout').classList.remove('hidden');
     try { await loadMasters(); await refreshStats(); show('homeView'); }
-    catch (err) { $('configError').textContent = '初期化に失敗しました。Supabase設定とSQL適用を確認してください。'; $('configError').classList.remove('hidden'); console.error(err); }
+    catch (err) { $('configError').textContent = `初期化に失敗しました。${err?.message || ''}`; $('configError').classList.remove('hidden'); console.error(err); }
   }
   client.auth.onAuthStateChange((_event, session) => { if (session) init(); });
   init();
