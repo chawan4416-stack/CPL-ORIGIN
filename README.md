@@ -11,15 +11,36 @@ CPLは、馬を追跡するシステムでも予想ソフトでもありませ�
 - 人気・単勝オッズはレース結果入力時の客観データとして保存
 - 1レース＝1回の保存
 - 1着〜3着だけを記録
-- Google Apps Script + Google Sheets + スマートフォンWebアプリ
+- **Supabase PostgreSQL** を永続DBとして使用
+- **Googleログイン**を使用
+- スマートフォンファーストのWebアプリ
 - Ver1.0ではデータ収集と保存を優先
 - 馬体研究室の分析機能はVer1.1以降
 
+## Architecture
+
+`スマートフォンWebアプリ → Supabase Auth → Supabase PostgreSQL`
+
+- GitHub：ソースコード管理
+- Supabase：認証・DB・RLS
+- Google Sheets：DBとして使用しない
+- `races`：レース条件
+- `race_results`：1〜3着の結果＋馬体
+- `master_options`：入力マスター
+- `save_race()`：1レースを原子的に保存
+
 ## Setup
 
-1. GoogleスプレッドシートにApps Scriptプロジェクトを作成する
-2. このリポジトリのApps Scriptソースを配置する
-3. `setupCpl()` を一度実行してDB/HOMEを準備する
-4. Webアプリとしてデプロイする
+1. Supabaseでプロジェクト `CPL` を作成する
+2. `supabase/migrations/0001_cpl_v1.sql` をSupabase SQL Editorで実行する
+3. Google OAuthをSupabase Authに設定する
+4. `supabase/config.js` にProject URLとpublishable keyを設定する
+5. 静的Webホスティングへデプロイする
 
-`setupCpl()` は既存のDBデータを消去しません。列構成が一致しない場合は安全のため停止します。
+`service_role` keyはブラウザへ公開しない。Webアプリはpublishable/anon key＋RLSで接続する。
+
+## Ver1.0 Scope
+
+CPLは「馬を追う」ためのシステムではありません。
+
+**条件 × 結果 × 馬体**を蓄積し、将来の研究機能で組み合わせを分析します。
