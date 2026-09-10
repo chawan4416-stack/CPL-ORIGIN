@@ -55,6 +55,16 @@
     if (latestError) throw new Error(`最終更新取得失敗: ${latestError.message}`);
     $('lastUpdate').textContent = data ? new Date(data.created_at).toLocaleDateString('ja-JP') : '—';
   }
+  function localDateString() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+  function resetInputDate() {
+    $('race_date').value = localDateString();
+  }
   function collectResults() {
     return [...document.querySelectorAll('.result-card')].map(card => {
       const get = k => card.querySelector(`[data-field="${k}"]`).value;
@@ -76,7 +86,7 @@
     if (!btn || btn.disabled) return;
     const screen = btn.dataset.screen;
     show(screen === 'home' ? 'homeView' : screen === 'input' ? 'inputView' : 'masterView');
-    if (screen === 'input') $('race_date').value ||= new Date().toISOString().slice(0,10);
+    if (screen === 'input') resetInputDate();
   });
   $('raceForm').addEventListener('submit', async e => {
     e.preventDefault(); if (state.saving) return;
