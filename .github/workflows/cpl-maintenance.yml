@@ -1,0 +1,28 @@
+name: CPL Weekly Maintenance
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  supabase-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Touch Supabase database
+        env:
+          SUPABASE_URL: ${{ secrets.CPL_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.CPL_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_KEY"
+          curl --fail-with-body --silent --show-error \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/master_options?select=id&limit=1" \
+            > /dev/null
+          echo "Supabase maintenance request completed."
