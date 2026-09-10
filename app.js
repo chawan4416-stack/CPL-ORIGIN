@@ -69,7 +69,7 @@
     $('distance').value = selected || '';
   }
   function updateCourseOptions() {
-    const values = state.masters[`COURSE:${$('racecourse').value}`] || [];
+    const values = (state.masters[`COURSE:${$('racecourse').value}`] || []).map(v => v.option_value);
     const current = $('course').value;
     buildSimpleOptions($('course'), values, values.includes(current) ? current : values[0]);
   }
@@ -78,8 +78,6 @@
     if (error) throw new Error(`Master読み込み失敗: ${error.message}`);
     state.masters = {};
     data.forEach(row => {
-      // COURSE:/DISTANCE: は field_key 自体に競馬場を含めたキー。
-      // それ以外は field_key をそのまま使う。
       const key = row.field_key;
       (state.masters[key] ||= []).push(row);
     });
