@@ -78,7 +78,9 @@
     if (error) throw new Error(`Master読み込み失敗: ${error.message}`);
     state.masters = {};
     data.forEach(row => {
-      const key = row.category === 'DISTANCE' ? `DISTANCE:${row.field_key}` : row.category === 'COURSE' ? `COURSE:${row.field_key}` : row.field_key;
+      // COURSE:/DISTANCE: は field_key 自体に競馬場を含めたキー。
+      // それ以外は field_key をそのまま使う。
+      const key = row.field_key;
       (state.masters[key] ||= []).push(row);
     });
     $('racecourse').innerHTML = options('RACECOURSE');
