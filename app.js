@@ -27,6 +27,10 @@
   function buildSimpleOptions(select, values, selected = '') {
     select.innerHTML = values.map(v => `<option value="${esc(v)}"${String(v) === String(selected) ? ' selected' : ''}>${esc(v)}</option>`).join('');
   }
+  function buildRaceAndFieldSizeOptions() {
+    buildSimpleOptions($('race_number'), Array.from({length:12}, (_,i) => i + 1), 1);
+    buildSimpleOptions($('field_size'), Array.from({length:18}, (_,i) => i + 1), 12);
+  }
   function buildPopularityOptions() {
     const fieldSize = Number($('field_size').value || 12);
     document.querySelectorAll('[data-field="popularity"]').forEach(el => {
@@ -80,6 +84,7 @@
     $('racecourse').innerHTML = options('RACECOURSE');
     $('surface').innerHTML = options('SURFACE');
     $('track_condition').innerHTML = options('TRACK_CONDITION');
+    buildRaceAndFieldSizeOptions();
     buildResultCards();
     updateDistances();
     updateCourseOptions();
@@ -122,8 +127,7 @@
     show(screen === 'home' ? 'homeView' : screen === 'input' ? 'inputView' : 'masterView');
     if (screen === 'input') {
       resetInputDate();
-      $('race_number').value ||= 1;
-      $('field_size').value ||= 12;
+      buildRaceAndFieldSizeOptions();
       updateDistances();
       updateCourseOptions();
       buildPopularityOptions();
