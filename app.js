@@ -2,7 +2,7 @@
   const $ = (id) => document.getElementById(id);
   const views = ['loginView','homeView','inputView','masterView','savedView'];
   const bodyFields = [
-    ['胸前','CHEST'],['トモ','HINDQUARTER'],['歩様','GAIT'],['前後バランス','BALANCE'],['ハリ','TONE'],['腹回り','ABDOMEN']
+    ['胸前','CHEST'],['トモ','HINDQUARTER'],['歩様','GAIT'],['前後バランス','BALANCE'],['ハリ','TONE'],['腹回り','ABDOMEN'],['パドック総評','PADDOCK_EVALUATION']
   ];
   const state = { masters: {}, saving: false, initializing: false };
   const hasConfig = window.CPL_SUPABASE_URL && !window.CPL_SUPABASE_URL.includes('YOUR_PROJECT') && window.CPL_SUPABASE_KEY && !window.CPL_SUPABASE_KEY.includes('YOUR_');
@@ -13,38 +13,80 @@
     return;
   }
   const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
-
-  function show(name) {
-    views.forEach(v => $(v).classList.toggle('hidden', v !== name));
-  }
+  function show(name) { views.forEach(v => $(v).classList.toggle('hidden', v !== name)); }
   function esc(v) { return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function options(key, placeholder = '選択') {
     const values = state.masters[key] || [];
     return `<option value="">${placeholder}</option>` + values.map(v => `<option value="${esc(v.option_value)}">${esc(v.option_value)}</option>`).join('');
   }
+  function localDateString() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  }
+  function resetInputDate() { $('race_date').value = localDateString(); }
+  function buildSimpleOptions(select, values, selected = '') {
+    select.innerHTML = values.map(v => `<option value="${esc(v)}"${String(v) === String(selected) ? ' selected' : ''}>${esc(v)}</option>`).join('');
+  }
+  function buildPopularityOptions() {
+    const fieldSize = Number($('field_size').value || 12);
+    document.querySelectorAll('[data-field="popularity"]').forEach(el => {
+      const current = Number(el.value || 1);
+      el.innerHTML = Array.from({length: fieldSize}, (_, i) => i + 1).map(v => `<option value="${v}"${v === current ? ' selected' : ''}>${v}番人気</option>`).join('');
+    });
+  }
+  function buildOddsOptions() {
+    document.querySelectorAll('.odds-int').forEach(el => {
+      const current = Number(el.value || 1);
+      el.innerHTML = Array.from({length: 999}, (_, i) => i + 1).map(v => `<option value="${v}"${v === current ? ' selected' : ''}>${v}</option>`).join('');
+    });
+    document.querySelectorAll('.odds-dec').forEach(el => {
+      const current = Number(el.value || 0);
+      el.innerHTML = Array.from({length: 10}, (_, i) => i).map(v => `<option value="${v}"${v === current ? ' selected' : ''}>.${v}</option>`).join('');
+    });
+  }
   function buildResultCards() {
     $('resultCards').innerHTML = [1,2,3].map(pos => `
       <div class="card result-card" data-position="${pos}"><h2>${pos}着</h2>
         <div class="grid">
-          <label>人気<input data-field="popularity" type="number" min="1" required></label>
-          <label>単勝オッズ<input data-field="win_odds" type="number" min="0" step="0.1" required></label>
+          <label>人気<select data-field="popularity" required></select></label>
+          <label>単勝オッズ<div class="odds-row"><select class="odds-int" data-field="win_odds_int" required></select><select class="odds-dec" data-field="win_odds_dec" required></select></div></label>
           ${bodyFields.map(([label,key]) => `<label>${label}<select data-field="${key}" required>${options(key)}</select></label>`).join('')}
         </div>
       </div>`).join('');
+    buildPopularityOptions();
+    buildOddsOptions();
+  }
+  function updateDistances() {
+    const racecourse = $('racecourse').value;
+    const values = (state.masters[`DISTANCE:${racecourse}`] || []).map(v => Number(v.option_value)).sort((a,b) => a-b);
+    const current = Number($('distance').value || 1600);
+    const selected = values.includes(current) ? current : (values.includes(1600) ? 1600 : values[0]);
+    buildSimpleOptions($('distance'), values, selected);
+    $('distance').value = selected || '';
+  }
+  function updateCourseOptions() {
+    const values = state.masters[`COURSE:${$('racecourse').value}`] || [];
+    const current = $('course').value;
+    buildSimpleOptions($('course'), values, values.includes(current) ? current : values[0]);
   }
   async function loadMasters() {
     const { data, error } = await client.from('master_options').select('category,field_key,option_value,sort_order').eq('active', true).order('sort_order');
     if (error) throw new Error(`Master読み込み失敗: ${error.message}`);
     state.masters = {};
-    data.forEach(row => (state.masters[row.field_key] ||= []).push(row));
+    data.forEach(row => {
+      const key = row.category === 'DISTANCE' ? `DISTANCE:${row.field_key}` : row.category === 'COURSE' ? `COURSE:${row.field_key}` : row.field_key;
+      (state.masters[key] ||= []).push(row);
+    });
     $('racecourse').innerHTML = options('RACECOURSE');
     $('surface').innerHTML = options('SURFACE');
     $('track_condition').innerHTML = options('TRACK_CONDITION');
     buildResultCards();
+    updateDistances();
+    updateCourseOptions();
     renderMaster();
   }
   function renderMaster() {
-    const keys = ['RACECOURSE','SURFACE','TRACK_CONDITION','CHEST','HINDQUARTER','GAIT','BALANCE','TONE','ABDOMEN'];
+    const keys = ['RACECOURSE','SURFACE','TRACK_CONDITION','CHEST','HINDQUARTER','GAIT','BALANCE','TONE','ABDOMEN','PADDOCK_EVALUATION'];
     $('masterList').innerHTML = keys.map(k => `<div class="card master-card"><h2>${esc(k)}</h2><div class="chips">${(state.masters[k] || []).map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>`).join('');
   }
   async function refreshStats() {
@@ -55,25 +97,15 @@
     if (latestError) throw new Error(`最終更新取得失敗: ${latestError.message}`);
     $('lastUpdate').textContent = data ? new Date(data.created_at).toLocaleDateString('ja-JP') : '—';
   }
-  function localDateString() {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
-  function resetInputDate() {
-    $('race_date').value = localDateString();
-  }
   function collectResults() {
     return [...document.querySelectorAll('.result-card')].map(card => {
       const get = k => card.querySelector(`[data-field="${k}"]`).value;
-      return { finish_position:Number(card.dataset.position), popularity:Number(get('popularity')), win_odds:Number(get('win_odds')), chest:get('CHEST'), hindquarter:get('HINDQUARTER'), gait:get('GAIT'), balance:get('BALANCE'), tone:get('TONE'), abdomen:get('ABDOMEN') };
+      return { finish_position:Number(card.dataset.position), popularity:Number(get('popularity')), win_odds:Number(`${get('win_odds_int')}.${get('win_odds_dec')}`), chest:get('CHEST'), hindquarter:get('HINDQUARTER'), gait:get('GAIT'), balance:get('BALANCE'), tone:get('TONE'), abdomen:get('ABDOMEN'), paddock_evaluation:get('PADDOCK_EVALUATION') };
     });
   }
   function validate(race, results) {
     if (Object.values(race).some(v => v === '' || v == null || Number.isNaN(v))) return 'レース情報をすべて入力してください。';
-    if (!results.every(r => r.popularity > 0 && r.win_odds >= 0 && bodyFields.every(([,k]) => r[k]))) return '1〜3着の情報をすべて入力してください。';
+    if (!results.every(r => r.popularity > 0 && r.win_odds >= 1 && bodyFields.every(([,k]) => r[k]))) return '1〜3着の情報をすべて入力してください。';
     return '';
   }
   $('login').addEventListener('click', async () => {
@@ -81,17 +113,26 @@
     if (error) $('configError').textContent = `Googleログイン失敗: ${error.message}`;
   });
   $('logout').addEventListener('click', () => client.auth.signOut());
+  $('racecourse').addEventListener('change', () => { updateDistances(); updateCourseOptions(); });
+  $('field_size').addEventListener('change', buildPopularityOptions);
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-screen]');
     if (!btn || btn.disabled) return;
     const screen = btn.dataset.screen;
     show(screen === 'home' ? 'homeView' : screen === 'input' ? 'inputView' : 'masterView');
-    if (screen === 'input') resetInputDate();
+    if (screen === 'input') {
+      resetInputDate();
+      $('race_number').value ||= 1;
+      $('field_size').value ||= 12;
+      updateDistances();
+      updateCourseOptions();
+      buildPopularityOptions();
+    }
   });
   $('raceForm').addEventListener('submit', async e => {
     e.preventDefault(); if (state.saving) return;
     $('formError').textContent = '';
-    const race = { race_date:$('race_date').value, racecourse:$('racecourse').value, race_number:$('race_number').value, course:$('course').value.trim(), surface:$('surface').value, distance:$('distance').value, track_condition:$('track_condition').value, field_size:$('field_size').value };
+    const race = { race_date:$('race_date').value, racecourse:$('racecourse').value, race_number:$('race_number').value, course:$('course').value, surface:$('surface').value, distance:$('distance').value, track_condition:$('track_condition').value, field_size:$('field_size').value };
     const results = collectResults(); const error = validate(race, results);
     if (error) { $('formError').textContent = error; return; }
     state.saving = true; $('saveButton').disabled = true;
