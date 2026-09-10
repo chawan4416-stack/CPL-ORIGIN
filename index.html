@@ -5,22 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
   <title>CPL｜Chawan Paddock Labs</title>
-  <link rel="stylesheet" href="styles.css?v=20260910-3">
+  <link rel="stylesheet" href="styles.css?v=20260910-4">
 </head>
 <body>
   <main id="app" class="app">
     <header class="topbar"><div class="brand">CPL</div><button id="logout" class="text-button hidden">ログアウト</button></header>
-
     <section id="loginView" class="view center">
-      <div class="login-card">
-        <div class="mark">CPL</div>
-        <h1>Chawan Paddock Labs</h1>
-        <p>馬体研究所</p>
-        <button id="login" class="primary wide">Googleでログイン</button>
-        <p id="configError" class="error hidden"></p>
-      </div>
+      <div class="login-card"><div class="mark">CPL</div><h1>Chawan Paddock Labs</h1><p>馬体研究所</p><button id="login" class="primary wide">Googleでログイン</button><p id="configError" class="error hidden"></p></div>
     </section>
-
     <section id="homeView" class="view hidden">
       <div class="home-title"><h1>HOME</h1><p>レース後の事実を蓄積する</p></div>
       <button class="home-card research-input" data-screen="input"><span>今日の研究</span><small>レース結果を登録</small></button>
@@ -28,35 +20,29 @@
       <button class="home-card master" data-screen="master"><span>Master</span><small>登録項目を確認</small></button>
       <div class="stats"><div><b id="raceCount">—</b><small>累計レース</small></div><div><b id="lastUpdate">—</b><small>最終更新</small></div></div>
     </section>
-
     <section id="inputView" class="view hidden">
       <div class="screen-head"><button class="back" data-screen="home">‹</button><div><h1>レース登録</h1><p>1レース＝1回の保存</p></div></div>
       <form id="raceForm" novalidate>
         <div class="card"><h2>レース情報</h2><div class="grid">
           <label>日付<input id="race_date" type="date" required></label>
           <label>競馬場<select id="racecourse" required></select></label>
-          <label>レース<input id="race_number" type="number" min="1" max="99" required></label>
-          <label>コース<input id="course" type="text" required></label>
+          <label>レース<select id="race_number" required></select></label>
+          <label>コース<select id="course" required></select></label>
           <label>芝・ダート<select id="surface" required></select></label>
-          <label>距離<input id="distance" type="number" min="1" required></label>
+          <label>距離<select id="distance" required></select></label>
           <label>馬場<select id="track_condition" required></select></label>
-          <label>頭数<input id="field_size" type="number" min="1" required></label>
+          <label>頭数<select id="field_size" required></select></label>
         </div></div>
         <div id="resultCards"></div>
         <p id="formError" class="error"></p>
         <button id="saveButton" class="primary wide" type="submit">保存する</button>
       </form>
     </section>
-
-    <section id="masterView" class="view hidden">
-      <div class="screen-head"><button class="back" data-screen="home">‹</button><div><h1>Master</h1><p>登録項目の確認</p></div></div>
-      <div id="masterList"></div>
-    </section>
-
+    <section id="masterView" class="view hidden"><div class="screen-head"><button class="back" data-screen="home">‹</button><div><h1>Master</h1><p>登録項目の確認</p></div></div><div id="masterList"></div></section>
     <section id="savedView" class="view hidden center"><div class="saved"><div class="check">✓</div><h1>保存しました</h1><button class="primary" data-screen="home">HOMEへ</button></div></section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase/config.js?v=20260910-3"></script>
-  <script src="app.js?v=20260910-3"></script>
+  <script src="supabase/config.js?v=20260910-4"></script>
+  <script src="app.js?v=20260910-4"></script>
 </body>
 </html>
