@@ -12,17 +12,22 @@ jobs:
   supabase-maintenance:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Touch Supabase database
-        env:
-          SUPABASE_URL: ${{ secrets.CPL_SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.CPL_SUPABASE_PUBLISHABLE_KEY }}
         run: |
           set -euo pipefail
-          test -n "$SUPABASE_URL"
+
+          SUPABASE_URL="https://ekgislctkribtztazvsd.supabase.co"
+          SUPABASE_KEY="$(sed -n "s/^window\.CPL_SUPABASE_KEY = '\(.*\)';$/\1/p" supabase/config.js)"
+
           test -n "$SUPABASE_KEY"
+
           curl --fail-with-body --silent --show-error \
             -H "apikey: $SUPABASE_KEY" \
             -H "Authorization: Bearer $SUPABASE_KEY" \
             "$SUPABASE_URL/rest/v1/master_options?select=id&limit=1" \
             > /dev/null
+
           echo "Supabase maintenance request completed."
