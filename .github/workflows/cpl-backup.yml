@@ -1,0 +1,27 @@
+name: CPL Weekly Backup
+
+on:
+  schedule:
+    - cron: '15 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create Google Drive backup
+        env:
+          SUPABASE_URL: https://ekgislctkribtztazvsd.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.CPL_SUPABASE_SECRET_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.CPL_BACKUP_GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.CPL_BACKUP_GOOGLE_CLIENT_SECRET }}
+          GOOGLE_REFRESH_TOKEN: ${{ secrets.CPL_BACKUP_GOOGLE_REFRESH_TOKEN }}
+          CPL_BACKUP_FOLDER_ID: ${{ secrets.CPL_BACKUP_FOLDER_ID }}
+          CPL_BACKUP_RETENTION: '12'
+        run: python3 scripts/cpl_backup.py
