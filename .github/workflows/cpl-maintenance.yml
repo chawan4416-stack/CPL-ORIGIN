@@ -25,9 +25,12 @@ jobs:
           test -n "$SUPABASE_KEY"
 
           curl --fail-with-body --silent --show-error \
+            -X POST \
             -H "apikey: $SUPABASE_KEY" \
             -H "Authorization: Bearer $SUPABASE_KEY" \
-            "$SUPABASE_URL/rest/v1/master_options?select=id&limit=1" \
+            -H "Content-Type: application/json" \
+            "$SUPABASE_URL/rest/v1/rpc/maintenance_ping" \
+            -d '{}' \
             > /dev/null
 
           echo "Supabase maintenance request completed."
