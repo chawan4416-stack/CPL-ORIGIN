@@ -1,0 +1,36 @@
+name: CPL Weekly Maintenance
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  supabase-maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Touch Supabase database
+        run: |
+          set -euo pipefail
+
+          SUPABASE_URL="https://ekgislctkribtztazvsd.supabase.co"
+          SUPABASE_KEY="$(sed -n "s/^window\.CPL_SUPABASE_KEY = '\(.*\)';$/\1/p" supabase/config.js)"
+
+          test -n "$SUPABASE_KEY"
+
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            -H "Content-Type: application/json" \
+            "$SUPABASE_URL/rest/v1/rpc/maintenance_ping" \
+            -d '{}' \
+            > /dev/null
+
+          echo "Supabase maintenance request completed."
