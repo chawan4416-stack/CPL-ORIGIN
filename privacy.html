@@ -5,43 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CPL プライバシーポリシー</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", sans-serif; line-height: 1.8; margin: 0; padding: 32px 20px; color: #222; background: #fff; }
-    main { max-width: 720px; margin: 0 auto; }
-    h1 { line-height: 1.4; }
-    h2 { margin-top: 2em; }
-    .updated { color: #666; }
+    body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.8; max-width: 760px; margin: 0 auto; padding: 24px; color: #222; }
+    h1 { font-size: 1.6rem; }
+    h2 { margin-top: 2rem; font-size: 1.2rem; }
   </style>
 </head>
 <body>
-<main>
   <h1>CPL プライバシーポリシー</h1>
-  <p class="updated">最終更新日：2026年9月12日</p>
 
-  <h2>1. CPLについて</h2>
-  <p>CPL（Chawan Paddock Labs）は、競馬のレース結果と馬体に関する研究データを整理・蓄積するための個人利用を目的としたWebアプリです。</p>
+  <p>CPL（Chawan Paddock Labs）は、レース終了後の事実データを蓄積し、馬体研究に利用する個人利用を目的としたWebアプリです。</p>
 
-  <h2>2. 取得する情報</h2>
-  <p>CPLでは、Googleアカウントによるログインに必要な認証情報をGoogleの認証機能を通じて利用します。また、CPL利用時に登録されたレース情報および馬体研究データを保存します。</p>
-  <p>CPLは馬名を登録・追跡することを目的としていません。</p>
+  <h2>1. 取得する情報</h2>
+  <p>CPLでは、Googleログインに必要なGoogleアカウント情報、およびユーザーが入力するレース情報・着順・人気・単勝オッズ・馬体評価情報を取り扱います。</p>
+  <p>CPLでは、馬名を入力・保存しません。また、レース前の予想や評価を入力・保存することを目的としていません。</p>
 
-  <h2>3. Google Driveへのバックアップ</h2>
-  <p>利用者が設定した自動バックアップ機能では、CPLの研究データを利用者自身のGoogle Driveへ保存します。Google Driveへのアクセスには、バックアップに必要な範囲の権限（drive.file）を使用します。</p>
-  <p>バックアップデータは利用者自身のGoogle Driveに保存され、CPL運営者が第三者のGoogle Driveへデータを共有することはありません。</p>
+  <h2>2. 利用目的</h2>
+  <p>取得した情報は、CPLの認証、データ保存、表示、バックアップ、および馬体研究のために利用します。</p>
 
-  <h2>4. 情報の利用目的</h2>
-  <p>取得・保存した情報は、CPLの認証、データ保存、バックアップ、およびアプリの機能提供のために利用します。</p>
+  <h2>3. データの保存</h2>
+  <p>レースデータはSupabase PostgreSQLに保存されます。アクセス制御にはSupabaseのRow Level Security（RLS）を使用し、ユーザーが自身の登録データを扱えるよう制御します。</p>
+
+  <h2>4. Google Driveバックアップ</h2>
+  <p>バックアップ機能を利用する場合、レースデータはユーザー自身のGoogle Drive内のCPL_BACKUPフォルダへJSON形式で保存されます。バックアップ処理ではGoogle Driveのファイル作成に必要な権限（drive.file）を使用します。</p>
 
   <h2>5. 第三者提供</h2>
-  <p>法令に基づく場合を除き、利用者のデータを第三者へ販売・提供することはありません。</p>
+  <p>取得した情報を第三者へ販売・提供することはありません。ただし、法令に基づく場合などを除きます。</p>
 
-  <h2>6. データの管理</h2>
-  <p>データへのアクセスは、認証された利用者本人に限定する設計としています。Google Driveへのバックアップも利用者本人のGoogleアカウントに対して行います。</p>
+  <h2>6. 管理</h2>
+  <p>認証・データベースへのアクセスは、Supabase AuthおよびRLSによって制御します。ユーザーは自身の登録データを確認・削除できます。</p>
 
-  <h2>7. お問い合わせ</h2>
-  <p>CPLに関するお問い合わせは、Google認証画面に表示されるサポート用メールアドレスからご連絡ください。</p>
+  <h2>7. 問い合わせ</h2>
+  <p>お問い合わせ先は、Googleログイン画面等に表示する連絡先をご確認ください。</p>
 
-  <h2>8. ポリシーの変更</h2>
-  <p>必要に応じて本ポリシーを変更することがあります。変更した場合は本ページに掲載します。</p>
-</main>
+  <h2>8. 改定</h2>
+  <p>本ポリシーは、CPLの機能変更等に応じて改定することがあります。</p>
+
+  <p>最終更新日：2026年9月13日</p>
 </body>
 </html>
