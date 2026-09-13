@@ -44,6 +44,7 @@
   $('login').addEventListener('click', async () => { const { error } = await client.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.origin + location.pathname } }); if (error) $('configError').textContent = `Googleログイン失敗: ${error.message}`; });
   $('logout').addEventListener('click', () => client.auth.signOut());
   $('racecourse').addEventListener('change', () => { updateDistances(); updateCourseOptions(); updateRaceClassOptions(); writeDraft(); });
+  $('surface').addEventListener('change', () => { updateDistances(); writeDraft(); });
   $('field_size').addEventListener('change', () => { buildPopularityOptions(); writeDraft(); });
   document.addEventListener('input', writeDraft);
   document.addEventListener('change', writeDraft);
