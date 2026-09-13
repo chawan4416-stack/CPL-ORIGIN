@@ -1,64 +1,97 @@
 # CPL Ver1.0 Completion Checklist
 
-## Scope
-- Race-result data collection only.
-- No horse names.
-- No pre-race prediction or evaluation input.
-- Popularity and win odds are stored as result-entry market data.
-- One race is saved once after 1st–3rd are complete.
+## 1. Product Scope
 
-## Race fields
-- Date
+- [x] Post-race data collection only
+- [x] No horse names
+- [x] No pre-race prediction/evaluation
+- [x] Top 3 only
+- [x] One race = one save
+- [x] Research/analysis deferred to Ver1.1+
+
+## 2. Input Data
+
+### Race
+
+- Race date
 - Racecourse
 - Race number
-- Course
 - Surface
 - Distance
 - Track condition
-- Field size
 
-## Top 3 fields
+### Results
+
+For 1st–3rd:
+
+- Finish position
 - Popularity
 - Win odds
 - Chest
 - Hindquarter
 - Gait
-- Front/rear balance
+- Balance
 - Tone
 - Abdomen
 - Paddock evaluation
 
-## Ver1.0 provisional body master
-- Chest: シャープ / 普通 / 厚 / 重厚
-- Hindquarter: シャープ / 普通 / 厚 / 重厚
-- Gait: チャカ付き / 歩幅短い / 歩幅長い / 普通 / スムーズ
-- Balance: 良い / 普通 / 悪い
-- Tone: パンパン / 普通 / ゴム感
-- Abdomen: 普通 / 太い
-- Paddock evaluation: 悪い / 普通 / 良い
+## 3. Current Architecture
 
-## Architecture
-- Frontend: smartphone-first Web App
-- Hosting: GitHub Pages
-- Authentication: Supabase Auth + Google login
-- Database: Supabase PostgreSQL
-- Master data: `master_options`
-- Race data: `races`
-- Result data: `race_results`
-- Authoritative save path: `save_race()` RPC
-- Race deletion: `delete_race()` RPC
-- Row-level security (RLS) protects user data
+- [x] Smartphone-first Web App
+- [x] GitHub Pages
+- [x] Supabase Auth + Google OAuth
+- [x] Supabase PostgreSQL
+- [x] RLS
+- [x] `master_options`
+- [x] `races`
+- [x] `race_results`
+- [x] `save_race()`
+- [x] `delete_race()`
 
-## Completion gate
-1. Supabase database structure and integrity rules are complete.
-2. Web app loads master data from `master_options`.
-3. Required input is validated before save.
-4. One submit call saves exactly one race and its 1st–3rd results.
-5. Duplicate race input is prevented and overwrite is supported.
-6. Success screen only confirms save and provides the next action.
-7. Registered data can be viewed and the user's own race can be deleted.
-8. Master screen is reference-only.
-9. Research analysis remains outside Ver1.0.
-10. Daily database maintenance is configured and manually verified.
-11. Google Drive backup is configured and manually verified.
-12. Real-device acceptance test remains as the final release gate.
+## 4. Database Integrity
+
+- [x] DB-side input validation
+- [x] Master-value validation
+- [x] Top-3 position validation
+- [x] Popularity uniqueness validation
+- [x] Duplicate race prevention
+- [x] Overwrite save
+- [x] `updated_at` maintenance
+
+## 5. UI / UX
+
+- [x] HOME
+- [x] Today's research entry point
+- [x] Race input flow
+- [x] 1st → 2nd → 3rd sequential input
+- [x] Save completion state
+- [x] Registered data display
+- [x] Own-data deletion
+- [x] Master reference display
+- [x] Research Room disabled until later version
+
+## 6. Operations
+
+- [x] Daily `maintenance_ping()` workflow
+- [x] Google Drive backup
+- [x] Backup includes paddock evaluation
+- [x] Backup generation retention: latest 12
+
+## 7. Release Gate
+
+The remaining item is the smartphone real-device acceptance test.
+
+Required flow:
+
+1. Google login
+2. Open HOME
+3. Enter one race
+4. Enter 1st–3rd
+5. Save
+6. Confirm registered data
+7. Save the same race again and confirm overwrite
+8. Confirm updated data
+9. Delete the race
+10. Confirm it disappears
+
+After this test passes, Ver1.0 is ready to become the operational baseline for CPL data collection.
