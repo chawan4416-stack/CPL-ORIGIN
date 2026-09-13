@@ -24,6 +24,7 @@
     select.value = values.includes(selected) ? selected : (includePlaceholder ? '' : (values[0] || ''));
     select.disabled = auto;
     select.required = true;
+    select.dataset.courseExplicit = includePlaceholder && selected ? 'true' : 'false';
     if (autoValue) {
       autoValue.textContent = select.value;
       autoValue.classList.toggle('hidden', !auto);
@@ -85,8 +86,13 @@
     if (event.target?.id === 'course' && !event.target.dataset.courseLayoutSync) {
       const layouts = courseDistanceMasters[courseDistanceKey()] || [];
       if ($('surface')?.value === '芝' && layouts.length > 1) {
-        if (layouts.includes(event.target.value)) courseSelections[courseDistanceKey()] = event.target.value;
-        else delete courseSelections[courseDistanceKey()];
+        if (layouts.includes(event.target.value)) {
+          courseSelections[courseDistanceKey()] = event.target.value;
+          event.target.dataset.courseExplicit = 'true';
+        } else {
+          delete courseSelections[courseDistanceKey()];
+          event.target.dataset.courseExplicit = 'false';
+        }
       }
     }
   });
