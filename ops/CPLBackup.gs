@@ -24,11 +24,11 @@ function runCplBackup() {
     throw new Error('SUPABASE_URL / SUPABASE_SECRET_KEY が Script Properties にありません。');
   }
 
-  const races = fetchAllRows_(supabaseUrl, secretKey, 'races', 'id,race_date,racecourse,race_number,course,surface,distance,track_condition,field_size,created_by,created_at,updated_at');
+  const races = fetchAllRows_(supabaseUrl, secretKey, 'races', 'id,race_date,racecourse,race_number,course,surface,distance,race_class,track_condition,field_size,created_by,created_at,updated_at');
   const raceResults = fetchAllRows_(supabaseUrl, secretKey, 'race_results', 'id,race_id,finish_position,popularity,win_odds,chest,hindquarter,gait,balance,tone,abdomen,paddock_evaluation,created_at');
 
   const backup = {
-    backup_version: 2,
+    backup_version: 3,
     created_at: new Date().toISOString(),
     source: 'CPL Supabase PostgreSQL',
     races: races,
