@@ -1,20 +1,31 @@
 (() => {
   const $ = (id) => document.getElementById(id);
-  const JRA = new Set(['札幌','函館','福島','新潟','東京','中山','中京','京都','阪神','小倉']);
-  let layoutMasters = {};
+  let courseMasters = {};
+  let courseDistanceMasters = {};
   let loaded = false;
 
-  function key() {
-    const racecourse = $('racecourse')?.value || '';
-    const surface = $('surface')?.value || '';
-    const distance = $('distance')?.value || '';
-    return `${racecourse}:${surface}:${distance}`;
+  function esc(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
   }
 
-  function buildOptions(values, selected = '') {
+  function courseDistanceKey() {
+    return `${$('racecourse')?.value || ''}:${$('surface')?.value || ''}:${$('distance')?.value || ''}`;
+  }
+
+  function setCourseOptions(values, selected, disabled, includePlaceholder) {
     const select = $('course');
     if (!select) return;
-    select.innerHTML = values.map(v => `<option value="${v.replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]))}"${v === selected ? ' selected' : ''}>${v}</option>`).join('');
+    const previousValue = select.value;
+    const previousDisabled = select.disabled;
+    const options = [...(includePlaceholder ? [''] : []), ...values];
+    select.innerHTML = options.map(value => `<option value="${esc(value)}">${value ? esc(value) : '選択'}</option>`).join('');
+    select.value = values.includes(selected) ? selected : (includePlaceholder ? '' : (values[0] || ''));
+    select.disabled = disabled;
+    select.required = true;
+
+    if (previousValue !== select.value || previousDisabled !== select.disabled) {
+      select.dispatchEvent(new Event('change', { bubbles:true }));
+    }
   }
 
   function apply() {
@@ -24,20 +35,15 @@
     const select = $('course');
     if (!select || !racecourse || !surface) return;
 
-    const values = layoutMasters[key()] || [];
-    if (!JRA.has(racecourse) || surface !== '芝' || values.length === 0) return;
-
     const current = select.value;
-    if (values.length === 1) {
-      buildOptions(values, values[0]);
-      select.disabled = true;
-      select.required = true;
-    } else {
-      buildOptions(values, values.includes(current) ? current : '');
-      select.disabled = false;
-      select.required = true;
-      if (!select.value) select.insertAdjacentHTML('afterbegin', '<option value="">選択</option>');
+    const layouts = courseDistanceMasters[courseDistanceKey()] || [];
+    if (surface === '芝' && layouts.length > 0) {
+      setCourseOptions(layouts, current, layouts.length === 1, layouts.length > 1);
+      return;
     }
+
+    const standardCourses = courseMasters[racecourse] || [];
+    if (standardCourses.length > 0) setCourseOptions(standardCourses, current, false, false);
   }
 
   async function load() {
@@ -45,14 +51,17 @@
     try {
       const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
       const { data, error } = await client.from('master_options')
-        .select('field_key,option_value,sort_order')
-        .eq('category','COURSE_DISTANCE')
-        .eq('active',true)
+        .select('category,field_key,option_value,sort_order')
+        .in('category', ['COURSE', 'COURSE_DISTANCE'])
+        .eq('active', true)
         .order('sort_order');
       if (error) throw error;
-      layoutMasters = {};
+
+      courseMasters = {};
+      courseDistanceMasters = {};
       (data || []).forEach(row => {
-        (layoutMasters[row.field_key] ||= []).push(row.option_value);
+        const target = row.category === 'COURSE_DISTANCE' ? courseDistanceMasters : courseMasters;
+        (target[row.field_key] ||= []).push(row.option_value);
       });
       loaded = true;
       apply();
@@ -61,11 +70,10 @@
     }
   }
 
-  document.addEventListener('change', (e) => {
-    if (e.target?.id === 'racecourse' || e.target?.id === 'surface' || e.target?.id === 'distance') {
-      window.setTimeout(apply, 0);
-    }
+  document.addEventListener('change', event => {
+    if (['racecourse', 'surface', 'distance'].includes(event.target?.id)) window.setTimeout(apply, 0);
   });
+
   window.setTimeout(load, 250);
   window.setInterval(() => {
     if (loaded && $('inputView') && !$('inputView').classList.contains('hidden')) apply();
