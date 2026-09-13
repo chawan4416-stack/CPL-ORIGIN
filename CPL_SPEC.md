@@ -17,7 +17,8 @@ CPL（Chawan Paddock Labs）は、レース後の事実を蓄積し、条件 × 
 7. 馬体評価7項目を記録する
 8. 同一レースは上書き保存できる
 9. ユーザーは自分の登録データのみ削除できる
-10. Ver1.0では研究・分析機能を実装しない
+10. 入力途中のデータは端末のブラウザに一時保存し、アプリを離れても再開できる
+11. Ver1.0では研究・分析機能を実装しない
 
 ## Body Evaluation
 
@@ -48,6 +49,7 @@ Supabase PostgreSQL
 - Result/body data: `race_results`
 - Authoritative save operation: `save_race()`
 - Delete operation: `delete_race()`
+- Unfinished input draft: browser `localStorage`, keyed per authenticated user
 
 ## Design Principles
 
@@ -75,6 +77,19 @@ CPLはデータを整理する。意味づけ・研究・解釈は後続バー�
 
 処理ロジックとマスタデータを分離し、保守性を確保する。
 
+## Input Continuity
+
+CPLの入力は、Racing Viewer、netkeiba、ブラウザ、ChatGPTなどを行き来しながら行うことを前提とします。
+
+そのため、入力途中のレースデータをブラウザの`localStorage`へ自動保存します。
+
+- 入力・変更のたびに下書きを更新する
+- アプリが再読み込みされても下書きを復元する
+- 入力画面を復元し、可能な範囲でスクロール位置も復元する
+- 保存成功時に下書きを削除する
+- 下書きは認証ユーザー単位で分離する
+- 下書きはSupabaseへ送信しない
+
 ## Ver1.0 Scope
 
 ### Included
@@ -85,6 +100,7 @@ CPLはデータを整理する。意味づけ・研究・解釈は後続バー�
 - 1着〜3着入力
 - 人気・単勝オッズ入力
 - 馬体評価入力
+- 入力途中データの自動保持・復元
 - 保存
 - 重複レースの上書き
 - 登録済みデータ確認
