@@ -2,6 +2,7 @@
   const $ = (id) => document.getElementById(id);
   let courseMasters = {};
   let courseDistanceMasters = {};
+  let courseSelections = {};
   let loaded = false;
 
   function esc(value) {
@@ -30,7 +31,9 @@
     }
 
     if (previousValue !== select.value || previousDisabled !== select.disabled) {
+      select.dataset.courseLayoutSync = 'true';
       select.dispatchEvent(new Event('change', { bubbles:true }));
+      delete select.dataset.courseLayoutSync;
     }
   }
 
@@ -44,7 +47,8 @@
     const current = select.value;
     const layouts = courseDistanceMasters[courseDistanceKey()] || [];
     if (surface === '芝' && layouts.length > 0) {
-      setCourseOptions(layouts, current, { auto: layouts.length === 1, includePlaceholder: layouts.length > 1 });
+      const selected = layouts.length === 1 ? current : (courseSelections[courseDistanceKey()] || '');
+      setCourseOptions(layouts, selected, { auto: layouts.length === 1, includePlaceholder: layouts.length > 1 });
       return;
     }
 
@@ -78,6 +82,13 @@
 
   document.addEventListener('change', event => {
     if (['racecourse', 'surface', 'distance'].includes(event.target?.id)) window.setTimeout(apply, 0);
+    if (event.target?.id === 'course' && !event.target.dataset.courseLayoutSync) {
+      const layouts = courseDistanceMasters[courseDistanceKey()] || [];
+      if ($('surface')?.value === '芝' && layouts.length > 1) {
+        if (layouts.includes(event.target.value)) courseSelections[courseDistanceKey()] = event.target.value;
+        else delete courseSelections[courseDistanceKey()];
+      }
+    }
   });
 
   window.setTimeout(load, 250);
