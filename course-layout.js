@@ -50,7 +50,7 @@
     const contextChanged = context !== appliedContext;
     const current = select.value;
     const layouts = courseDistanceMasters[courseDistanceKey()] || [];
-    if (surface === '芝' && layouts.length > 0) {
+    if (layouts.length > 0) {
       const selected = layouts.length === 1 ? current : (courseSelections[courseDistanceKey()] || '');
       setCourseOptions(layouts, selected, { auto: layouts.length === 1, includePlaceholder: layouts.length > 1 });
       appliedContext = context;
@@ -90,7 +90,7 @@
     if (['racecourse', 'surface', 'distance'].includes(event.target?.id)) window.setTimeout(apply, 0);
     if (event.target?.id === 'course' && !event.target.dataset.courseLayoutSync) {
       const layouts = courseDistanceMasters[courseDistanceKey()] || [];
-      if ($('surface')?.value === '芝' && layouts.length > 1) {
+      if (layouts.length > 1) {
         if (layouts.includes(event.target.value)) {
           courseSelections[courseDistanceKey()] = event.target.value;
           event.target.dataset.courseExplicit = 'true';
