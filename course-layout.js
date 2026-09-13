@@ -12,16 +12,22 @@
     return `${$('racecourse')?.value || ''}:${$('surface')?.value || ''}:${$('distance')?.value || ''}`;
   }
 
-  function setCourseOptions(values, selected, disabled, includePlaceholder) {
+  function setCourseOptions(values, selected, { auto = false, includePlaceholder = false } = {}) {
     const select = $('course');
+    const autoValue = $('courseAuto');
     if (!select) return;
     const previousValue = select.value;
     const previousDisabled = select.disabled;
     const options = [...(includePlaceholder ? [''] : []), ...values];
     select.innerHTML = options.map(value => `<option value="${esc(value)}">${value ? esc(value) : '選択'}</option>`).join('');
     select.value = values.includes(selected) ? selected : (includePlaceholder ? '' : (values[0] || ''));
-    select.disabled = disabled;
+    select.disabled = auto;
     select.required = true;
+    if (autoValue) {
+      autoValue.textContent = select.value;
+      autoValue.classList.toggle('hidden', !auto);
+      select.classList.toggle('hidden', auto);
+    }
 
     if (previousValue !== select.value || previousDisabled !== select.disabled) {
       select.dispatchEvent(new Event('change', { bubbles:true }));
@@ -38,12 +44,12 @@
     const current = select.value;
     const layouts = courseDistanceMasters[courseDistanceKey()] || [];
     if (surface === '芝' && layouts.length > 0) {
-      setCourseOptions(layouts, current, layouts.length === 1, layouts.length > 1);
+      setCourseOptions(layouts, current, { auto: layouts.length === 1, includePlaceholder: layouts.length > 1 });
       return;
     }
 
     const standardCourses = courseMasters[racecourse] || [];
-    if (standardCourses.length > 0) setCourseOptions(standardCourses, current, false, false);
+    if (standardCourses.length > 0) setCourseOptions(standardCourses, current);
   }
 
   async function load() {
