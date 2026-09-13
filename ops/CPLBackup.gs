@@ -25,10 +25,10 @@ function runCplBackup() {
   }
 
   const races = fetchAllRows_(supabaseUrl, secretKey, 'races', 'id,race_date,racecourse,race_number,course,surface,distance,track_condition,field_size,created_by,created_at,updated_at');
-  const raceResults = fetchAllRows_(supabaseUrl, secretKey, 'race_results', 'id,race_id,finish_position,popularity,win_odds,chest,hindquarter,gait,balance,tone,abdomen,created_at');
+  const raceResults = fetchAllRows_(supabaseUrl, secretKey, 'race_results', 'id,race_id,finish_position,popularity,win_odds,chest,hindquarter,gait,balance,tone,abdomen,paddock_evaluation,created_at');
 
   const backup = {
-    backup_version: 1,
+    backup_version: 2,
     created_at: new Date().toISOString(),
     source: 'CPL Supabase PostgreSQL',
     races: races,
