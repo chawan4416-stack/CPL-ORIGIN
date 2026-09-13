@@ -4,13 +4,17 @@
   const bodyFields = [
     ['胸前','CHEST'],['トモ','HINDQUARTER'],['歩様','GAIT'],['前後バランス','BALANCE'],['ハリ','TONE'],['腹回り','ABDOMEN'],['パドック総評','PADDOCK_EVALUATION']
   ];
-  const state = { masters: {}, saving: false, initializing: false, deleting: false, userId: null };
+  const state = {
+    masters: {}, saving: false, initializing: false, initialized: false,
+    deleting: false, userId: null, currentView: 'loginView', draftScrollTimer: null,
+    draftRestoreTimer: null
+  };
   const DRAFT_PREFIX = 'CPL_V1_INPUT_DRAFT_';
   const hasConfig = window.CPL_SUPABASE_URL && !window.CPL_SUPABASE_URL.includes('YOUR_PROJECT') && window.CPL_SUPABASE_KEY && !window.CPL_SUPABASE_KEY.includes('YOUR_');
   if (!hasConfig) { $('configError').textContent = 'Supabase設定がまだ入っていません。'; $('configError').classList.remove('hidden'); $('login').disabled = true; return; }
   const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
 
-  function show(name) { views.forEach(v => $(v).classList.toggle('hidden', v !== name)); }
+  function show(name) { views.forEach(v => $(v).classList.toggle('hidden', v !== name)); state.currentView = name; }
   function esc(v) { return String(v ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
   function options(key, placeholder = '選択') { const values = state.masters[key] || []; return `<option value="">${placeholder}</option>` + values.map(v => `<option value="${esc(v.option_value)}">${esc(v.option_value)}</option>`).join(''); }
   function localDateString() { const now = new Date(); return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`; }
@@ -32,9 +36,9 @@
   async function deleteRace(raceId) { if (state.deleting) return; const confirmed = window.confirm('このレースを削除しますか？\n\nこのレースの1〜3着データも削除されます。\n削除履歴は保存されません。'); if (!confirmed) return; state.deleting = true; $('recordsError').textContent = ''; try { const { error } = await client.rpc('delete_race', { p_race_id: raceId }); if (error) { if (error.message?.includes('RACE_NOT_FOUND')) throw new Error('このレースは見つかりません。'); throw error; } await loadRecords(); await refreshStats(); } catch (err) { $('recordsError').textContent = `削除できませんでした: ${err?.message || '不明なエラー'}`; console.error(err); } finally { state.deleting = false; } }
   function draftKey() { return state.userId ? `${DRAFT_PREFIX}${state.userId}` : null; }
   function readDraft() { const key = draftKey(); if (!key) return null; try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : null; } catch (err) { console.warn('下書き読み込み失敗', err); return null; } }
-  function writeDraft() { if (!state.userId || $('inputView').classList.contains('hidden')) return; try { const draft = { version:1, screen:'inputView', saved_at:new Date().toISOString(), scrollY:window.scrollY, race:{ race_date:$('race_date').value, racecourse:$('racecourse').value, race_number:$('race_number').value, course:$('course').value, surface:$('surface').value, distance:$('distance').value, track_condition:$('track_condition').value, field_size:$('field_size').value }, results:[...document.querySelectorAll('.result-card')].map(card => { const get = k => card.querySelector(`[data-field="${k}"]`)?.value ?? ''; return { popularity:get('popularity'), win_odds_int:get('win_odds_int'), win_odds_dec:get('win_odds_dec'), ...Object.fromEntries(bodyFields.map(([,k]) => [k,get(k)])) }; }) }; localStorage.setItem(draftKey(), JSON.stringify(draft)); } catch (err) { console.warn('下書き保存失敗', err); } }
+  function writeDraft() { if (!state.userId || state.currentView !== 'inputView') return; try { const draft = { version:1, screen:'inputView', saved_at:new Date().toISOString(), scrollY:window.scrollY, race:{ race_date:$('race_date').value, racecourse:$('racecourse').value, race_number:$('race_number').value, course:$('course').value, surface:$('surface').value, distance:$('distance').value, track_condition:$('track_condition').value, field_size:$('field_size').value }, results:[...document.querySelectorAll('.result-card')].map(card => { const get = k => card.querySelector(`[data-field="${k}"]`)?.value ?? ''; return { popularity:get('popularity'), win_odds_int:get('win_odds_int'), win_odds_dec:get('win_odds_dec'), ...Object.fromEntries(bodyFields.map(([,k]) => [k,get(k)])) }; }) }; localStorage.setItem(draftKey(), JSON.stringify(draft)); } catch (err) { console.warn('下書き保存失敗', err); } }
   function clearDraft() { const key = draftKey(); if (!key) return; try { localStorage.removeItem(key); } catch (err) { console.warn('下書き削除失敗', err); } }
-  function restoreDraft() { const draft = readDraft(); if (!draft?.race || draft.version !== 1) return false; const race = draft.race; $('race_date').value = race.race_date || localDateString(); $('racecourse').value = race.racecourse || ''; $('surface').value = race.surface || ''; $('track_condition').value = race.track_condition || ''; $('race_number').value = race.race_number || '1'; $('field_size').value = race.field_size || '12'; updateDistances(); updateCourseOptions(); $('distance').value = race.distance || $('distance').value; $('course').value = race.course || $('course').value; buildPopularityOptions(); buildOddsOptions(); (draft.results || []).slice(0,3).forEach((saved, index) => { const card = document.querySelector(`.result-card[data-position="${index + 1}"]`); if (!card) return; Object.entries(saved).forEach(([key,value]) => { const el = card.querySelector(`[data-field="${key}"]`); if (el && value !== undefined && value !== '') el.value = value; }); }); if (draft.scrollY > 0) window.setTimeout(() => window.scrollTo(0, draft.scrollY), 100); return true; }
+  function restoreDraft() { const draft = readDraft(); if (!draft?.race || draft.version !== 1) return false; const race = draft.race; $('race_date').value = race.race_date || localDateString(); $('racecourse').value = race.racecourse || ''; $('surface').value = race.surface || ''; $('track_condition').value = race.track_condition || ''; $('race_number').value = race.race_number || '1'; $('field_size').value = race.field_size || '12'; updateDistances(); updateCourseOptions(); $('distance').value = race.distance || $('distance').value; $('course').value = race.course || $('course').value; buildPopularityOptions(); buildOddsOptions(); (draft.results || []).slice(0,3).forEach((saved, index) => { const card = document.querySelector(`.result-card[data-position="${index + 1}"]`); if (!card) return; Object.entries(saved).forEach(([key,value]) => { const el = card.querySelector(`[data-field="${key}"]`); if (el && value !== undefined && value !== '') el.value = value; }); }); if (draft.scrollY > 0) { window.clearTimeout(state.draftRestoreTimer); state.draftRestoreTimer = window.setTimeout(() => window.scrollTo(0, draft.scrollY), 100); } return true; }
 
   $('login').addEventListener('click', async () => { const { error } = await client.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.origin + location.pathname } }); if (error) $('configError').textContent = `Googleログイン失敗: ${error.message}`; });
   $('logout').addEventListener('click', () => client.auth.signOut());
@@ -42,14 +46,23 @@
   $('field_size').addEventListener('change', () => { buildPopularityOptions(); writeDraft(); });
   document.addEventListener('input', writeDraft);
   document.addEventListener('change', writeDraft);
+  window.addEventListener('scroll', () => {
+    if (state.currentView !== 'inputView') return;
+    window.clearTimeout(state.draftScrollTimer);
+    state.draftScrollTimer = window.setTimeout(writeDraft, 200);
+  }, { passive:true });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') writeDraft(); });
   window.addEventListener('pagehide', writeDraft);
+  window.addEventListener('beforeunload', writeDraft);
   document.addEventListener('click', async e => {
     const deleteButton = e.target.closest('[data-delete-race]');
     if (deleteButton) { await deleteRace(deleteButton.dataset.deleteRace); return; }
     const btn = e.target.closest('[data-screen]');
     if (!btn || btn.disabled) return;
     const screen = btn.dataset.screen;
-    show(screen === 'home' ? 'homeView' : screen === 'input' ? 'inputView' : screen === 'records' ? 'recordsView' : 'masterView');
+    const nextView = screen === 'home' ? 'homeView' : screen === 'input' ? 'inputView' : screen === 'records' ? 'recordsView' : 'masterView';
+    if (state.currentView === 'inputView' && nextView !== 'inputView') writeDraft();
+    show(nextView);
     if (screen === 'input') {
       buildRaceAndFieldSizeOptions();
       updateDistances();
@@ -62,6 +75,38 @@
     if (screen === 'records') { try { await loadRecords(); } catch (err) { $('recordsError').textContent = `登録データを取得できませんでした: ${err?.message || '不明なエラー'}`; } }
   });
   $('raceForm').addEventListener('submit', async e => { e.preventDefault(); if (state.saving) return; $('formError').textContent = ''; const race = { race_date:$('race_date').value, racecourse:$('racecourse').value, race_number:$('race_number').value, course:$('course').value, surface:$('surface').value, distance:$('distance').value, track_condition:$('track_condition').value, field_size:$('field_size').value }; const results = collectResults(); const error = validate(race, results); if (error) { $('formError').textContent = error; return; } state.saving = true; $('saveButton').disabled = true; try { const existingRaceId = await findExistingRace(race); let raceId = null; if (existingRaceId) { const overwrite = window.confirm('このレースはすでに登録されています。\n現在の入力内容で上書きしますか？\n\n※変更履歴は保存されません。'); if (!overwrite) return; raceId = existingRaceId; } const { error: saveError } = await client.rpc('save_race', { p_race:race, p_results:results, p_race_id:raceId }); if (saveError) { if (saveError.message?.includes('DUPLICATE_RACE')) throw new Error('このレースはすでに登録されています。'); throw saveError; } clearDraft(); $('raceForm').reset(); show('savedView'); await refreshStats(); } catch (err) { $('formError').textContent = `保存できませんでした: ${err?.message || '不明なエラー'}`; console.error(err); } finally { state.saving = false; $('saveButton').disabled = false; } });
-  async function init() { if (state.initializing) return; state.initializing = true; const { data:{ session }, error: sessionError } = await client.auth.getSession(); if (sessionError) { $('configError').textContent = `セッション取得失敗: ${sessionError.message}`; $('configError').classList.remove('hidden'); state.initializing = false; return; } if (!session) { state.userId = null; $('logout').classList.add('hidden'); show('loginView'); state.initializing = false; return; } state.userId = session.user.id; $('logout').classList.remove('hidden'); try { await loadMasters(); await refreshStats(); $('configError').classList.add('hidden'); const restored = readDraft(); show(restored?.screen === 'inputView' ? 'inputView' : 'homeView'); if (restored?.screen === 'inputView') restoreDraft(); } catch (err) { $('configError').textContent = `初期化に失敗しました。${err?.message || '不明なエラー'}`; $('configError').classList.remove('hidden'); console.error(err); } finally { state.initializing = false; } }
-  client.auth.onAuthStateChange((_event, session) => { if (session) init(); }); init();
+  async function init(sessionFromAuth = null) {
+    if (state.initializing || state.initialized) return;
+    state.initializing = true;
+    const { data:{ session }, error: sessionError } = sessionFromAuth ? { data:{ session:sessionFromAuth }, error:null } : await client.auth.getSession();
+    if (sessionError) { $('configError').textContent = `セッション取得失敗: ${sessionError.message}`; $('configError').classList.remove('hidden'); state.initializing = false; return; }
+    if (!session) { state.userId = null; $('logout').classList.add('hidden'); show('loginView'); state.initializing = false; return; }
+    state.userId = session.user.id;
+    $('logout').classList.remove('hidden');
+    try {
+      await loadMasters();
+      await refreshStats();
+      $('configError').classList.add('hidden');
+      const restored = readDraft();
+      show(restored?.screen === 'inputView' ? 'inputView' : 'homeView');
+      if (restored?.screen === 'inputView') restoreDraft();
+      state.initialized = true;
+    } catch (err) {
+      $('configError').textContent = `初期化に失敗しました。${err?.message || '不明なエラー'}`;
+      $('configError').classList.remove('hidden');
+      console.error(err);
+    } finally { state.initializing = false; }
+  }
+  client.auth.onAuthStateChange((event, session) => {
+    // TOKEN_REFRESHED 等では画面と入力DOMを絶対に作り直さない。
+    if (event === 'SIGNED_OUT') {
+      state.userId = null;
+      state.initialized = false;
+      $('logout').classList.add('hidden');
+      show('loginView');
+      return;
+    }
+    if (event === 'SIGNED_IN' && session && !state.initialized) init(session);
+  });
+  init();
 })();
