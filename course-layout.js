@@ -3,6 +3,7 @@
   let courseMasters = {};
   let courseDistanceMasters = {};
   let courseSelections = {};
+  let appliedContext = '';
   let loaded = false;
 
   function esc(value) {
@@ -45,16 +46,20 @@
     const select = $('course');
     if (!select || !racecourse || !surface) return;
 
+    const context = `${racecourse}:${surface}:${$('distance')?.value || ''}`;
+    const contextChanged = context !== appliedContext;
     const current = select.value;
     const layouts = courseDistanceMasters[courseDistanceKey()] || [];
     if (surface === '芝' && layouts.length > 0) {
       const selected = layouts.length === 1 ? current : (courseSelections[courseDistanceKey()] || '');
       setCourseOptions(layouts, selected, { auto: layouts.length === 1, includePlaceholder: layouts.length > 1 });
+      appliedContext = context;
       return;
     }
 
     const standardCourses = courseMasters[racecourse] || [];
-    if (standardCourses.length > 0) setCourseOptions(standardCourses, current);
+    if (standardCourses.length > 0) setCourseOptions(standardCourses, contextChanged ? '' : current);
+    appliedContext = context;
   }
 
   async function load() {
