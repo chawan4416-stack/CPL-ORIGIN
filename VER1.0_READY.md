@@ -23,7 +23,8 @@ Ver1.0 is a post-race data collection system.
 - Top 3 only
 - One race = one save
 - Popularity and win odds are stored as objective race-result data
-- Seven body evaluation fields are stored
+- Eight paddock evaluation fields are stored
+- Agitation and sweating are optional condition fields; blank means no issue
 - Research/analysis is deferred to Ver1.1+
 
 ## Release Gate
@@ -34,7 +35,8 @@ The following must all be confirmed:
 - [ ] HOME
 - [ ] Race input
 - [ ] 1st–3rd input
-- [ ] Body evaluation input
+- [ ] Paddock evaluation input
+- [ ] Optional agitation/sweating blank-state save
 - [ ] Save
 - [ ] Duplicate/overwrite
 - [ ] Registered data display
@@ -46,8 +48,8 @@ The following must all be confirmed:
 
 ## Current Status
 
-PC-side implementation and operational setup are complete.
+PC-side implementation and operational setup are prepared, but migration `0014_paddock_condition_fields.sql` and the corresponding real-device save flow must be confirmed before this revision is treated as complete.
 
-The remaining release gate is the smartphone real-device acceptance test. The test should cover the complete flow from login through save, overwrite, registered-data confirmation, and deletion.
+The remaining release gate should cover the complete flow from login through save, overwrite, registered-data confirmation, deletion, and the optional agitation/sweating behavior.
 
 After that confirmation, Ver1.0 can be treated as the operational baseline for data collection.
