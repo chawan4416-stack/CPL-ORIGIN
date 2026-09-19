@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
   <title>競馬場研究室｜CPL</title>
-  <link rel="stylesheet" href="styles.css?v=20260920-10">
+  <link rel="stylesheet" href="styles.css?v=20260920-11">
 </head>
 <body>
   <main class="app">
@@ -36,7 +36,7 @@
           <div class="section-kicker">SYNC VIEW</div>
           <h3>平面 × 高低断面</h3>
           <div class="official-figure sync-plan">
-            <img id="officialCourseImage" alt="JRA公式 距離別コース図">
+            <img id="officialCourseImage" alt="JRA公式 距離別コース図"><div id="distanceAnchors" class="distance-anchors"></div>
           </div>
           <div id="elevationChart" class="elevation-chart" aria-label="高低断面模式図"></div>
           <p class="diagram-note">平面図と高低断面から、コース構造を確認します。</p>
@@ -60,6 +60,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase/config.js?v=20260913-3"></script>
-  <script src="course-research.js?v=20260920-10"></script>
+  <script src="course-research.js?v=20260920-11"></script>
 </body>
 </html>
