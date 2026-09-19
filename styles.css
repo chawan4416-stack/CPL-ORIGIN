@@ -20,3 +20,9 @@
 
 /* Keep overview elevation visually START-left / GOAL-right. */
 .overview-elevation-reversed{transform:scaleX(-1)}
+
+/* Sync plan focus v8: endpoints + quiet highlighted interval. */
+.plan-focus-overlay .plan-zone{fill:none;stroke:#f2c94c;stroke-width:34;stroke-linecap:round;stroke-linejoin:round;opacity:.28;filter:none}
+.plan-focus-overlay .plan-point circle{fill:#f2c94c;stroke:#5b4a08;stroke-width:2}
+.plan-focus-overlay .plan-point line{stroke:#f2c94c;stroke-width:4}
+.plan-focus-overlay .plan-point text{fill:#3d340d;font-size:22px;font-weight:900;paint-order:stroke;stroke:#fff7d1;stroke-width:6px;stroke-linejoin:round}
