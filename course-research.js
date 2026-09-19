@@ -70,8 +70,18 @@
     const defs=focusDefs(Number(currentRow.distance)), def=defs[index];
     document.querySelectorAll('.focus-segment').forEach((b,i)=>b.classList.toggle('active',i===index));
     $('focusSummary').textContent=def.text;
-    const rect=document.getElementById('elevationFocusRect');    const overlay=$('planFocusOverlay');
-    overlay?.classList.add('hidden');
+    const rect=document.getElementById('elevationFocusRect');    const overlay=$('planFocusOverlay'), path=$('planFocusPath');
+    const markerPoints={
+      1:{a:[805,355,'残1600'],b:[710,155,'残1200'],zone:'M805 355 C850 285 842 210 790 170 C765 150 738 142 710 155'},
+      2:{a:[710,155,'残1200'],b:[390,190,'残800'],zone:'M710 155 C610 125 485 145 390 190'},
+      3:{a:[390,190,'残800'],b:[255,365,'残400'],zone:'M390 190 C300 225 235 285 255 365'},
+      4:{a:[255,365,'残400'],b:[465,448,'GOAL'],zone:'M255 365 C275 420 365 450 465 448'}
+    };
+    const seg=markerPoints[index];
+    if(!seg){ overlay?.classList.add('hidden'); return; }
+    const marker=(p)=>`<g class="plan-point"><circle cx="${p[0]}" cy="${p[1]}" r="9"/><line x1="${p[0]}" y1="${p[1]-10}" x2="${p[0]}" y2="${p[1]-34}"/><text x="${p[0]}" y="${p[1]-43}" text-anchor="middle">${p[2]}</text></g>`;
+    overlay.innerHTML=`<path class="plan-zone" d="${seg.zone}"></path>${marker(seg.a)}${marker(seg.b)}`;
+    overlay.classList.remove('hidden');
   }
 
   function renderDetail(row){
