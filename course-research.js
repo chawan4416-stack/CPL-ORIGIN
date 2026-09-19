@@ -70,24 +70,8 @@
     const defs=focusDefs(Number(currentRow.distance)), def=defs[index];
     document.querySelectorAll('.focus-segment').forEach((b,i)=>b.classList.toggle('active',i===index));
     $('focusSummary').textContent=def.text;
-    const rect=document.getElementById('elevationFocusRect');
-    const overlay=$('planFocusOverlay'), path=$('planFocusPath');
-    if(index===0){rect?.classList.add('hidden');overlay.classList.add('hidden');return;}
-    const distance=Number(currentRow.distance), pad=18,W=720;
-    const s1=distance-def.from,s2=distance-def.to;
-    const x=pad+s1/distance*(W-pad*2), w=(s2-s1)/distance*(W-pad*2);
-    rect.setAttribute('x',x);rect.setAttribute('width',w);rect.classList.remove('hidden');
-    // The plan is not a linear x-axis. Highlight the actual race-route segment instead of a vertical band.
-    const routeSegments={
-      // Calibrated against the JRA 2000m image currently displayed above.
-      // START is at lower-right, GOAL is on the home straight near lower-centre.
-      1:'M820 385 C865 315 860 230 795 185 C720 132 615 118 520 135',
-      2:'M520 135 C420 155 320 195 255 260',
-      3:'M255 260 C205 315 220 385 305 425',
-      4:'M305 425 C395 458 505 468 610 452'
-    };
-    path.setAttribute('d',routeSegments[index]||'');
-    overlay.classList.remove('hidden');
+    const rect=document.getElementById('elevationFocusRect');    const overlay=$('planFocusOverlay');
+    overlay?.classList.add('hidden');
   }
 
   function renderDetail(row){
