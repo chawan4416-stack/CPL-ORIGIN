@@ -56,34 +56,6 @@
     return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}<rect id="elevationFocusRect" class="elev-focus hidden" x="0" y="16" width="0" height="112"/></svg>`;
   }
 
-  function focusDefs(distance){
-    return [
-      {label:'全体',from:distance,to:0,text:'全体表示'},
-      {label:'残1600→1200',from:1600,to:1200,text:'上りの頂点付近から下りへ'},
-      {label:'残1200→800',from:1200,to:800,text:'長い下り区間｜向正面方向'},
-      {label:'残800→400',from:800,to:400,text:'下りで速度を持ったまま3角へ'},
-      {label:'残400→GOAL',from:400,to:0,text:'4角 → 短い直線 → ゴール前急坂'}
-    ];
-  }
-
-  function setFocus(index){
-    const defs=focusDefs(Number(currentRow.distance)), def=defs[index];
-    document.querySelectorAll('.focus-segment').forEach((b,i)=>b.classList.toggle('active',i===index));
-    $('focusSummary').textContent=def.text;
-    const rect=document.getElementById('elevationFocusRect');    const overlay=$('planFocusOverlay'), path=$('planFocusPath');
-    const markerPoints={
-      1:{a:[805,355,'残1600'],b:[710,155,'残1200'],zone:'M805 355 C850 285 842 210 790 170 C765 150 738 142 710 155'},
-      2:{a:[710,155,'残1200'],b:[390,190,'残800'],zone:'M710 155 C610 125 485 145 390 190'},
-      3:{a:[390,190,'残800'],b:[255,365,'残400'],zone:'M390 190 C300 225 235 285 255 365'},
-      4:{a:[255,365,'残400'],b:[465,448,'GOAL'],zone:'M255 365 C275 420 365 450 465 448'}
-    };
-    const seg=markerPoints[index];
-    if(!seg){ overlay?.classList.add('hidden'); return; }
-    const marker=(p)=>`<g class="plan-point"><circle cx="${p[0]}" cy="${p[1]}" r="9"/><line x1="${p[0]}" y1="${p[1]-10}" x2="${p[0]}" y2="${p[1]-34}"/><text x="${p[0]}" y="${p[1]-43}" text-anchor="middle">${p[2]}</text></g>`;
-    overlay.innerHTML=`<path class="plan-zone" d="${seg.zone}"></path>${marker(seg.a)}${marker(seg.b)}`;
-    overlay.classList.remove('hidden');
-  }
-
   function renderDetail(row){
     currentRow=row;
     $('researchDetail').classList.remove('hidden');$('researchEmpty').classList.add('hidden');
