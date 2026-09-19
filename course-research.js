@@ -1,122 +1,130 @@
 (() => {
   const $ = id => document.getElementById(id);
   const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
-  let rows = [];
+  let rows = [], selectedSurface = '芝', currentRow = null;
 
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const list = (target, values) => { $(target).innerHTML = (values || []).map(v => `<div class="research-list-item">${esc(v)}</div>`).join(''); };
+  const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const list=(id,a)=>$(id).innerHTML=(a||[]).map(v=>`<div class="research-list-item">${esc(v)}</div>`).join('');
 
-  function horseDiagram(chest, hindquarter, tone) {
-    const chestClass = chest === '重厚' ? 'mass-4' : chest === '厚' ? 'mass-3' : chest === '普通' ? 'mass-2' : 'mass-1';
-    const hindClass = hindquarter === '重厚' ? 'mass-4' : hindquarter === '厚' ? 'mass-3' : hindquarter === '普通' ? 'mass-2' : 'mass-1';
-    return `<div class="horse-diagram" aria-label="馬体図">
-      <svg viewBox="0 0 440 245" role="img" aria-label="胸前とトモを示す馬体模式図">
-        <defs><linearGradient id="coat" x1="0" x2="1"><stop offset="0" stop-color="#5b3a2c"/><stop offset=".48" stop-color="#8a6048"/><stop offset="1" stop-color="#4c3026"/></linearGradient></defs>
-        <path class="horse-tail" d="M348 87 C392 79 412 52 425 34 C418 72 397 111 351 123"/>
-        <path class="horse-neck" d="M134 100 C109 77 92 48 82 22 L58 27 C67 57 79 90 104 116Z"/>
-        <path class="horse-head" d="M78 18 C64 6 43 8 32 24 C23 37 30 55 46 60 C61 64 76 54 83 40Z"/>
-        <path class="horse-ear" d="M55 15 L54 0 L66 14 M73 18 L80 4 L82 23"/>
-        <path class="horse-body" d="M112 91 C149 55 271 54 332 78 C359 89 372 112 363 137 C356 156 334 166 307 165 L296 223 L275 223 L269 165 L170 165 L158 223 L137 223 L139 158 C112 150 94 132 94 112 C94 103 101 96 112 91Z"/>
-        <ellipse class="horse-chest ${chestClass}" cx="151" cy="126" rx="34" ry="51"/>
-        <ellipse class="horse-hind ${hindClass}" cx="315" cy="126" rx="45" ry="53"/>
-        <path class="horse-leg" d="M145 158 L135 230 M169 160 L176 230 M291 162 L282 230 M323 161 L330 230"/>
-      </svg>
-      <div class="body-callout chest-callout"><span>胸前</span><b>${esc(chest || '—')}</b></div>
-      <div class="body-callout hind-callout"><span>トモ</span><b>${esc(hindquarter || '—')}</b></div>
-      ${tone ? `<div class="tone-label">質感 <b>${esc(tone)}</b></div>` : ''}
-    </div>`;
+  const NAKAYAMA_TURF = [
+    [1200,'外回り'],[1600,'外回り'],[1800,'内回り'],[2000,'内回り'],[2200,'外回り'],
+    [2500,'内回り'],[2600,'外回り'],[3200,'外→内'],[3600,'内回り'],[4000,'外回り']
+  ];
+
+  function horseDiagram(chest,hind,tone){
+    return `<div class="body-summary"><div><span>胸前</span><b>${esc(chest||'—')}</b></div><div><span>トモ</span><b>${esc(hind||'—')}</b></div><div><span>質感</span><b>${esc(tone||'—')}</b></div></div>`;
+  }
+  function renderIdealBody(body){
+    const vs=Array.isArray(body?.variants)?body.variants:[];
+    $('idealBody').innerHTML=vs.slice(0,2).map((v,i)=>`<div class="hypothesis-variant variant-${i+1}"><div class="variant-head">${esc(v.label||`仮説${i+1}`)}</div>${horseDiagram(v.chest,v.hindquarter,v.tone)}</div>`).join('');
   }
 
-  function renderIdealBody(body) {
-    const variants = Array.isArray(body.variants) && body.variants.length ? body.variants : [{
-      label:'仮説A', chest:body.chest, hindquarter:body.hindquarter, tone:body.tone
-    }];
-    $('idealBody').innerHTML = variants.slice(0,2).map((v,i) => `
-      <div class="hypothesis-variant variant-${i+1}">
-        <div class="variant-head"><span>${esc(v.label || `仮説${i+1}`)}</span></div>
-        ${horseDiagram(v.chest, v.hindquarter, v.tone)}
-      </div>`).join('');
+  function renderRacecourses(){
+    const names=[...new Set(rows.map(r=>r.racecourse))];
+    if(!names.includes('中山')) names.unshift('中山');
+    $('researchRacecourse').innerHTML=names.map(v=>`<option>${esc(v)}</option>`).join('');
+    renderOverview();
   }
 
-  function routeDiagram(row) {
-    const inner = row.course === '内回り';
-    return `<svg viewBox="0 0 620 365" role="img" aria-label="中山競馬場 全体形状と今回の走行ルート模式図">
-      <rect x="10" y="10" width="600" height="345" rx="24" class="map-bg"/>
-      <text x="32" y="44" class="map-title">中山競馬場</text>
-      <text x="32" y="66" class="map-subtitle">全体形状を残し、今回の走路だけを強調</text>
-      <path class="route-outer" d="M95 282 C47 254 42 185 76 131 C112 74 191 39 300 42 C413 45 526 82 558 139 C580 178 561 220 520 237 C491 249 459 246 429 247"/>
-      <path class="route-inner ${inner ? 'route-active' : ''}" d="M95 282 C66 257 69 203 103 168 C146 124 222 108 319 112 C420 116 492 145 510 183 C529 224 489 260 431 275 C343 298 184 309 95 282Z"/>
-      <path class="chute" d="M431 275 C470 280 519 291 577 316"/>
-      <path class="home-line" d="M95 282 C190 310 343 298 431 275"/>
-      <path class="start-guide" d="M455 281 L493 291"/>
-      <circle class="start-dot" cx="493" cy="291" r="9"/><text x="504" y="316" class="start-text">START</text>
-      <circle class="goal-dot" cx="144" cy="294" r="9"/><text x="91" y="329" class="goal-text">GOAL</text>
-      <text x="342" y="82" class="outer-label">外回り</text>
-      <text x="255" y="202" class="inner-label">内回り</text>
-      <text x="252" y="226" class="active-label">今回走るルート</text>
-      <path class="route-arrow" d="M415 282 l-22 -10 l7 22Z"/><path class="route-arrow" d="M91 222 l-10 -22 l23 7Z"/><path class="route-arrow" d="M250 120 l22 -8 l-7 21Z"/>
-      <g class="corner-labels"><text x="476" y="252">1角</text><text x="467" y="157">2角</text><text x="104" y="150">3角</text><text x="66" y="258">4角</text></g>
-      <text x="32" y="347" class="route-caption">${esc(row.racecourse)} ｜ ${esc(row.surface)} ｜ ${esc(row.distance)}m ｜ ${esc(row.course)}</text>
-    </svg>`;
-  }
-
-  function renderRacecourses() {
-    const racecourses = [...new Set(rows.map(row => row.racecourse))];
-    $('researchRacecourse').innerHTML = racecourses.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  function renderOverview(){
+    const rc=$('researchRacecourse').value;
+    $('trackOverviewTitle').textContent=`${rc}競馬場`;
+    const img=$('trackOverviewImage');
+    if(rc==='中山'){
+      img.src='https://www.jra.go.jp/facilities/race/nakayama/course/img/pic_course_turf.gif';
+      img.alt='JRA公式 中山競馬場 芝コース高低断面';
+    } else img.classList.add('hidden');
     renderDistances();
   }
 
-  function renderDistances() {
-    const racecourse = $('researchRacecourse').value;
-    const candidates = rows.filter(row => row.racecourse === racecourse).sort((a,b) => a.distance - b.distance);
-    $('researchDistances').innerHTML = candidates.map((row, index) => `<button type="button" class="distance-button${index === 0 ? ' active' : ''}" data-id="${row.id}">${esc(row.surface)} ${esc(row.distance)}m<span>${esc(row.course)}</span></button>`).join('');
-    if (candidates[0]) renderDetail(candidates[0].id); else showEmpty();
+  function renderDistances(){
+    const rc=$('researchRacecourse').value;
+    let candidates=rows.filter(r=>r.racecourse===rc && r.surface===selectedSurface);
+    const master=(rc==='中山'&&selectedSurface==='芝')?NAKAYAMA_TURF:candidates.map(r=>[r.distance,r.course]);
+    $('researchDistances').innerHTML=master.map(([d,c])=>{
+      const row=candidates.find(r=>Number(r.distance)===d);
+      return `<button type="button" class="distance-button" data-distance="${d}" data-id="${row?.id||''}">${d}<small>m</small><span>${esc(c)}</span></button>`;
+    }).join('');
+    $('researchDetail').classList.add('hidden');
+    $('researchEmpty').classList.add('hidden');
   }
 
-  function showEmpty() { $('researchDetail').classList.add('hidden'); $('researchEmpty').classList.remove('hidden'); }
-
-  function renderDetail(id) {
-    const row = rows.find(item => String(item.id) === String(id));
-    if (!row) return showEmpty();
-    $('researchEmpty').classList.add('hidden'); $('researchDetail').classList.remove('hidden');
-    document.querySelectorAll('.distance-button').forEach(button => button.classList.toggle('active', String(button.dataset.id) === String(id)));
-    $('researchStatus').textContent = row.status || '仮説';
-    $('researchTitle').textContent = row.title;
-    $('researchDate').textContent = row.researched_at ? `研究日 ${row.researched_at}` : '';
-    $('researchCondition').innerHTML = [row.racecourse,row.surface,`${row.distance}m`,row.course].map(v=>`<span>${esc(v)}</span>`).join('');
-    $('researchSummary').textContent = row.summary || '';
-    const courseImg = $('officialCourseImage'), elevationImg = $('officialElevationImage');
-    const officialCourse = row.racecourse === '中山' && row.surface === '芝' && Number(row.distance) === 2000
-      ? 'https://www.jra.go.jp/keiba/g1/_common/course/_img/nakayama_2000.png'
-      : (row.official_course_image_url || '');
-    const officialElevation = row.racecourse === '中山' && row.surface === '芝' && row.course === '内回り'
-      ? 'https://www.jra.go.jp/facilities/race/nakayama/course/img/pic_course_turf.gif'
-      : (row.official_elevation_image_url || '');
-    courseImg.src = officialCourse; courseImg.classList.toggle('hidden', !officialCourse);
-    elevationImg.src = officialElevation; elevationImg.classList.toggle('hidden', !officialElevation);
-    $('officialSource').href = row.official_source_url || '#';
-    list('researchPoints', row.points); list('researchRequirements', row.requirements); list('researchFacts', row.facts);
-    $('researchFlow').innerHTML = (row.flow || []).map((v, i) => `${i ? '<span class="flow-arrow">→</span>' : ''}<span class="flow-step">${esc(v)}</span>`).join('');
-    renderIdealBody(row.ideal_body_hypothesis || {});
-    scrollTo({top:0,behavior:'instant'});
+  function officialCourseImage(row){
+    if(row.racecourse==='中山'&&row.surface==='芝'&&Number(row.distance)===2000)
+      return 'https://www.jra.go.jp/keiba/g1/_common/course/_img/nakayama_2000.png';
+    return row.official_course_image_url||'';
   }
 
-  $('researchRacecourse').addEventListener('change', renderDistances);
-  $('researchDistances').addEventListener('click', event => { const button = event.target.closest('[data-id]'); if (button) renderDetail(button.dataset.id); });
-  $('showResearchReason').addEventListener('click', () => $('researchReason').scrollIntoView({behavior:'smooth',block:'start'}));
+  function elevationSvg(distance){
+    // 2000m template only: schematic synchronization layer. Remaining-distance labels are the shared coordinate.
+    const points=[[0,60],[200,42],[400,25],[600,18],[800,28],[1000,42],[1200,58],[1400,72],[1600,88],[1820,94],[1930,65],[2000,60]];
+    const W=720,H=180,pad=18;
+    const xy=points.map(([s,h])=>[pad+s/distance*(W-pad*2),h+18]);
+    const path=xy.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1]}`).join(' ');
+    const ticks=[2000,1600,1200,800,400,0];
+    return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}<rect id="elevationFocusRect" class="elev-focus hidden" x="0" y="16" width="0" height="112"/></svg>`;
+  }
 
-  async function init() {
-    try {
-      const { data: { session } } = await client.auth.getSession();
-      if (!session) { location.replace('index.html'); return; }
-      const { data, error } = await client.from('course_research').select('*').order('racecourse').order('distance');
-      if (error) throw error;
-      rows = data || []; $('courseResearchApp').classList.remove('hidden');
-      if (rows.length) renderRacecourses(); else showEmpty();
-    } catch (error) {
-      $('courseResearchApp').classList.remove('hidden');
-      $('researchError').textContent = `研究データを読み込めませんでした: ${error.message}`;
-    }
+  function focusDefs(distance){
+    return [
+      {label:'全体',from:distance,to:0,text:'全体表示'},
+      {label:'残1600→1200',from:1600,to:1200,text:'上りの頂点付近から下りへ'},
+      {label:'残1200→800',from:1200,to:800,text:'長い下り区間｜向正面方向'},
+      {label:'残800→400',from:800,to:400,text:'下りで速度を持ったまま3角へ'},
+      {label:'残400→GOAL',from:400,to:0,text:'4角 → 短い直線 → ゴール前急坂'}
+    ];
+  }
+
+  function setFocus(index){
+    const defs=focusDefs(Number(currentRow.distance)), def=defs[index];
+    document.querySelectorAll('.focus-segment').forEach((b,i)=>b.classList.toggle('active',i===index));
+    $('focusSummary').textContent=def.text;
+    const rect=document.getElementById('elevationFocusRect');
+    if(index===0){rect?.classList.add('hidden');$('planFocusBand').classList.add('hidden');return;}
+    const distance=Number(currentRow.distance), pad=18,W=720;
+    const s1=distance-def.from,s2=distance-def.to;
+    const x=pad+s1/distance*(W-pad*2), w=(s2-s1)/distance*(W-pad*2);
+    rect.setAttribute('x',x);rect.setAttribute('width',w);rect.classList.remove('hidden');
+    // Official image stays untouched. A quiet band indicates the selected sync interval without redrawing geometry.
+    $('planFocusBand').classList.remove('hidden');
+    $('planFocusBand').style.left=`${(s1/distance)*100}%`;
+    $('planFocusBand').style.width=`${((s2-s1)/distance)*100}%`;
+  }
+
+  function renderDetail(row){
+    currentRow=row;
+    $('researchDetail').classList.remove('hidden');$('researchEmpty').classList.add('hidden');
+    $('researchStatus').textContent=row.status||'仮説';$('researchTitle').textContent=row.title;
+    $('researchDate').textContent=row.researched_at?`研究日 ${row.researched_at}`:'';
+    $('researchCondition').innerHTML=[row.racecourse,row.surface,`${row.distance}m`,row.course].map(v=>`<span>${esc(v)}</span>`).join('');
+    $('officialCourseImage').src=officialCourseImage(row);
+    $('elevationChart').innerHTML=elevationSvg(Number(row.distance));
+    const defs=focusDefs(Number(row.distance));
+    $('focusSegments').innerHTML=defs.map((d,i)=>`<button class="focus-segment${i===0?' active':''}" data-focus="${i}">${esc(d.label)}</button>`).join('');
+    $('focusSummary').textContent='全体表示';
+    $('researchSummary').textContent=row.summary||'';
+    $('researchFlow').innerHTML=(row.flow||[]).map((v,i)=>`${i?'<span class="flow-arrow">→</span>':''}<span class="flow-step">${esc(v)}</span>`).join('');
+    list('researchRequirements',row.requirements);list('researchFacts',row.facts);renderIdealBody(row.ideal_body_hypothesis||{});
+    $('officialSource').href=row.official_source_url||'#';
+    document.querySelectorAll('.distance-button').forEach(b=>b.classList.toggle('active',Number(b.dataset.distance)===Number(row.distance)));
+    $('researchDetail').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  $('researchRacecourse').addEventListener('change',renderOverview);
+  $('surfaceTabs').addEventListener('click',e=>{const b=e.target.closest('[data-surface]');if(!b)return;selectedSurface=b.dataset.surface;document.querySelectorAll('.surface-tab').forEach(x=>x.classList.toggle('active',x===b));renderDistances();});
+  $('researchDistances').addEventListener('click',e=>{
+    const b=e.target.closest('[data-distance]');if(!b)return;
+    if(!b.dataset.id){$('researchDetail').classList.add('hidden');$('researchEmpty').classList.remove('hidden');$('researchEmpty').textContent=`${b.dataset.distance}m は研究未確定です。雛型完成後に展開します。`;return;}
+    const row=rows.find(r=>String(r.id)===b.dataset.id);if(row)renderDetail(row);
+  });
+  $('focusSegments').addEventListener('click',e=>{const b=e.target.closest('[data-focus]');if(b)setFocus(Number(b.dataset.focus));});
+
+  async function init(){
+    try{
+      const {data:{session}}=await client.auth.getSession();if(!session){location.replace('index.html');return;}
+      const {data,error}=await client.from('course_research').select('*').order('racecourse').order('distance');if(error)throw error;
+      rows=data||[];$('courseResearchApp').classList.remove('hidden');renderRacecourses();
+    }catch(error){$('courseResearchApp').classList.remove('hidden');$('researchError').textContent=`研究データを読み込めませんでした: ${error.message}`;}
   }
   init();
 })();
