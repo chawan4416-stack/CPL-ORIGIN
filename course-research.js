@@ -48,7 +48,7 @@
 
   function elevationSvg(distance){
     // 2000m template only: schematic synchronization layer. Remaining-distance labels are the shared coordinate.
-    const points=[[0,60],[70,65],[180,94],[400,88],[600,72],[800,58],[1000,42],[1200,28],[1400,18],[1600,25],[1800,42],[2000,60]];
+    const points=[[0,60],[200,42],[400,25],[600,18],[800,28],[1000,42],[1200,58],[1400,72],[1600,88],[1820,94],[1930,65],[2000,60]];
     const W=720,H=180,pad=18;
     const xy=points.map(([s,h])=>[pad+s/distance*(W-pad*2),h+18]);
     const path=xy.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1]}`).join(' ');
@@ -71,15 +71,21 @@
     document.querySelectorAll('.focus-segment').forEach((b,i)=>b.classList.toggle('active',i===index));
     $('focusSummary').textContent=def.text;
     const rect=document.getElementById('elevationFocusRect');
-    if(index===0){rect?.classList.add('hidden');$('planFocusBand').classList.add('hidden');return;}
+    const overlay=$('planFocusOverlay'), path=$('planFocusPath');
+    if(index===0){rect?.classList.add('hidden');overlay.classList.add('hidden');return;}
     const distance=Number(currentRow.distance), pad=18,W=720;
     const s1=distance-def.from,s2=distance-def.to;
     const x=pad+s1/distance*(W-pad*2), w=(s2-s1)/distance*(W-pad*2);
     rect.setAttribute('x',x);rect.setAttribute('width',w);rect.classList.remove('hidden');
-    // Official image stays untouched. A quiet band indicates the selected sync interval without redrawing geometry.
-    $('planFocusBand').classList.remove('hidden');
-    $('planFocusBand').style.left=`${(s1/distance)*100}%`;
-    $('planFocusBand').style.width=`${((s2-s1)/distance)*100}%`;
+    // The plan is not a linear x-axis. Highlight the actual race-route segment instead of a vertical band.
+    const routeSegments={
+      1:'M835 185 C760 145 660 130 555 150',
+      2:'M555 150 C455 170 365 205 300 255',
+      3:'M300 255 C245 300 250 390 350 430',
+      4:'M350 430 C500 485 690 470 805 400 C850 372 870 330 855 285'
+    };
+    path.setAttribute('d',routeSegments[index]||'');
+    overlay.classList.remove('hidden');
   }
 
   function renderDetail(row){
