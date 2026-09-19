@@ -56,6 +56,13 @@
     return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}<rect id="elevationFocusRect" class="elev-focus hidden" x="0" y="16" width="0" height="112"/></svg>`;
   }
 
+  function renderDistanceAnchors(row){
+    const box=$('distanceAnchors'); if(!box) return; box.innerHTML='';
+    if(!(row.racecourse==='中山'&&row.surface==='芝'&&Number(row.distance)===2000)) return;
+    const anchors=[{label:'残1600',x:78.2,y:61.0,note:'1角入口 約4.9m手前'},{label:'残600',x:28.0,y:42.0,note:'3角'},{label:'残310',x:39.5,y:76.0,note:'直線入口'}];
+    box.innerHTML=anchors.map(a=>'<span class="distance-anchor" style="left:'+a.x+'%;top:'+a.y+'%" title="'+a.note+'"><i></i><b>'+a.label+'</b></span>').join('');
+  }
+
   function renderDetail(row){
     currentRow=row;
     $('researchDetail').classList.remove('hidden');$('researchEmpty').classList.add('hidden');
@@ -63,6 +70,7 @@
     $('researchDate').textContent=row.researched_at?`研究日 ${row.researched_at}`:'';
     $('researchCondition').innerHTML=[row.racecourse,row.surface,`${row.distance}m`,row.course].map(v=>`<span>${esc(v)}</span>`).join('');
     $('officialCourseImage').src=officialCourseImage(row);
+    renderDistanceAnchors(row);
     $('elevationChart').innerHTML=elevationSvg(Number(row.distance));
     const defs=focusDefs(Number(row.distance));
     $('focusSegments').innerHTML=defs.map((d,i)=>`<button class="focus-segment${i===0?' active':''}" data-focus="${i}">${esc(d.label)}</button>`).join('');
