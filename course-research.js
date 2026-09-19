@@ -85,10 +85,15 @@
     $('researchDate').textContent = row.researched_at ? `研究日 ${row.researched_at}` : '';
     $('researchCondition').innerHTML = [row.racecourse,row.surface,`${row.distance}m`,row.course].map(v=>`<span>${esc(v)}</span>`).join('');
     $('researchSummary').textContent = row.summary || '';
-    $('courseRouteDiagram').innerHTML = routeDiagram(row);
     const courseImg = $('officialCourseImage'), elevationImg = $('officialElevationImage');
-    courseImg.src = row.official_course_image_url || ''; courseImg.classList.toggle('hidden', !row.official_course_image_url);
-    elevationImg.src = row.official_elevation_image_url || ''; elevationImg.classList.toggle('hidden', !row.official_elevation_image_url);
+    const officialCourse = row.racecourse === '中山' && row.surface === '芝' && Number(row.distance) === 2000
+      ? 'https://www.jra.go.jp/keiba/g1/_common/course/_img/nakayama_2000.png'
+      : (row.official_course_image_url || '');
+    const officialElevation = row.racecourse === '中山' && row.surface === '芝' && row.course === '内回り'
+      ? 'https://www.jra.go.jp/facilities/race/nakayama/course/img/pic_course_turf.gif'
+      : (row.official_elevation_image_url || '');
+    courseImg.src = officialCourse; courseImg.classList.toggle('hidden', !officialCourse);
+    elevationImg.src = officialElevation; elevationImg.classList.toggle('hidden', !officialElevation);
     $('officialSource').href = row.official_source_url || '#';
     list('researchPoints', row.points); list('researchRequirements', row.requirements); list('researchFacts', row.facts);
     $('researchFlow').innerHTML = (row.flow || []).map((v, i) => `${i ? '<span class="flow-arrow">→</span>' : ''}<span class="flow-step">${esc(v)}</span>`).join('');
