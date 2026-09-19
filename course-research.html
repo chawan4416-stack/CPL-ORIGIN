@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
   <title>競馬場研究室｜CPL</title>
-  <link rel="stylesheet" href="styles.css?v=20260920-9">
+  <link rel="stylesheet" href="styles.css?v=20260920-10">
 </head>
 <body>
   <main class="app">
     <header class="topbar"><div class="brand">CPL</div><a class="text-button plain-link" href="index.html">HOME</a></header>
     <section id="courseResearchApp" class="view hidden">
-      <div class="screen-head"><a class="back plain-link" href="index.html">‹</a><div><h1>競馬場研究室</h1><p>競馬場 → 距離 → 区間。</p></div></div>
+      <div class="screen-head"><a class="back plain-link" href="index.html">‹</a><div><h1>競馬場研究室</h1><p>競馬場 → 距離。</p></div></div>
 
       <div class="card research-selector">
         <label>競馬場<select id="researchRacecourse"></select></label>
@@ -37,13 +37,9 @@
           <h3>平面 × 高低断面</h3>
           <div class="official-figure sync-plan">
             <img id="officialCourseImage" alt="JRA公式 距離別コース図">
-            <svg id="planFocusOverlay" class="plan-focus-overlay hidden" viewBox="0 0 1000 560" preserveAspectRatio="none"><path id="planFocusPath"></path></svg>
           </div>
           <div id="elevationChart" class="elevation-chart" aria-label="高低断面模式図"></div>
-          <div class="focus-picker-label">区間フォーカス</div>
-          <div id="focusSegments" class="focus-segments"></div>
-          <div id="focusSummary" class="focus-summary">全体表示</div>
-          <p class="diagram-note">距離表示はゴールまでの残り距離で統一。平面と断面は同じ区間を同期表示します。</p>
+          <p class="diagram-note">平面図と高低断面から、コース構造を確認します。</p>
         </section>
 
         <section id="researchConclusion">
@@ -64,6 +60,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase/config.js?v=20260913-3"></script>
-  <script src="course-research.js?v=20260920-9"></script>
+  <script src="course-research.js?v=20260920-10"></script>
 </body>
 </html>
