@@ -86,7 +86,7 @@
     const b=e.target.closest('[data-distance]');if(!b)return;
     if(!b.dataset.id){$('researchDetail').classList.add('hidden');$('researchEmpty').classList.remove('hidden');$('researchEmpty').textContent=`${b.dataset.distance}m は研究未確定です。雛型完成後に展開します。`;return;}
     const row=rows.find(r=>String(r.id)===b.dataset.id);if(row)renderDetail(row);
-  });if(b)setFocus(Number(b.dataset.focus));});
+  });
 
   async function init(){
     try{
