@@ -5,16 +5,31 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
   <title>競馬場研究室｜CPL</title>
-  <link rel="stylesheet" href="styles.css?v=20260919-3">
+  <link rel="stylesheet" href="styles.css?v=20260920-1">
 </head>
 <body>
   <main class="app">
     <header class="topbar"><div class="brand">CPL</div><a class="text-button plain-link" href="index.html">HOME</a></header>
     <section id="courseResearchApp" class="view hidden">
-      <div class="screen-head"><a class="back plain-link" href="index.html">‹</a><div><h1>競馬場研究室</h1><p>結論を先に。理由は下へ。</p></div></div>
+      <div class="screen-head"><a class="back plain-link" href="index.html">‹</a><div><h1>競馬場研究室</h1><p>競馬場 → 距離 → 区間。</p></div></div>
 
-      <div id="researchSelector" class="card research-selector">
+      <div class="card research-selector">
         <label>競馬場<select id="researchRacecourse"></select></label>
+        <div id="surfaceTabs" class="surface-tabs">
+          <button type="button" class="surface-tab active" data-surface="芝">芝</button>
+          <button type="button" class="surface-tab" data-surface="ダート">ダート</button>
+        </div>
+      </div>
+
+      <section id="trackOverview" class="card track-overview">
+        <div class="section-kicker">RACECOURSE</div>
+        <h2 id="trackOverviewTitle">中山競馬場</h2>
+        <img id="trackOverviewImage" alt="競馬場平面図">
+        <p class="diagram-note">まず全体を見る。距離を選ぶと、その距離だけにフォーカスします。</p>
+      </section>
+
+      <div id="distancePickerWrap" class="distance-picker-wrap">
+        <div class="distance-picker-label">距離</div>
         <div id="researchDistances" class="distance-buttons"></div>
       </div>
 
@@ -22,37 +37,33 @@
 
       <article id="researchDetail" class="hidden">
         <div class="research-title-row"><div><span id="researchStatus" class="research-badge"></span><h2 id="researchTitle"></h2></div><small id="researchDate"></small></div>
+        <div class="condition-strip" id="researchCondition"></div>
 
-        <section class="research-first-view">
-          <div class="condition-strip" id="researchCondition"></div>
+        <section class="card sync-lab">
+          <div class="section-kicker">SYNC VIEW</div>
+          <h3>平面 × 高低断面</h3>
+          <div class="official-figure sync-plan">
+            <img id="officialCourseImage" alt="JRA公式 距離別コース図">
+            <div id="planFocusBand" class="plan-focus-band hidden"></div>
+          </div>
+          <div id="elevationChart" class="elevation-chart" aria-label="高低断面模式図"></div>
+          <div class="focus-picker-label">区間フォーカス</div>
+          <div id="focusSegments" class="focus-segments"></div>
+          <div id="focusSummary" class="focus-summary">全体表示</div>
+          <p class="diagram-note">距離表示はゴールまでの残り距離で統一。平面と断面は同じ区間を同期表示します。</p>
+        </section>
+
+        <section id="researchConclusion">
+          <div class="card research-summary"><h3>このコースを一言で</h3><p id="researchSummary"></p></div>
+          <div class="card"><h3>コースの骨格</h3><div id="researchFlow" class="flow-line"></div></div>
+          <div class="card"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
           <div class="card hypothesis-hero">
-            <div class="section-kicker">CURRENT HYPOTHESIS</div>
-            <h3>現在の理想馬体仮説</h3>
+            <div class="section-kicker">HYPOTHESIS</div><h3>現在の理想馬体仮説</h3>
             <p class="hypothesis-note">コース構造から置いた仮説。実走パドックデータとは独立して検証する。</p>
             <div id="idealBody" class="hypothesis-grid"></div>
           </div>
-          <button id="showResearchReason" class="reason-jump" type="button">コースを詳しく見る ↓</button>
-        </section>
-
-        <section id="researchReason">
-          <div class="card research-visual">
-            <h3>コース全体と今回の走行ルート</h3>
-            <div class="official-figure">
-              <img id="officialCourseImage" alt="JRA公式 中山芝2000mコース図">
-              <p class="diagram-note">JRA公式の距離別コース図を使用。CPLでは形状を描き直さない。</p>
-            </div>
-            <div class="official-figure elevation-figure">
-              <h3>高低断面図</h3>
-              <img id="officialElevationImage" alt="JRA公式 芝コース高低断面図（右・内回り）">
-            </div>
-            <a id="officialSource" class="source-link" target="_blank" rel="noopener noreferrer">JRA公式コース紹介を開く ↗</a>
-          </div>
-
-          <div class="card research-summary"><h3>このコースを一言で</h3><p id="researchSummary"></p></div>
-          <div class="card"><h3>コースの骨格</h3><div id="researchFlow" class="flow-line"></div></div>
-          <div class="card"><h3>区間のポイント</h3><div id="researchPoints" class="research-list"></div></div>
-          <div class="card"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
           <details class="card facts-card"><summary>構造上の事実</summary><div id="researchFacts" class="research-list"></div></details>
+          <a id="officialSource" class="source-link" target="_blank" rel="noopener noreferrer">JRA公式情報を開く ↗</a>
         </section>
       </article>
       <p id="researchError" class="error"></p>
@@ -60,6 +71,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase/config.js?v=20260913-3"></script>
-  <script src="course-research.js?v=20260919-3"></script>
+  <script src="course-research.js?v=20260920-1"></script>
 </body>
 </html>
