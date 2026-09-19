@@ -26,3 +26,9 @@
 .plan-focus-overlay .plan-point circle{fill:#f2c94c;stroke:#5b4a08;stroke-width:2}
 .plan-focus-overlay .plan-point line{stroke:#f2c94c;stroke-width:4}
 .plan-focus-overlay .plan-point text{fill:#3d340d;font-size:22px;font-weight:900;paint-order:stroke;stroke:#fff7d1;stroke-width:6px;stroke-linejoin:round}
+
+.sync-plan{position:relative}
+.distance-anchors{position:absolute;inset:8px;pointer-events:none}
+.distance-anchor{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;z-index:3}
+.distance-anchor i{display:block;width:9px;height:9px;border-radius:50%;background:#f2c94c;border:2px solid rgba(20,20,20,.75);box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.distance-anchor b{font-size:11px;line-height:1;padding:3px 5px;border-radius:5px;background:rgba(255,255,255,.92);color:#202020;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.18)}
