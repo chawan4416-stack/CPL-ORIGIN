@@ -89,6 +89,7 @@
   });
 
   async function init(){
+    $('courseResearchApp')?.classList.remove('hidden');
     try{
       const {data:{session}}=await client.auth.getSession();if(!session){location.replace('index.html');return;}
       const {data,error}=await client.from('course_research').select('*').order('racecourse').order('distance');if(error)throw error;
