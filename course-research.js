@@ -29,12 +29,19 @@
   function renderOverview(){
     const rc=$('researchRacecourse').value;
     $('trackOverviewTitle').textContent=`${rc}競馬場`;
-    const img=$('trackOverviewImage');
+    const profile=$('trackOverviewProfile');
     if(rc==='中山'){
-      img.src='https://www.jra.go.jp/facilities/race/nakayama/course/img/pic_course_turf.gif';
-      img.alt='JRA公式 中山競馬場 芝コース高低断面';
-      img.classList.add('overview-elevation-reversed');
-    } else { img.classList.add('hidden'); img.classList.remove('overview-elevation-reversed'); }
+      profile.classList.remove('hidden');
+      profile.innerHTML=`<svg viewBox="0 0 720 190" role="img" aria-label="中山競馬場 芝内回り高低断面 START左 GOAL右">
+        <rect width="720" height="190" rx="12" fill="#f7f5ef"/>
+        <path d="M22 92 C62 92 80 112 112 135 C170 122 255 124 345 123 C405 122 446 101 487 73 C530 45 574 31 616 31 C646 31 664 53 698 88" fill="none" stroke="#2d7d46" stroke-width="5" stroke-linecap="round"/>
+        <path d="M22 92 C62 92 80 112 112 135 C170 122 255 124 345 123 C405 122 446 101 487 73 C530 45 574 31 616 31 C646 31 664 53 698 88 L698 145 L22 145 Z" fill="#78bd69" opacity=".78"/>
+        <line x1="22" y1="145" x2="698" y2="145" stroke="#87948b"/>
+        <text x="22" y="169" fill="#445148" font-size="13" font-weight="800">START</text>
+        <text x="698" y="169" text-anchor="end" fill="#445148" font-size="13" font-weight="800">GOAL</text>
+        <text x="360" y="181" text-anchor="middle" fill="#6b756e" font-size="11">左 → 右へ走行</text>
+      </svg>`;
+    } else profile.classList.add('hidden');
     renderDistances();
   }
 
