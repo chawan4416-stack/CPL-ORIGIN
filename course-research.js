@@ -33,7 +33,8 @@
     if(rc==='中山'){
       img.src='https://www.jra.go.jp/facilities/race/nakayama/course/img/pic_course_turf.gif';
       img.alt='JRA公式 中山競馬場 芝コース高低断面';
-    } else img.classList.add('hidden');
+      img.classList.add('overview-elevation-reversed');
+    } else { img.classList.add('hidden'); img.classList.remove('overview-elevation-reversed'); }
     renderDistances();
   }
 
