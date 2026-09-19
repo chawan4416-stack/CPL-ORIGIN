@@ -57,7 +57,7 @@
 
   function elevationSvg(distance){
     // 2000m template only: schematic synchronization layer. Remaining-distance labels are the shared coordinate.
-    const points=[[0,60],[200,42],[400,25],[600,18],[800,28],[1000,42],[1200,58],[1400,72],[1600,88],[1820,94],[1930,65],[2000,60]];
+    const points=[[0,60],[70,65],[180,94],[400,88],[600,72],[800,58],[1000,42],[1200,28],[1400,18],[1600,25],[1800,42],[2000,60]];
     const W=720,H=180,pad=18;
     const xy=points.map(([s,h])=>[pad+s/distance*(W-pad*2),h+18]);
     const path=xy.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1]}`).join(' ');
