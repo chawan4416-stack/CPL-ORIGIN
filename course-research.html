@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b0b0b">
   <title>競馬場研究室｜CPL</title>
-  <link rel="stylesheet" href="styles.css?v=20260920-16">
+  <link rel="stylesheet" href="styles.css?v=20260920-18">
 </head>
 <body>
   <main class="app">
@@ -51,8 +51,9 @@
         <section class="research-step">
           <div class="step-label"><b>05</b><span>コースの骨格</span></div>
           <div class="card structure-card">
+            <div class="structure-head"><h3>コースの骨格</h3><p>（運動の流れとおおよその残り距離）</p></div>
+            <div id="courseStructure" class="course-structure" role="list" aria-label="走行順のコース骨格"></div>
             <p id="researchSummary" class="structure-summary"></p>
-            <div id="courseStructure" class="course-structure"></div>
             <div class="movement-block"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
           </div>
         </section>
@@ -83,6 +84,6 @@
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase/config.js?v=20260913-3"></script>
-  <script src="course-research.js?v=20260920-17"></script>
+  <script src="course-research.js?v=20260920-18"></script>
 </body>
 </html>

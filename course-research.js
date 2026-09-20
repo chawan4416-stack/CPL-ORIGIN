@@ -38,6 +38,41 @@
     }
   };
 
+  const COURSE_SKELETONS = {
+    '中山|芝|2000|内回り': [
+      {
+        label: '上り負荷',
+        range: 'START ～ 残1600',
+        description: 'スタート直後に急坂を上り、最初のコーナーへ。',
+        type: 'uphill'
+      },
+      {
+        label: '下り加速',
+        range: '残1600 ～ 残600',
+        description: '1コーナーから向正面にかけて下りで加速。',
+        type: 'downhill'
+      },
+      {
+        label: '高速小回り',
+        range: '残600 ～ 残310',
+        description: '下りの勢いを保ったまま3～4コーナーのタイトな小回りを処理。',
+        type: 'corner'
+      },
+      {
+        label: '短い直線',
+        range: '残310 ～ 残180',
+        description: '310mの短い直線。ここからゴール前の急坂へ。',
+        type: 'straight'
+      },
+      {
+        label: '急坂・GOAL',
+        range: '残180 ～ GOAL',
+        description: 'ゴール前の急坂（高低差2.2m）。主な急勾配は残180～残70付近。そのまま上った先にGOAL。最後の踏ん張りが求められる。',
+        type: 'goal'
+      }
+    ]
+  };
+
   let rows = [];
   let selectedCourseType = 'turf-inner';
 
@@ -81,12 +116,12 @@
     $('researchEmpty').classList.add('hidden');
   }
 
-  function renderStructure(structure) {
-    const phases = Array.isArray(structure?.phases) ? structure.phases : [];
+  function renderStructure(row) {
+    const key = `${row.racecourse}|${row.surface}|${Number(row.distance)}|${row.course}`;
+    const phases = COURSE_SKELETONS[key] || (Array.isArray(row.course_structure?.phases) ? row.course_structure.phases : []);
     $('courseStructure').innerHTML = phases.map((phase, index) => {
-      const range = phase.range || {};
-      const subevents = (phase.subevents || []).map(event => `<div class="structure-subevent"><span>その中に</span><b>${esc(event.label)}</b><small>${esc(event.range?.from)} → ${esc(event.range?.to)}</small></div>`).join('');
-      return `<div class="structure-phase"><div class="phase-index">${String(index + 1).padStart(2, '0')}</div><div class="phase-body"><h3>${esc(phase.label)}</h3><div class="phase-range"><span>${esc(range.from)}</span><i>→</i><span>${esc(range.to)}</span></div><p>${esc(phase.description)}</p>${subevents}</div></div>${index < phases.length - 1 ? '<div class="structure-arrow">↓</div>' : ''}`;
+      const range = typeof phase.range === 'string' ? phase.range : `${phase.range?.from || ''} ～ ${phase.range?.to || ''}`;
+      return `<article class="structure-phase phase-${esc(phase.type || 'default')}" role="listitem"><span class="phase-index">${String(index + 1).padStart(2, '0')}</span><h3>${esc(phase.label)}</h3><div class="phase-range">${esc(range)}</div><p>${esc(phase.description)}</p></article>`;
     }).join('');
   }
 
@@ -108,7 +143,7 @@
     $('researchDate').textContent = row.researched_at ? `研究日 ${row.researched_at}` : '';
     $('researchCondition').innerHTML = [row.racecourse, row.surface, `${row.distance}m`, row.course].map(value => `<span>${esc(value)}</span>`).join('');
     $('researchSummary').textContent = row.summary || '';
-    renderStructure(row.course_structure || {});
+    renderStructure(row);
     list('researchRequirements', row.requirements);
     renderIdealBody(row.ideal_body_hypothesis || {});
     renderAnalysis(row.analysis || {});
