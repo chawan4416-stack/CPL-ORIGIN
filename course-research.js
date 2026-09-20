@@ -1,102 +1,161 @@
 (() => {
   const $ = id => document.getElementById(id);
-  let rows = [], selectedSurface = '芝';
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const list = (id, values) => { $(id).innerHTML = (values || []).map(value => `<div class="research-list-item">${esc(value)}</div>`).join(''); };
 
-  const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const list=(id,a)=>$(id).innerHTML=(a||[]).map(v=>`<div class="research-list-item">${esc(v)}</div>`).join('');
+  const COURSE_TYPES = {
+    'turf-inner': {
+      kicker: 'TURF · INNER',
+      title: '芝・内回り',
+      surface: '芝',
+      course: '内回り',
+      image: 'assets/nakayama-turf-inner.png',
+      distances: [
+        {distance: 1800}, {distance: 2000}, {distance: 2500}, {distance: 3600}
+      ]
+    },
+    'turf-outer': {
+      kicker: 'TURF · OUTER',
+      title: '芝・外回り',
+      surface: '芝',
+      course: '外回り',
+      image: 'assets/nakayama-turf-outer.png',
+      distances: [
+        {distance: 1200}, {distance: 1600}, {distance: 2200}, {distance: 2600},
+        {distance: 3200, course: '外→内', special: true}, {distance: 4000}
+      ]
+    },
+    dirt: {
+      kicker: 'DIRT',
+      title: 'ダート',
+      surface: 'ダート',
+      course: '右回り',
+      image: 'assets/nakayama-dirt.png',
+      distances: [
+        {distance: 1000}, {distance: 1200}, {distance: 1700},
+        {distance: 1800}, {distance: 2400}, {distance: 2500}
+      ]
+    }
+  };
 
-  const NAKAYAMA_TURF = [
-    [1200,'外回り'],[1600,'外回り'],[1800,'内回り'],[2000,'内回り'],[2200,'外回り'],
-    [2500,'内回り'],[2600,'外回り'],[3200,'外→内'],[3600,'内回り'],[4000,'外回り']
-  ];
+  let rows = [];
+  let selectedCourseType = 'turf-inner';
 
-  function horseDiagram(chest,hind,tone){
-    return `<div class="body-summary"><div><span>胸前</span><b>${esc(chest||'—')}</b></div><div><span>トモ</span><b>${esc(hind||'—')}</b></div><div><span>質感</span><b>${esc(tone||'—')}</b></div></div>`;
+  function renderRacecourses() {
+    $('researchRacecourse').innerHTML = '<option value="中山">中山競馬場</option>';
   }
-  function renderIdealBody(body){
-    const vs=Array.isArray(body?.variants)?body.variants:[];
-    $('idealBody').innerHTML=vs.slice(0,2).map((v,i)=>`<div class="hypothesis-variant variant-${i+1}"><div class="variant-head">${esc(v.label||`仮説${i+1}`)}</div>${horseDiagram(v.chest,v.hindquarter,v.tone)}</div>`).join('');
+
+  function diagramDistanceLabel(item) {
+    return item.special ? `${item.distance}m 外→内` : `${item.distance}m`;
   }
 
-  function renderRacecourses(){
-    const names=[...new Set(rows.map(r=>r.racecourse))];
-    if(!names.includes('中山')) names.unshift('中山');
-    $('researchRacecourse').innerHTML=names.map(v=>`<option>${esc(v)}</option>`).join('');
+  function renderCourseType() {
+    const type = COURSE_TYPES[selectedCourseType];
+    document.querySelectorAll('.course-type-tab').forEach(button => {
+      const active = button.dataset.courseType === selectedCourseType;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', String(active));
+    });
+    $('courseDiagramCard').className = `card course-diagram-card mode-${selectedCourseType}`;
+    $('courseDiagramKicker').textContent = type.kicker;
+    $('courseDiagramTitle').textContent = type.title;
+    $('courseDiagram').src = type.image;
+    $('courseDiagram').alt = `中山競馬場 ${type.title}コース立体図`;
+    $('diagramDistances').innerHTML = type.distances.map(item => `<span${item.special ? ' class="special"' : ''}>${diagramDistanceLabel(item)}</span>`).join('');
     renderDistances();
   }
 
-  function renderOverview(){ renderDistances(); }
-
-  function renderDistances(){
-    const rc=$('researchRacecourse').value;
-    let candidates=rows.filter(r=>r.racecourse===rc && r.surface===selectedSurface);
-    const master=(rc==='中山'&&selectedSurface==='芝')?NAKAYAMA_TURF:candidates.map(r=>[r.distance,r.course]);
-    $('researchDistances').innerHTML=master.map(([d,c])=>{
-      const row=candidates.find(r=>Number(r.distance)===d);
-      return `<button type="button" class="distance-button" data-distance="${d}" data-id="${row?.id||''}">${d}<small>m</small><span>${esc(c)}</span></button>`;
+  function renderDistances() {
+    const type = COURSE_TYPES[selectedCourseType];
+    $('researchDistances').innerHTML = type.distances.map(item => {
+      const lookupCourse = item.course || type.course;
+      const row = rows.find(candidate =>
+        candidate.racecourse === '中山' &&
+        candidate.surface === type.surface &&
+        Number(candidate.distance) === item.distance &&
+        candidate.course === lookupCourse
+      );
+      return `<button type="button" class="distance-button${item.special ? ' special' : ''}" data-distance="${item.distance}" data-course="${esc(lookupCourse)}" data-id="${row?.id || ''}"><b>${item.distance}</b><small>m</small>${item.special ? '<span>外→内</span>' : ''}</button>`;
     }).join('');
     $('researchDetail').classList.add('hidden');
     $('researchEmpty').classList.add('hidden');
   }
 
-  function officialCourseImage(row){
-    if(row.racecourse==='中山'&&row.surface==='芝'&&Number(row.distance)===2000)
-      return 'https://www.jra.go.jp/keiba/g1/_common/course/_img/nakayama_2000.png';
-    return row.official_course_image_url||'';
+  function renderStructure(structure) {
+    const phases = Array.isArray(structure?.phases) ? structure.phases : [];
+    $('courseStructure').innerHTML = phases.map((phase, index) => {
+      const range = phase.range || {};
+      const subevents = (phase.subevents || []).map(event => `<div class="structure-subevent"><span>その中に</span><b>${esc(event.label)}</b><small>${esc(event.range?.from)} → ${esc(event.range?.to)}</small></div>`).join('');
+      return `<div class="structure-phase"><div class="phase-index">${String(index + 1).padStart(2, '0')}</div><div class="phase-body"><h3>${esc(phase.label)}</h3><div class="phase-range"><span>${esc(range.from)}</span><i>→</i><span>${esc(range.to)}</span></div><p>${esc(phase.description)}</p>${subevents}</div></div>${index < phases.length - 1 ? '<div class="structure-arrow">↓</div>' : ''}`;
+    }).join('');
   }
 
-  function elevationSvg(distance){
-    // 2000m template only: schematic synchronization layer. Remaining-distance labels are the shared coordinate.
-    const points=[[0,82],[180,56],[400,42],[600,45],[800,55],[1000,66],[1200,78],[1400,88],[1600,94],[1780,96],[1890,74],[2000,58]];
-    const W=720,H=180,pad=18;
-    const xy=points.map(([s,h])=>[pad+s/distance*(W-pad*2),h+18]);
-    const path=xy.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1]}`).join(' ');
-    const ticks=[2000,1600,1200,800,400,0];
-    return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}</svg>`;
+  function renderIdealBody(body) {
+    const variants = Array.isArray(body?.variants) ? body.variants : [];
+    $('idealBody').innerHTML = variants.slice(0, 2).map((variant, index) => `<div class="hypothesis-variant variant-${index + 1}"><div class="variant-head"><b>${esc(variant.label || `案${index + 1}`)}</b><span>並列仮説</span></div><div class="body-summary"><div><span>胸前</span><b>${esc(variant.chest || '—')}</b></div><div><span>トモ</span><b>${esc(variant.hindquarter || '—')}</b></div><div><span>ハリ</span><b>${esc(variant.tone || '—')}</b></div></div></div>`).join('');
   }
 
-  function renderDistanceAnchors(row){
-    const box=$('distanceAnchors'); if(!box) return; box.innerHTML='';
-    if(!(row.racecourse==='中山'&&row.surface==='芝'&&Number(row.distance)===2000)) return;
-    const anchors=[{label:'残1600',x:78.2,y:61.0,note:'1角入口 約4.9m手前'},{label:'残600',x:28.0,y:42.0,note:'3角'},{label:'残310',x:39.5,y:76.0,note:'直線入口'}];
-    box.innerHTML=anchors.map(a=>'<span class="distance-anchor" style="left:'+a.x+'%;top:'+a.y+'%" title="'+a.note+'"><i></i><b>'+a.label+'</b></span>').join('');
+  function renderAnalysis(analysis) {
+    $('analysisStatus').textContent = analysis?.label || 'データ蓄積中';
+    $('analysisMessage').textContent = analysis?.message || '1〜3着馬の馬体データが蓄積されるまで、分析結果は確定しません。';
   }
 
-  function renderDetail(row){
-    $('researchDetail').classList.remove('hidden');$('researchEmpty').classList.add('hidden');
-    $('researchStatus').textContent=row.status||'仮説';$('researchTitle').textContent=row.title;
-    $('researchDate').textContent=row.researched_at?`研究日 ${row.researched_at}`:'';
-    $('researchCondition').innerHTML=[row.racecourse,row.surface,`${row.distance}m`,row.course].map(v=>`<span>${esc(v)}</span>`).join('');
-    $('officialCourseImage').src=officialCourseImage(row);
-    renderDistanceAnchors(row);
-    $('elevationChart').innerHTML=elevationSvg(Number(row.distance));
-    $('researchSummary').textContent=row.summary||'';
-    $('researchFlow').innerHTML=(row.flow||[]).map((v,i)=>`${i?'<span class="flow-arrow">→</span>':''}<span class="flow-step">${esc(v)}</span>`).join('');
-    list('researchRequirements',row.requirements);list('researchFacts',row.facts);renderIdealBody(row.ideal_body_hypothesis||{});
-    $('officialSource').href=row.official_source_url||'#';
-    document.querySelectorAll('.distance-button').forEach(b=>b.classList.toggle('active',Number(b.dataset.distance)===Number(row.distance)));
-    $('researchDetail').scrollIntoView({behavior:'smooth',block:'start'});
+  function renderDetail(row) {
+    $('researchDetail').classList.remove('hidden');
+    $('researchEmpty').classList.add('hidden');
+    $('researchStatus').textContent = row.status || '仮説';
+    $('researchTitle').textContent = row.title;
+    $('researchDate').textContent = row.researched_at ? `研究日 ${row.researched_at}` : '';
+    $('researchCondition').innerHTML = [row.racecourse, row.surface, `${row.distance}m`, row.course].map(value => `<span>${esc(value)}</span>`).join('');
+    $('researchSummary').textContent = row.summary || '';
+    renderStructure(row.course_structure || {});
+    list('researchRequirements', row.requirements);
+    renderIdealBody(row.ideal_body_hypothesis || {});
+    renderAnalysis(row.analysis || {});
+    list('researchFacts', row.facts);
+    $('officialSource').href = row.official_source_url || 'https://www.jra.go.jp/facilities/race/nakayama/course/';
+    document.querySelectorAll('.distance-button').forEach(button => button.classList.toggle('active', String(button.dataset.id) === String(row.id)));
+    $('researchDetail').scrollIntoView({behavior: 'smooth', block: 'start'});
   }
 
-  $('researchRacecourse').addEventListener('change',renderOverview);
-  $('surfaceTabs').addEventListener('click',e=>{const b=e.target.closest('[data-surface]');if(!b)return;selectedSurface=b.dataset.surface;document.querySelectorAll('.surface-tab').forEach(x=>x.classList.toggle('active',x===b));renderDistances();});
-  $('researchDistances').addEventListener('click',e=>{
-    const b=e.target.closest('[data-distance]');if(!b)return;
-    if(!b.dataset.id){$('researchDetail').classList.add('hidden');$('researchEmpty').classList.remove('hidden');$('researchEmpty').textContent=`${b.dataset.distance}m は研究未確定です。雛型完成後に展開します。`;return;}
-    const row=rows.find(r=>String(r.id)===b.dataset.id);if(row)renderDetail(row);
+  $('researchRacecourse').addEventListener('change', renderCourseType);
+  $('courseTypeTabs').addEventListener('click', event => {
+    const button = event.target.closest('[data-course-type]');
+    if (!button) return;
+    selectedCourseType = button.dataset.courseType;
+    renderCourseType();
+  });
+  $('researchDistances').addEventListener('click', event => {
+    const button = event.target.closest('[data-distance]');
+    if (!button) return;
+    const row = rows.find(candidate => String(candidate.id) === button.dataset.id);
+    const isApprovedTemplate = row && row.racecourse === '中山' && row.surface === '芝' && Number(row.distance) === 2000 && row.course === '内回り';
+    if (!isApprovedTemplate) {
+      $('researchDetail').classList.add('hidden');
+      $('researchEmpty').classList.remove('hidden');
+      $('researchEmpty').textContent = button.dataset.distance === '3200' ? '3200m 外→内は研究未確定です。' : `${button.dataset.distance}m は研究未確定です。`;
+      return;
+    }
+    renderDetail(row);
   });
 
-  async function init(){
-    // Render before external dependencies or network calls. A load failure must not blank the room.
+  async function init() {
     renderRacecourses();
-    try{
-      if(!window.supabase?.createClient) throw new Error('Supabaseライブラリを読み込めませんでした。再読み込みしてください。');
-      if(!window.CPL_SUPABASE_URL||!window.CPL_SUPABASE_KEY) throw new Error('Supabase設定を読み込めませんでした。再読み込みしてください。');
-      const client=window.supabase.createClient(window.CPL_SUPABASE_URL,window.CPL_SUPABASE_KEY);
-      const {data:{session}}=await client.auth.getSession();if(!session){location.replace('index.html');return;}
-      const {data,error}=await client.from('course_research').select('*').order('racecourse').order('distance');if(error)throw error;
-      rows=data||[];renderRacecourses();
-    }catch(error){$('researchError').textContent=`研究データを読み込めませんでした: ${error?.message||String(error)}`;}
+    renderCourseType();
+    try {
+      if (!window.supabase?.createClient) throw new Error('Supabaseライブラリを読み込めませんでした。再読み込みしてください。');
+      if (!window.CPL_SUPABASE_URL || !window.CPL_SUPABASE_KEY) throw new Error('Supabase設定を読み込めませんでした。再読み込みしてください。');
+      const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
+      const {data: {session}} = await client.auth.getSession();
+      if (!session) { location.replace('index.html'); return; }
+      const {data, error} = await client.from('course_research').select('*').eq('racecourse', '中山').order('distance');
+      if (error) throw error;
+      rows = data || [];
+      renderDistances();
+    } catch (error) {
+      $('researchError').textContent = `研究データを読み込めませんでした: ${error?.message || String(error)}`;
+    }
   }
+
   init();
 })();
