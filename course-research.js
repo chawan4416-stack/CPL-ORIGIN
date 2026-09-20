@@ -1,7 +1,6 @@
 (() => {
   const $ = id => document.getElementById(id);
-  const client = window.supabase.createClient(window.CPL_SUPABASE_URL, window.CPL_SUPABASE_KEY);
-  let rows = [], selectedSurface = '芝', currentRow = null;
+  let rows = [], selectedSurface = '芝';
 
   const esc = v => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const list=(id,a)=>$(id).innerHTML=(a||[]).map(v=>`<div class="research-list-item">${esc(v)}</div>`).join('');
@@ -53,7 +52,7 @@
     const xy=points.map(([s,h])=>[pad+s/distance*(W-pad*2),h+18]);
     const path=xy.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)},${p[1]}`).join(' ');
     const ticks=[2000,1600,1200,800,400,0];
-    return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}<rect id="elevationFocusRect" class="elev-focus hidden" x="0" y="16" width="0" height="112"/></svg>`;
+    return `<svg viewBox="0 0 ${W} ${H}" role="img"><path class="elev-line" d="${path}"/><line class="elev-base" x1="${pad}" y1="126" x2="${W-pad}" y2="126"/>${ticks.map(rem=>{const s=distance-rem,x=pad+s/distance*(W-pad*2);return `<g><line class="elev-tick" x1="${x}" y1="20" x2="${x}" y2="126"/><text x="${x}" y="151" text-anchor="middle">${rem===distance?'START':rem===0?'GOAL':`残${rem}`}</text></g>`}).join('')}</svg>`;
   }
 
   function renderDistanceAnchors(row){
@@ -64,7 +63,6 @@
   }
 
   function renderDetail(row){
-    currentRow=row;
     $('researchDetail').classList.remove('hidden');$('researchEmpty').classList.add('hidden');
     $('researchStatus').textContent=row.status||'仮説';$('researchTitle').textContent=row.title;
     $('researchDate').textContent=row.researched_at?`研究日 ${row.researched_at}`:'';
@@ -89,12 +87,16 @@
   });
 
   async function init(){
-    $('courseResearchApp')?.classList.remove('hidden');
+    // Render before external dependencies or network calls. A load failure must not blank the room.
+    renderRacecourses();
     try{
+      if(!window.supabase?.createClient) throw new Error('Supabaseライブラリを読み込めませんでした。再読み込みしてください。');
+      if(!window.CPL_SUPABASE_URL||!window.CPL_SUPABASE_KEY) throw new Error('Supabase設定を読み込めませんでした。再読み込みしてください。');
+      const client=window.supabase.createClient(window.CPL_SUPABASE_URL,window.CPL_SUPABASE_KEY);
       const {data:{session}}=await client.auth.getSession();if(!session){location.replace('index.html');return;}
       const {data,error}=await client.from('course_research').select('*').order('racecourse').order('distance');if(error)throw error;
-      rows=data||[];$('courseResearchApp').classList.remove('hidden');renderRacecourses();
-    }catch(error){$('courseResearchApp').classList.remove('hidden');$('researchError').textContent=`研究データを読み込めませんでした: ${error.message}`;}
+      rows=data||[];renderRacecourses();
+    }catch(error){$('researchError').textContent=`研究データを読み込めませんでした: ${error?.message||String(error)}`;}
   }
   init();
 })();
