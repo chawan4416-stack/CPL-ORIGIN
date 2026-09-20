@@ -9,7 +9,7 @@
       title: '芝・内回り',
       surface: '芝',
       course: '内回り',
-      image: 'assets/nakayama-turf-inner.png',
+      image: 'assets/nakayama-turf-inner.png?v=20260920-17',
       distances: [
         {distance: 1800}, {distance: 2000}, {distance: 2500}, {distance: 3600}
       ]
@@ -19,7 +19,7 @@
       title: '芝・外回り',
       surface: '芝',
       course: '外回り',
-      image: 'assets/nakayama-turf-outer.png',
+      image: 'assets/nakayama-turf-outer.png?v=20260920-17',
       distances: [
         {distance: 1200}, {distance: 1600}, {distance: 2200}, {distance: 2600},
         {distance: 3200, course: '外→内', special: true}, {distance: 4000}
@@ -30,7 +30,7 @@
       title: 'ダート',
       surface: 'ダート',
       course: '右回り',
-      image: 'assets/nakayama-dirt.png',
+      image: 'assets/nakayama-dirt.png?v=20260920-17',
       distances: [
         {distance: 1000}, {distance: 1200}, {distance: 1700},
         {distance: 1800}, {distance: 2400}, {distance: 2500}
