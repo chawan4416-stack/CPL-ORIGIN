@@ -54,11 +54,11 @@
             <div class="structure-head"><h3>コースの骨格</h3><p>（運動の流れとおおよその残り距離）</p></div>
             <div id="courseStructure" class="course-structure" role="list" aria-label="走行順のコース骨格"></div>
             <p id="researchSummary" class="structure-summary"></p>
-            <div class="movement-block"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
+            <div id="researchMovementBlock" class="movement-block"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
           </div>
         </section>
 
-        <section class="research-step">
+        <section id="hypothesisStep" class="research-step">
           <div class="step-label"><b>06</b><span>理想馬体仮説</span></div>
           <div class="card hypothesis-hero">
             <div class="section-kicker">COURSE HYPOTHESIS</div>
@@ -68,7 +68,7 @@
           </div>
         </section>
 
-        <section class="research-step">
+        <section id="analysisStep" class="research-step">
           <div class="step-label"><b>07</b><span>分析</span></div>
           <div id="analysisCard" class="card analysis-card">
             <div class="analysis-head"><div><div class="section-kicker">VALIDATION</div><h3>仮説 × 実データ</h3></div><span id="analysisStatus" class="analysis-status">データ蓄積中</span></div>
@@ -77,13 +77,13 @@
           </div>
         </section>
 
-        <details class="card facts-card"><summary>公式情報・構造上の事実</summary><div id="researchFacts" class="research-list"></div><a id="officialSource" class="source-link" target="_blank" rel="noopener noreferrer">JRA公式情報を開く ↗</a></details>
+        <details id="factsCard" class="card facts-card"><summary>公式情報・構造上の事実</summary><div id="researchFacts" class="research-list"></div><a id="officialSource" class="source-link" target="_blank" rel="noopener noreferrer">JRA公式情報を開く ↗</a></details>
       </article>
       <p id="researchError" class="error"></p>
     </section>
   </main>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase/config.js?v=20260913-3"></script>
-  <script src="course-research.js?v=20260920-18"></script>
+  <script src="course-research.js?v=20260920-19"></script>
 </body>
 </html>
