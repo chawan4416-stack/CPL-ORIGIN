@@ -9,6 +9,7 @@
     { label:'ハリ', master:'TONE', prop:'tone', required:true },
     { label:'イレ込み', master:'AGITATION', prop:'agitation', required:false },
     { label:'発汗', master:'SWEATING', prop:'sweating', required:false },
+    { label:'早歩き', master:'FAST_WALKING', prop:'fast_walking', required:false },
     { label:'パドック総評', master:'PADDOCK_EVALUATION', prop:'paddock_evaluation', required:true }
   ];
   const requiredBodyFields = bodyFields.filter(field => field.required);
@@ -42,7 +43,7 @@
   function updateCourseOptions() { const values = (state.masters[`COURSE:${$('racecourse').value}`] || []).map(v => v.option_value); const current = $('course').value; buildSimpleOptions($('course'), values, values.includes(current) ? current : values[0]); }
   function updateRaceClassOptions() { const select = $('race_class'); const values = state.masters[`RACE_CLASS:${$('racecourse').value}`] || []; const current = select.value; select.required = values.length > 0; select.disabled = values.length === 0; select.innerHTML = values.length ? options(`RACE_CLASS:${$('racecourse').value}`, '選択') : '<option value="">未設定</option>'; select.value = values.some(v => v.option_value === current) ? current : ''; }
   async function loadMasters() { const { data, error } = await client.from('master_options').select('category,field_key,option_value,sort_order').eq('active', true).order('sort_order'); if (error) throw new Error(`Master読み込み失敗: ${error.message}`); state.masters = {}; data.forEach(row => { (state.masters[row.field_key] ||= []).push(row); (state.masters[`${row.category}:${row.field_key}`] ||= []).push(row); }); $('racecourse').innerHTML = options('RACECOURSE'); $('surface').innerHTML = options('SURFACE'); $('track_condition').innerHTML = options('TRACK_CONDITION'); buildRaceAndFieldSizeOptions(); buildResultCards(); updateDistances(); updateCourseOptions(); updateRaceClassOptions(); renderMaster(); }
-  function renderMaster() { const keys = ['RACECOURSE','SURFACE','TRACK_CONDITION','CHEST','HINDQUARTER','GAIT','BALANCE','TONE','AGITATION','SWEATING','PADDOCK_EVALUATION']; const raceClasses = [...new Map(Object.entries(state.masters).filter(([key]) => key.startsWith('RACE_CLASS:')).flatMap(([, values]) => values).map(value => [value.option_value, value])).values()]; $('masterList').innerHTML = keys.map(k => `<div class="card master-card"><h2>${esc(k)}</h2><div class="chips">${(state.masters[k] || []).map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>`).join('') + (raceClasses.length ? `<div class="card master-card"><h2>RACE_CLASS</h2><div class="chips">${raceClasses.map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>` : ''); }
+  function renderMaster() { const keys = ['RACECOURSE','SURFACE','TRACK_CONDITION','CHEST','HINDQUARTER','GAIT','BALANCE','TONE','AGITATION','SWEATING','FAST_WALKING','PADDOCK_EVALUATION']; const raceClasses = [...new Map(Object.entries(state.masters).filter(([key]) => key.startsWith('RACE_CLASS:')).flatMap(([, values]) => values).map(value => [value.option_value, value])).values()]; $('masterList').innerHTML = keys.map(k => `<div class="card master-card"><h2>${esc(k)}</h2><div class="chips">${(state.masters[k] || []).map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>`).join('') + (raceClasses.length ? `<div class="card master-card"><h2>RACE_CLASS</h2><div class="chips">${raceClasses.map(x => `<span>${esc(x.option_value)}</span>`).join('')}</div></div>` : ''); }
   async function refreshStats() { const { count, error } = await client.from('races').select('*', { count:'exact', head:true }); if (error) throw new Error(`レース件数取得失敗: ${error.message}`); $('raceCount').textContent = count ?? 0; const { data, error: latestError } = await client.from('races').select('updated_at').order('updated_at',{ascending:false}).limit(1).maybeSingle(); if (latestError) throw new Error(`最終更新取得失敗: ${latestError.message}`); $('lastUpdate').textContent = data ? new Date(data.updated_at).toLocaleDateString('ja-JP') : '—'; }
   function collectResults() {
     return [...document.querySelectorAll('.result-card')].map(card => {
@@ -58,6 +59,7 @@
         tone:get('TONE'),
         agitation:get('AGITATION') || null,
         sweating:get('SWEATING') || null,
+        fast_walking:get('FAST_WALKING') || null,
         paddock_evaluation:get('PADDOCK_EVALUATION')
       };
     });
