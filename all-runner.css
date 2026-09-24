@@ -1,0 +1,18 @@
+.ar-home{color:#baf1a4;text-decoration:none;font-size:13px;font-weight:800}
+.ar-env{font-size:11px;color:#baf1a4;vertical-align:middle}.ar-auth{margin:12px 0}.ar-auth p{font-size:13px;color:#b9cbb6;line-height:1.6}.ar-auth .ar-button{margin-top:8px}
+.ar-kicker{color:#83c874;font-size:11px;font-weight:900;letter-spacing:.12em}
+.ar-note{color:#999;font-size:12px;line-height:1.6}.ar-title{font-size:20px;margin:5px 0 12px}
+.ar-actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.ar-actions>*{flex:1 1 auto}
+.ar-button,.ar-chip{border:1px solid #343434;border-radius:11px;background:#141414;color:#ddd;padding:11px 13px;font-size:14px;font-weight:800;min-height:44px}
+.ar-button[disabled],.primary[disabled]{opacity:.5}.ar-button.selected,.ar-chip.selected{border-color:#8ee36b;background:#132318;color:#d6f8c9}
+.ar-chip.complete{border-color:#487c43}.ar-chip.scratched{opacity:.58;text-decoration:line-through}
+.ar-chip.focus{box-shadow:inset 0 0 0 1px #d2ae5a}.ar-chip.active{outline:2px solid #baf1a4;outline-offset:2px}
+.ar-numbers{display:flex;overflow:auto;gap:9px;padding:7px 3px 12px;scroll-snap-type:x proximity;scrollbar-width:none}.ar-numbers::-webkit-scrollbar{display:none}.ar-numbers button{flex:0 0 51px;scroll-snap-align:start}
+.ar-field{display:block;font-size:13px;color:#ccc;margin:12px 0}.ar-field select,.ar-field input,.ar-field textarea{display:block;width:100%;min-height:44px;margin-top:5px;border:1px solid #383838;border-radius:10px;background:#101010;color:#fafafa;padding:10px;font-size:16px}
+.ar-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.ar-grid>.ar-field{min-width:0}
+.ar-footer{position:sticky;bottom:0;z-index:2;background:linear-gradient(transparent,#0b0b0b 14%);padding:16px 0 max(12px,env(safe-area-inset-bottom))}.ar-footer .primary{width:100%}
+.ar-badges{display:flex;gap:8px;flex-wrap:wrap}.ar-badges span{font-size:12px;border:1px solid #364338;border-radius:99px;padding:6px 9px;color:#badcb5}
+.ar-record{border-color:#355e2d}.ar-record h2{font-size:17px;margin-bottom:6px}.ar-record p{color:#999;font-size:12px}
+.ar-summary{line-height:1.9;font-size:14px}.ar-warning{border-left:3px solid #caaa6b;padding:10px;background:#241e13;color:#f1debb;font-size:12px;line-height:1.6}
+.ar-choice{display:flex;gap:8px;flex-wrap:wrap}.ar-choice button{min-width:64px}.ar-ranked{margin-top:10px}.ar-ranked h3{font-size:15px;margin:0 0 8px}.ar-history{border-top:1px solid #333;padding:12px 0}.ar-history small{display:block;color:#888}
+@media(max-width:390px){.ar-grid{grid-template-columns:1fr}.ar-actions{gap:6px}.ar-button{font-size:13px;padding:10px}}

@@ -29,10 +29,13 @@ jobs:
         with:
           enablement: true
 
+      - name: Build reviewed web artifact
+        run: node ops/build-pages-artifact.mjs "$RUNNER_TEMP/cpl-pages"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ${{ runner.temp }}/cpl-pages
 
       - name: Deploy to GitHub Pages
         id: deployment
