@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0b">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
+  <title>CPL｜全頭評価β・開発環境</title>
+  <link rel="stylesheet" href="styles.css?v=20260922-1">
+  <link rel="stylesheet" href="all-runner.css?v=20260924-2">
+</head>
+<body>
+  <main class="app" id="allRunnerApp">
+    <header class="topbar"><div class="brand">CPL <span class="ar-env">開発環境・CPL-DEV</span></div><a class="ar-home" href="index.html">HOME</a></header>
+    <div class="screen-head"><div><h1>全頭評価β</h1><p>先に観察。結果は判断を確定してから。</p></div></div>
+    <div id="arAuth" class="card ar-auth"><p>この画面はCPL-DEV専用です。本番のログイン・レースデータとは別に扱います。</p><button id="arLogin" type="button" class="primary wide">CPL-DEVでGoogleログイン</button><button id="arLogout" type="button" class="ar-button hidden">CPL-DEVからログアウト</button></div>
+    <p id="arStatus" class="error" role="status" aria-live="polite"></p>
+    <section id="arContent" aria-live="polite"></section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase/beta-config.js?v=20260924-1"></script>
+  <script src="all-runner-core.js?v=20260924-1"></script>
+  <script src="all-runner.js?v=20260925-1"></script>
+</body>
+</html>

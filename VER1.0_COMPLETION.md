@@ -1,45 +1,104 @@
 # CPL Ver1.0 Completion Checklist
 
-## Scope
-- Race-result data collection only.
-- No horse names.
-- No pre-race prediction or evaluation input.
-- Popularity and win odds are stored as result-entry market data.
-- One race is saved once after 1st–3rd are complete.
+## 1. Product Scope
 
-## Race fields
-- Date
+- [x] Post-race data collection only
+- [x] No horse names
+- [x] No pre-race prediction/evaluation
+- [x] Top 3 only
+- [x] One race = one save
+- [x] Research/analysis deferred to Ver1.1+
+
+## 2. Input Data
+
+### Race
+
+- Race date
 - Racecourse
 - Race number
-- Course
 - Surface
 - Distance
+- Course layout
+- Race class
 - Track condition
 - Field size
 
-## Top 3 fields
+### Results
+
+For 1st–3rd:
+
+- Finish position
 - Popularity
 - Win odds
 - Chest
 - Hindquarter
 - Gait
-- Front/rear balance
+- Balance
 - Tone
-- Abdomen
+- Agitation（blank = no issue, or `あり` / `強`）
+- Sweating（blank = no issue, or `あり` / `強`）
+- Paddock evaluation
 
-## Ver1.0 provisional body master
-- Chest: シャープ / 普通 / 厚 / 重厚
-- Hindquarter: シャープ / 普通 / 厚 / 重厚
-- Gait: チャカ付き / 歩幅短い / 歩幅長い / 普通 / スムーズ
-- Balance: 良い / 普通 / 悪い
-- Tone: パンパン / 普通 / ゴム感
-- Abdomen: 普通 / 太い
+Abdomen is not part of the Ver1.0 production schema.
 
-## Completion gate
-1. Spreadsheet setup is safe to rerun and does not erase saved races.
-2. Web app loads master data from MASTER_DATA.
-3. Required input is validated before save.
-4. One submit call saves exactly one DB row.
-5. Success screen only confirms save and provides next action.
-6. Master screen is reference-only.
-7. Research analysis remains outside Ver1.0.
+## 3. Current Architecture
+
+- [x] Smartphone-first Web App
+- [x] GitHub Pages
+- [x] Supabase Auth + Google OAuth
+- [x] Supabase PostgreSQL
+- [x] RLS
+- [x] `master_options`
+- [x] `races`
+- [x] `race_results`
+- [x] `save_race()`
+- [x] `delete_race()`
+
+## 4. Database Integrity
+
+- [x] DB-side input validation
+- [x] Master-value validation
+- [x] Top-3 position validation
+- [x] Popularity uniqueness validation
+- [x] Duplicate race prevention
+- [x] Overwrite save
+- [x] `updated_at` maintenance
+- [ ] Migration 0014 applied to production
+- [ ] Optional agitation/sweating NULL behavior confirmed
+
+## 5. UI / UX
+
+- [x] HOME
+- [x] Today's research entry point
+- [x] Race input flow
+- [x] 1st → 2nd → 3rd sequential input
+- [x] Save completion state
+- [x] Registered data display
+- [x] Own-data deletion
+- [x] Master reference display
+- [x] Research Room disabled until later version
+- [x] Draft compatibility retained across the paddock field change
+
+## 6. Operations
+
+- [x] Daily `maintenance_ping()` workflow
+- [x] Google Drive backup source updated to backup version 4
+- [x] Backup generation retention: latest 12
+- [ ] Deployed Apps Script backup updated and tested after migration 0014
+
+## 7. Release Gate
+
+Required remaining flow:
+
+1. Apply migration `0014_paddock_condition_fields.sql`
+2. Confirm Master shows AGITATION / SWEATING and no ABDOMEN
+3. Enter one race with agitation/sweating blank and save
+4. Confirm NULL is stored for both optional fields
+5. Overwrite the same race using `あり` / `強`
+6. Confirm updated values
+7. Confirm app-switch draft continuity still works
+8. Confirm registered data
+9. Delete the race
+10. Update and run the deployed Google Apps Script backup
+
+After this test passes, Ver1.0 is ready to become the operational baseline for CPL data collection.

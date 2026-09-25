@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0b">
+  <title>競馬場研究室｜CPL</title>
+  <link rel="stylesheet" href="styles.css?v=20260920-18">
+</head>
+<body>
+  <main class="app">
+    <header class="topbar"><div class="brand">CPL</div><a class="text-button plain-link" href="index.html">HOME</a></header>
+    <section id="courseResearchApp" class="view">
+      <div class="screen-head"><a class="back plain-link" href="index.html">‹</a><div><h1>競馬場研究室</h1><p>コースから、馬体仮説へ。</p></div></div>
+
+      <section class="research-step">
+        <div class="step-label"><b>01</b><span>競馬場</span></div>
+        <div class="card research-selector"><label>競馬場<select id="researchRacecourse" aria-label="競馬場"></select></label></div>
+      </section>
+
+      <section class="research-step">
+        <div class="step-label"><b>02</b><span>コース形態</span></div>
+        <div id="courseTypeTabs" class="course-type-tabs" role="tablist" aria-label="コース形態">
+          <button type="button" class="course-type-tab active" data-course-type="turf-inner"><span>芝</span><b>内回り</b></button>
+          <button type="button" class="course-type-tab" data-course-type="turf-outer"><span>芝</span><b>外回り</b></button>
+          <button type="button" class="course-type-tab" data-course-type="dirt"><span>ダート</span><b>右回り</b></button>
+        </div>
+      </section>
+
+      <section class="research-step">
+        <div class="step-label"><b>03</b><span>コース立体図</span></div>
+        <div id="courseDiagramCard" class="card course-diagram-card mode-turf-inner">
+          <div class="course-diagram-head"><div><span id="courseDiagramKicker">TURF · INNER</span><h2 id="courseDiagramTitle">芝・内回り</h2></div><small><a href="https://www.jra.go.jp/facilities/race/nakayama/course/" target="_blank" rel="noopener noreferrer">JRA公式図を基準 ↗</a></small></div>
+          <img id="courseDiagram" src="assets/nakayama-turf-inner.png?v=20260920-17" alt="中山競馬場 芝内回りコース立体図">
+          <div id="diagramDistances" class="diagram-distances" aria-label="発走距離"></div>
+          <p class="diagram-role">形・内外・発走距離を見る</p>
+        </div>
+      </section>
+
+      <section class="research-step">
+        <div class="step-label"><b>04</b><span>距離</span></div>
+        <div id="researchDistances" class="distance-buttons"></div>
+      </section>
+
+      <div id="researchEmpty" class="card empty-records hidden">この距離はまだ研究未確定です。</div>
+
+      <article id="researchDetail" class="hidden">
+        <div class="research-title-row"><div><span id="researchStatus" class="research-badge"></span><h2 id="researchTitle"></h2></div><small id="researchDate"></small></div>
+        <div class="condition-strip" id="researchCondition"></div>
+
+        <section class="research-step">
+          <div class="step-label"><b>05</b><span>コースの骨格</span></div>
+          <div class="card structure-card">
+            <div class="structure-head"><h3>コースの骨格</h3><p>（運動の流れとおおよその残り距離）</p></div>
+            <div id="courseStructure" class="course-structure" role="list" aria-label="走行順のコース骨格"></div>
+            <p id="researchSummary" class="structure-summary"></p>
+            <div id="researchMovementBlock" class="movement-block"><h3>要求される運動</h3><div id="researchRequirements" class="research-list"></div></div>
+          </div>
+        </section>
+
+        <section id="hypothesisStep" class="research-step">
+          <div class="step-label"><b>06</b><span>理想馬体仮説</span></div>
+          <div class="card hypothesis-hero">
+            <div class="section-kicker">COURSE HYPOTHESIS</div>
+            <h3>コース研究からの仮説</h3>
+            <p class="hypothesis-note">順位ではないA/B。異なる構造仮説を、実走データとは独立して並列比較する。</p>
+            <div id="idealBody" class="hypothesis-grid"></div>
+          </div>
+        </section>
+
+        <section id="analysisStep" class="research-step">
+          <div class="step-label"><b>07</b><span>分析</span></div>
+          <div id="analysisCard" class="card analysis-card">
+            <div class="analysis-head"><div><div class="section-kicker">VALIDATION</div><h3>仮説 × 実データ</h3></div><span id="analysisStatus" class="analysis-status">データ蓄積中</span></div>
+            <p id="analysisMessage">1〜3着馬の馬体データが蓄積されるまで、分析結果は確定しません。</p>
+            <div class="analysis-equation"><span>コース研究の仮説</span><b>×</b><span>実際の好走馬データ</span></div>
+          </div>
+        </section>
+
+        <details id="factsCard" class="card facts-card"><summary>公式情報・構造上の事実</summary><div id="researchFacts" class="research-list"></div><a id="officialSource" class="source-link" target="_blank" rel="noopener noreferrer">JRA公式情報を開く ↗</a></details>
+      </article>
+      <p id="researchError" class="error"></p>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase/config.js?v=20260913-3"></script>
+  <script src="course-research.js?v=20260920-19"></script>
+</body>
+</html>

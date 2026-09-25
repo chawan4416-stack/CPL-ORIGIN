@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CPL プライバシーポリシー</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.8; max-width: 760px; margin: 0 auto; padding: 24px; color: #222; }
+    h1 { font-size: 1.6rem; }
+    h2 { margin-top: 2rem; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>CPL プライバシーポリシー</h1>
+
+  <p>CPL（Chawan Paddock Labs）は、レース終了後の事実データを蓄積し、馬体研究に利用する個人利用を目的としたWebアプリです。</p>
+
+  <h2>1. 取得する情報</h2>
+  <p>CPLでは、Googleログインに必要なGoogleアカウント情報、およびユーザーが入力するレース情報・着順・人気・単勝オッズ・馬体評価情報を取り扱います。</p>
+  <p>CPLでは、馬名を入力・保存しません。また、レース前の予想や評価を入力・保存することを目的としていません。</p>
+
+  <h2>2. 利用目的</h2>
+  <p>取得した情報は、CPLの認証、データ保存、表示、バックアップ、および馬体研究のために利用します。</p>
+
+  <h2>3. データの保存</h2>
+  <p>保存したレースデータはSupabase PostgreSQLに保存されます。アクセス制御にはSupabaseのRow Level Security（RLS）を使用し、ユーザーが自身の登録データを扱えるよう制御します。</p>
+  <p>入力途中の未保存データは、アプリを離れた際にも再開できるよう、認証ユーザーごとに端末のブラウザ内へ一時保存されます。この下書きデータは保存処理を行うまでSupabaseへ送信されません。保存成功時には端末内の下書きを削除します。</p>
+
+  <h2>4. Google Driveバックアップ</h2>
+  <p>バックアップ機能を利用する場合、保存済みレースデータはユーザー自身のGoogle Drive内のCPL_BACKUPフォルダへJSON形式で保存されます。バックアップ処理ではGoogle Driveのファイル作成に必要な権限（drive.file）を使用します。</p>
+
+  <h2>5. 第三者提供</h2>
+  <p>取得した情報を第三者へ販売・提供することはありません。ただし、法令に基づく場合などを除きます。</p>
+
+  <h2>6. 管理</h2>
+  <p>認証・データベースへのアクセスは、Supabase AuthおよびRLSによって制御します。ユーザーは自身の登録データを確認・削除できます。</p>
+
+  <h2>7. 問い合わせ</h2>
+  <p>お問い合わせ先は、Googleログイン画面等に表示する連絡先をご確認ください。</p>
+
+  <h2>8. 改定</h2>
+  <p>本ポリシーは、CPLの機能変更等に応じて改定することがあります。</p>
+
+  <p>最終更新日：2026年9月13日</p>
+</body>
+</html>
