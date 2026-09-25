@@ -61,6 +61,11 @@
   }
   function note(message) { status.textContent = message || ''; }
   function setView(view) { state.view = view; render(); window.scrollTo(0,0); persistDraft(); }
+  function refreshOutcomes() {
+    const scrollY = window.scrollY;
+    render();
+    window.scrollTo(0,scrollY);
+  }
   const fieldSize = () => Number(state.race?.field_size || 0);
   function draftKey(suffix = state.raceId || 'new') {
     return state.user ? `CPL_DEV_${devRef}_ALL_RUNNER_BETA_DRAFT_${state.user.id}_${suffix}` : null;
@@ -306,7 +311,7 @@
             ${options(Array.from({length:state.outcomes.filter(x => x.outcome_status !== 'scratched').length},(_,i) => i+1),o.popularity,'人気を選択')}</select></label>`}
           </div></div>`).join('')}</div>
         <div class="card"><h2>公式1〜3着（同着は複数選択）</h2><p class="ar-note">JRAの公式着順をそのまま指定。欠番の順位は空欄にします。</p>
-          ${[1,2,3].map(rank => `<div class="ar-ranked"><h3>${rank}着：${state.outcomes.filter(o => o.finish_position === rank).length}頭</h3>
+          ${[1,2,3].map(rank => `<div class="ar-ranked"><h3 data-rank-heading="${rank}">${rank}着：${state.outcomes.filter(o => o.finish_position === rank).length}頭</h3>
             <div class="ar-choice">${state.outcomes.filter(o => !['scratched','dnf'].includes(o.outcome_status)).map(o =>
               `<button type="button" class="ar-chip ${o.finish_position === rank ? 'selected' : ''}" data-action="rank" data-rank="${rank}" data-number="${o.horse_number}">${o.horse_number}番</button>`).join('')}</div></div>`).join('')}</div>`}
       <div class="ar-footer"><button class="primary" data-action="save-outcomes">${isVoid ? '不成立として保存' : '公式の人気・結果を保存'}</button></div>`;
@@ -472,14 +477,20 @@
       }
       case 'review': await startReview(); break;
       case 'axis': state.analysisAxis=button.dataset.value; render(); break;
-      case 'result-status': state.resultStatus=button.dataset.value; setView('outcomes'); break;
+      case 'result-status': state.resultStatus=button.dataset.value; refreshOutcomes(); persistDraft(); break;
       case 'rank': {
         const o=state.outcomes[number-1];
         if (['scratched','dnf'].includes(o.outcome_status)) return;
         const rank=Number(button.dataset.rank);
         o.finish_position=o.finish_position === rank ? null : rank;
         o.outcome_status=o.finish_position ? 'placed' : 'finished_other';
-        setView('outcomes'); break;
+        content.querySelectorAll(`[data-action="rank"][data-number="${number}"]`).forEach(chip =>
+          chip.classList.toggle('selected',Number(chip.dataset.rank) === o.finish_position));
+        for (const position of [1,2,3]) {
+          const heading=content.querySelector(`[data-rank-heading="${position}"]`);
+          heading.textContent=`${position}着：${state.outcomes.filter(x => x.finish_position === position).length}頭`;
+        }
+        persistDraft(); break;
       }
       case 'save-outcomes': await saveOutcomes(); break;
       case 'history': await loadHistory(1); break;
@@ -523,7 +534,7 @@
         o.outcome_status=el.value;
         if (el.value === 'scratched') { o.popularity=null; o.finish_position=null; }
         if (el.value === 'dnf' || el.value === 'finished_other') o.finish_position=null;
-        render();
+        refreshOutcomes();
       }
     }
     persistDraft();
