@@ -11,9 +11,9 @@ try { await readdir(output); throw new Error('Output directory must not exist');
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 
 const files = [
-  'index.html', 'privacy.html', 'course-research.html', 'all-runner.html',
-  'styles.css', 'all-runner.css', 'app.js', 'course-layout.js',
-  'course-research.js', 'all-runner.js', 'all-runner-core.js',
+  'index.html', 'privacy.html', 'course-research.html', 'all-runner.html', 'research.html',
+  'styles.css', 'all-runner.css', 'research.css', 'app.js', 'course-layout.js',
+  'course-research.js', 'all-runner.js', 'all-runner-core.js', 'research.js',
   'supabase/config.js', 'supabase/beta-config.js',
   'assets/nakayama-course-3d-jra.jpg', 'assets/nakayama-dirt.png',
   'assets/nakayama-turf-inner.png', 'assets/nakayama-turf-outer.png'
