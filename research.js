@@ -76,6 +76,7 @@
    finish_position:Number(h.finish_position),chest:h.chest,hindquarter:h.hindquarter,tone:h.tone||null}));
    if(rows.some(h=>!h.horse_number||!h.finish_position||!h.chest||!h.hindquarter||!h.tone)||
       new Set(rows.map(h=>h.horse_number)).size!==rows.length)throw Error('各馬の馬番・胸前・トモ・ハリを入力し、馬番の重複を解消してください。');
+   if(!rows.some(h=>h.finish_position===1))throw Error('公式1着馬を含めてください。');
    $('saveSuitability').disabled=true;await checked(db.rpc('save_suitability_research',{p_race:state.sRace,p_horses:rows}));
    state.horses=[newHorse(1),newHorse(2),newHorse(3)];state.current=0;renderHorse();draft();notice('適性研究を保存しました。',true);
  }catch(e){notice(`保存できませんでした：${e.message}`)}finally{$('saveSuitability').disabled=false;}}
