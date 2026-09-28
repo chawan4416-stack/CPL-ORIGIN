@@ -161,3 +161,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .suit-race-fields input[type=date]{text-align:center;line-height:normal;padding:0 10px}
 #suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;min-height:100%;text-align:center}
 #suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{display:flex;align-items:center;justify-content:center;width:100%}
+/* Give the five race rows more breathing room and put labels ahead of values. */
+#suitRace .suit-race-fields{gap:12px 12px}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:56px;color:#cbd5cd}
+#suitRace .suit-race-fields label{color:#f2f5f1}
