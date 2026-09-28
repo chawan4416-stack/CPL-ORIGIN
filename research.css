@@ -240,11 +240,11 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #addHorse{min-height:38px;padding:3px;margin:1px 0 0}
 #suitability #saveSuitability{min-height:54px;margin:4px 0 0}
 
-/* Direct popularity keypad. Six columns preserve readable, separated numbers on iPhone. */
-#suitability .rank-popularity{padding:3px 6px 4px}
+/* Direct popularity keypad: nine clear numerals per row, two rows at most. */
+#suitability .rank-popularity{padding:2px 6px}
 #suitability .rank-popularity>strong{display:block;color:#d6ddd3;font-size:16px;font-weight:500;line-height:1.2}
-#suitability .popularity-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;margin-top:4px}
-#suitability .popularity-grid button{min-width:0;min-height:40px;padding:0 2px;border-radius:9px;background:#3e4840;border-color:#657268;color:#e3e6dc;font-size:16px;font-weight:600;line-height:1}
+#suitability .popularity-grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:2px;margin-top:2px}
+#suitability .popularity-grid button{min-width:0;min-height:38px;padding:0 1px;border-radius:7px;background:#3e4840;border-color:#657268;color:#e3e6dc;font-size:16px;font-weight:600;line-height:1}
 #suitability .popularity-grid button.active{background:#315e4d;border-color:#63816e;color:#f1f0e7;font-weight:750}
 
 /* Keep feature navigation available until the suitability horse workspace is open. */
