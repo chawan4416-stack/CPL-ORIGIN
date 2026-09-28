@@ -189,7 +189,6 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #saveSuitability{background:#315e4d;border-color:#63816e;color:#f1f0e7}
 #suitability #saveSuitability:active{background:#294e40}
 #workspace:has(#suitability:not([hidden])) button:focus-visible,#suitability select:focus-visible,#suitRace select:focus-visible,#suitRace input:focus-visible{outline-color:#9abc9f}
-
 /* Seventh pass: read race conditions as five steady two-column rows. */
 #suitRace .suit-race-fields{column-gap:24px;row-gap:14px}
 #suitRace .suit-race-fields label:first-child{grid-column:auto}
@@ -199,3 +198,28 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .suit-race-fields input[type=date]{text-align:left}
 #suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{justify-content:flex-start;text-align:left}
 #suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{justify-content:flex-start}
+/* One race condition at a time; preserve the four dark tones. */
+#suitHorseWork[hidden]{display:none}
+#suitRace .card.suit-step-card{display:flex;flex-direction:column;min-height:clamp(320px,58dvh,510px);padding:22px 20px 20px;background:#1c221e}
+#suitRace .suit-progress{color:#aeb8ad;font-size:13px;letter-spacing:.08em;margin:0}
+#suitRace .suit-step-label{display:block;margin:clamp(42px,9dvh,92px) 0 14px;color:#e3e6dc;font-size:27px;font-weight:700;line-height:1.25}
+#suitRace .suit-step-control{min-width:0}
+#suitRace .suit-step-control select,#suitRace .suit-step-control input[type=date],#suitRace .suit-auto-value{width:100%;height:58px;margin:0;padding:0 16px;border:1px solid #58675b;border-radius:13px;background:#343d36;color:#e9e9df;font-size:19px;font-weight:600;text-align:left;color-scheme:dark}
+#suitRace .suit-step-control input[type=date]::-webkit-date-and-time-value{justify-content:flex-start;text-align:left}
+#suitRace .suit-step-control input[type=date]::-webkit-datetime-edit{justify-content:flex-start}
+#suitRace .suit-auto-value{display:flex;align-items:center;border-color:#46564a}
+#suitRace .suit-auto-note{margin:10px 0 0;color:#b9ceba;font-size:14px}
+#suitRace .suit-step-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:36px}
+#suitRace .suit-step-actions button{min-height:48px}
+#suitRace .suit-step-back,#suitRace .suit-edit-button{background:transparent;border-color:#58675b;color:#cbd4c9}
+#suitRace .suit-step-next{background:#315e4d;border-color:#63816e;color:#f1f0e7;font-weight:700}
+#suitRace .card.suit-step-card.suit-review{min-height:0;gap:0}
+#suitRace .suit-review-values{display:grid;gap:10px;margin:28px 0;color:#dce2d8;font-size:17px;line-height:1.35}
+#suitRace .suit-review-values strong{color:#e8eae0;font-weight:650}
+#suitRace .suit-review .suit-edit-button{margin:14px 0 10px}
+#suitRace .suit-review .suit-step-next{min-height:54px}
+#suitRace .suit-edit-list{display:grid;gap:7px;margin:20px 0 18px}
+#suitRace .suit-edit-list button{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;background:#28312b;border-color:#46564a;color:#bdc8bc}
+#suitRace .suit-edit-list button strong{color:#e5e8df;font-weight:650}
+#suitRace .suit-step-card:has(.suit-edit-list){min-height:0}
+#suitRace .suit-step-card:has(.suit-edit-list)>.suit-step-back{align-self:flex-start}
