@@ -119,7 +119,8 @@
        tabs.scrollLeft=selected.offsetLeft+selected.offsetWidth-tabs.clientWidth;}
    const numbers=Array.from({length:Number(state.sRace.field_size)||18},(_,i)=>String(i+1));
    $('horseEditor').innerHTML=`<div class="rank-popularity">
-      <label>人気<select data-horse-field="popularity">${opts(numbers,h.popularity)}</select></label></div>
+      <strong id="popularityLabel">人気</strong><div class="popularity-grid" role="group" aria-labelledby="popularityLabel">${numbers.map(n=>
+        `<button type="button" data-horse-field="popularity" data-value="${n}" class="popularity-choice${h.popularity===n?' active':''}" aria-label="${n}人気" aria-pressed="${h.popularity===n}">${n}</button>`).join('')}</div></div>
       ${h.legacy_horse_number&&!h.popularity?`<p class="help">旧記録の馬番は${esc(h.legacy_horse_number)}番です。保存する際は公式の人気を選択してください。</p>`:''}
       <div class="group"><strong>胸前</strong><div class="focus-choices chest-choices">${values('SUITABILITY','CHEST').map(v=>choice('chest',v,v,h.chest)).join('')}</div></div>
       <div class="group"><strong>トモ</strong><div class="hind-choices">${[['シャープ−','シャープ'],['厚−','厚'],['重厚−','重厚']].map(pair=>
@@ -241,6 +242,7 @@
      const missing=Math.max(0,firstMissingStep());state.sRaceStage='steps';state.sRaceStep=missing;renderSuitRace();draft();
      return notice(`「${suitSteps[missing][1]}」を入力してください。`);}
      state.sRaceStage='horses';state.sRaceEditing=false;renderSuitRace();draft();window.scrollTo(0,0);}
+   else if(b.dataset.horseField==='popularity'){state.horses[state.current].popularity=b.dataset.value;renderHorse();draft();}
    else if(b.dataset.group){state.horses[state.current][b.dataset.group]=b.dataset.value;renderHorse();draft();}
    else if(b.dataset.condition){const [field,value]=b.dataset.condition.split(':');state.condition[field]=value?
      (state.condition[field]===value?null:value):!state.condition[field];renderChoices();draft();}
@@ -272,7 +274,6 @@
        if(['racecourse','surface','distance'].includes(el.dataset.key))syncRace(r,'c');
        renderRaces();draft();
      }}
-   else if(el.dataset.horseField){state.horses[state.current][el.dataset.horseField]=el.value;renderHorse();draft();}
    else if(el.dataset.filter){if(el.value)state.filter[el.dataset.filter]=el.value;else delete state.filter[el.dataset.filter];draft();await summary();}
  });
  for(const [id,key] of [['cHorse','horse_number'],['cOutcome','outcome_status'],['cRank','finish_position'],['cPopularity','popularity']])
