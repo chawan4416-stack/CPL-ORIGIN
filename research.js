@@ -44,9 +44,10 @@
    if(!complete)state.sRaceExpanded=true;
    if(complete&&!state.sRaceExpanded){
      const date=r.race_date.split('-');
+     const courseLabel={'内回り':'内','外回り':'外'}[r.course]||r.course;
      $('suitRace').innerHTML=`<div class="card race-compact"><div class="race-summary">
        <div><strong>${esc(Number(date[1]))}/${esc(Number(date[2]))}　${esc(r.racecourse)}${esc(r.race_number)}R</strong>
-       <span>${esc(r.surface)}${esc(r.distance)}m・${esc(r.course)}｜${esc(r.track_condition)}｜${esc(r.field_size)}頭</span></div>
+       <span>${esc(r.surface)}${esc(r.distance)}m・${esc(courseLabel)}｜${esc(r.track_condition)}｜${esc(r.field_size)}頭</span></div>
        <button type="button" data-race-toggle="open">変更</button></div></div>`;
    }else{
      $('suitRace').innerHTML=raceHTML(r,'s')+
@@ -56,8 +57,11 @@
    renderHorse();renderConditionResult();}
  function choice(group,value,label,current){return `<button type="button" class="choice${current===value?' active':''}" data-group="${group}" data-value="${esc(value)}" aria-pressed="${current===value}">${esc(label)}</button>`;}
  function renderHorse(){const h=state.horses[state.current],tabs=$('horseTabs'),previousScroll=tabs.scrollLeft;
-   tabs.innerHTML=state.horses.map((x,i)=>
-   `<button type="button" data-horse-tab="${i}" class="${state.current===i?'active':''}" aria-current="${state.current===i?'true':'false'}"><span>${esc(x.finish_position)}着</span><small>${x.popularity?esc(x.popularity)+'番人気':x.legacy_horse_number?'旧馬番 '+esc(x.legacy_horse_number):'未選択'}</small></button>`).join('');
+   tabs.innerHTML=state.horses.map((x,i)=>{const complete=!!(x.popularity&&x.chest&&x.hindquarter&&x.tone);
+     const progress=x.popularity?`${esc(x.popularity)}人気${complete?' ✓':'・入力中'}`:
+       x.legacy_horse_number?`旧馬番 ${esc(x.legacy_horse_number)}`:
+       (x.chest||x.hindquarter||x.tone?'入力中':'未選択');
+     return `<button type="button" data-horse-tab="${i}" data-complete="${complete}" class="${state.current===i?'active':''}" aria-current="${state.current===i?'true':'false'}"><span>${esc(x.finish_position)}着</span><small>${progress}</small></button>`;}).join('');
    tabs.scrollLeft=previousScroll;
    const selected=tabs.children[state.current];
    if(selected){if(selected.offsetLeft<tabs.scrollLeft)tabs.scrollLeft=selected.offsetLeft;
