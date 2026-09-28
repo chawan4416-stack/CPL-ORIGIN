@@ -246,3 +246,6 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability .popularity-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3px;margin-top:4px}
 #suitability .popularity-grid button{min-width:0;min-height:40px;padding:0 2px;border-radius:9px;background:#3e4840;border-color:#657268;color:#e3e6dc;font-size:16px;font-weight:600;line-height:1}
 #suitability .popularity-grid button.active{background:#315e4d;border-color:#63816e;color:#f1f0e7;font-weight:750}
+
+/* Keep feature navigation available until the suitability horse workspace is open. */
+#workspace:has(> #suitability:not([hidden]) #suitHorseWork:not([hidden])) > nav{display:none}
