@@ -189,3 +189,13 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #saveSuitability{background:#315e4d;border-color:#63816e;color:#f1f0e7}
 #suitability #saveSuitability:active{background:#294e40}
 #workspace:has(#suitability:not([hidden])) button:focus-visible,#suitability select:focus-visible,#suitRace select:focus-visible,#suitRace input:focus-visible{outline-color:#9abc9f}
+
+/* Seventh pass: read race conditions as five steady two-column rows. */
+#suitRace .suit-race-fields{column-gap:24px;row-gap:14px}
+#suitRace .suit-race-fields label:first-child{grid-column:auto}
+#suitRace .suit-race-fields label{font-size:14px}
+#suitRace .suit-race-fields .race-field-name{font-size:14px;color:#abb6aa}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:46px;margin-top:2px;font-size:16px;border-color:#465249}
+#suitRace .suit-race-fields input[type=date]{text-align:left}
+#suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{justify-content:flex-start;text-align:left}
+#suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{justify-content:flex-start}
