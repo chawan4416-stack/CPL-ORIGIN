@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260928-15"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260928-16"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性入力</button><button data-view="condition">状態入力</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
 <div id="message" role="status" aria-live="polite" hidden><span id="messageText"></span><button id="messageDismiss" type="button" aria-label="通知を閉じる">閉じる</button></div>
-<section id="suitability" class="view"><h1>適性研究</h1><div id="suitRace"></div><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></section>
+<section id="suitability" class="view"><div id="suitRace"></div><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></section>
 <section id="condition" class="view" hidden><h1>状態研究</h1><p>結果が分かった馬の、目立った状態だけを記録</p>
 <div class="card"><h2>気になった状態</h2><div id="conditionChoices" class="choices"></div><p class="help">未選択は「記録対象外」。異常なしとは扱いません。</p></div><div id="conditionRace"></div>
 <div class="card"><h2>馬と公式結果</h2><div class="fields"><label>馬番<select id="cHorse"></select></label><label>結果<select id="cOutcome"><option value="placed">1〜3着</option><option value="finished_other">着外</option><option value="dnf">競走中止</option><option value="scratched">出走取消</option></select></label><label id="cRankWrap">着順<select id="cRank"><option value="1">1着</option><option value="2">2着</option><option value="3">3着</option></select></label><label id="cPopularityWrap">人気<select id="cPopularity"></select></label></div><p class="help">同着は複数の馬に同じ公式着順を登録できます。取消は人気なし、中止は着順なしです。</p></div><button id="saveCondition" class="primary">状態と結果を保存</button></section>
