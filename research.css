@@ -172,3 +172,7 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 /* Separate neighboring race rows without reducing touch targets. */
 #suitRace .suit-race-fields{row-gap:19px}
 #suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{margin-top:7px}
+/* Expanded race entry gets its own screenful of breathing room. */
+#suitRace .card:not(.race-compact){padding:24px 16px}
+#suitRace .suit-race-fields{row-gap:36px}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:62px;margin-top:10px}
