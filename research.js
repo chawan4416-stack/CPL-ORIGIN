@@ -37,7 +37,7 @@
    const cs=courses(r);if(!cs.includes(r.course))r.course=cs.length===1?cs[0]:'';
    const cls=values('RACE_CLASS',r.racecourse).filter(v=>v!=='新馬');
    if(!cls.includes(r.race_class))r.race_class='';}
- let raceStepTimer;
+ const raceStepTimer={s:null,c:null};
  const raceMode=mode=>mode==='s'?{race:'sRace',stage:'sRaceStage',step:'sRaceStep',editing:'sRaceEditing',root:'suitRace',work:'suitHorseWork'}:
    {race:'cRace',stage:'cRaceStage',step:'cRaceStep',editing:'cRaceEditing',root:'conditionRace',work:'conditionWork'};
  const firstMissingStep=mode=>{const m=raceMode(mode),r=state[m.race];return suitSteps.findIndex(([key])=>!r[key]||(key==='race_class'&&r[key]==='新馬'));};
@@ -51,7 +51,7 @@
    renderFocusRace(mode);draft();
  }
  function renderFocusRace(mode){
-   clearTimeout(raceStepTimer);
+   clearTimeout(raceStepTimer[mode]);
    const m=raceMode(mode),r=state[m.race],complete=raceComplete(r),prefix=mode==='s'?'suit':'condition';
    if(!complete&&state[m.stage]!=='steps'){state[m.stage]='steps';state[m.step]=Math.max(0,firstMissingStep(mode));state[m.editing]=false;}
    const stage=state[m.stage];
@@ -87,7 +87,7 @@
      <label class="suit-step-label" for="${prefix}StepInput">${esc(label)}</label><div class="suit-step-control">${control}</div>
      <div class="suit-step-actions">${state[m.step]>0?`<button type="button" class="suit-step-back" data-race-back="${mode}">← 戻る</button>`:'<span></span>'}
      ${(key==='race_date'||(r[key]&&!autoCourse))?`<button type="button" class="suit-step-next" data-race-next="${mode}">${state[m.step]===8?'確認へ →':'次へ →'}</button>`:''}</div></div>`;
-   if(autoCourse)raceStepTimer=setTimeout(()=>{if(state[m.stage]==='steps'&&state[m.step]===4)moveRaceStep(mode);},700);
+   if(autoCourse)raceStepTimer[mode]=setTimeout(()=>{if(state[m.stage]==='steps'&&state[m.step]===4)moveRaceStep(mode);},700);
  }
  const renderSuitRace=()=>renderFocusRace('s');
  function renderRaces(){syncRace(state.sRace,'s');syncRace(state.cRace,'c');renderFocusRace('s');renderFocusRace('c');
@@ -232,7 +232,7 @@
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
    if(b.dataset.view){show(b.dataset.view);if(state.view==='summary')await summary();if(state.view==='records')await records();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
-   else if(b.dataset.raceBack){const m=raceMode(b.dataset.raceBack);clearTimeout(raceStepTimer);state[m.step]=Math.max(0,state[m.step]-1);renderFocusRace(b.dataset.raceBack);draft();}
+   else if(b.dataset.raceBack){const mode=b.dataset.raceBack,m=raceMode(mode);clearTimeout(raceStepTimer[mode]);state[m.step]=Math.max(0,state[m.step]-1);renderFocusRace(mode);draft();}
    else if(b.dataset.raceNext){const mode=b.dataset.raceNext,m=raceMode(mode),[key,label]=suitSteps[state[m.step]];
      if(!state[m.race][key])return notice(`「${label}」を入力してください。`);
      moveRaceStep(mode);}
@@ -279,9 +279,9 @@
        if(['racecourse','surface','distance'].includes(el.dataset.key))syncRace(r,'c');
        if(el.dataset.key==='field_size')renderConditionResult();
      }
-     draft();clearTimeout(raceStepTimer);
+     draft();clearTimeout(raceStepTimer[mode]);
      if(el.dataset.key!=='race_date'&&el.value){const at=state[m.step];
-       raceStepTimer=setTimeout(()=>{if(state[m.stage]==='steps'&&state[m.step]===at)moveRaceStep(mode);},180);}}
+       raceStepTimer[mode]=setTimeout(()=>{if(state[m.stage]==='steps'&&state[m.step]===at)moveRaceStep(mode);},180);}}
    else if(el.dataset.filter){if(el.value)state.filter[el.dataset.filter]=el.value;else delete state.filter[el.dataset.filter];draft();await summary();}
  });
  $('addHorse').onclick=()=>{if(state.horses.length>=18)return notice('最大18頭です。');
