@@ -71,7 +71,10 @@
       current:d.current||0,condition:d.condition||blankCondition(),view:d.view||'suitability',filter:d.filter||{},merge:!!d.merge});
    state.current=Math.min(state.current,state.horses.length-1);
    setTimeout(()=>window.scrollTo(0,d.scrollY||0),100);}catch{}}
- function notice(message,ok=false){$('message').textContent=message;$('message').classList.toggle('ok',ok);}
+ let noticeTimer;
+ function notice(message,ok=false){const box=$('message');clearTimeout(noticeTimer);
+   $('messageText').textContent=message;box.classList.toggle('ok',ok);box.hidden=!message;
+   if(ok)noticeTimer=setTimeout(()=>{box.hidden=true;},6000);}
  async function checked(promise){const {data,error}=await promise;if(error)throw error;return data;}
  async function loadMasters(){const rows=await checked(db.from('master_options').select('category,field_key,option_value,sort_order').eq('active',true).order('sort_order'));
    for(const row of rows)(state.masters[`${row.category}:${row.field_key}`]||=[]).push(row);}
@@ -162,6 +165,7 @@
  $('merge').onclick=async()=>{state.merge=!state.merge;draft();await summary();};
  $('login').onclick=async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:`${location.origin}${location.pathname}`}});if(error)notice(error.message);};
  $('logout').onclick=async()=>{await db.auth.signOut();};
+ $('messageDismiss').onclick=()=>{clearTimeout(noticeTimer);$('message').hidden=true;};
  document.addEventListener('visibilitychange',()=>{if(document.hidden)draft();});window.addEventListener('pagehide',draft);
  let initialized=false;
  async function auth(session){if(session?.user){if(initialized&&state.user?.id===session.user.id)return;
