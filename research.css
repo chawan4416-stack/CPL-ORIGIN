@@ -83,3 +83,10 @@ body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hid
 #suitability #addHorse{color:#496957}
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
+/* Dark outer canvas; the condition and observation cards keep their own surfaces. */
+:root,body{background:#0b0d0c;color:#f0f2ee}
+nav{background:#0b0d0c}
+.card{color:#252a26}
+header b,body:has(#suitability:not([hidden])) header b{color:#f0f2ee}
+header small,header a,body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hidden])) header a{color:#b9c8bc}
+#suitability h1{color:#e4ece4}
