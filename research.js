@@ -80,7 +80,7 @@
      track_condition:values('RACE','TRACK_CONDITION'),race_number:Array.from({length:12},(_,i)=>String(i+1)),
      field_size:Array.from({length:18},(_,i)=>String(i+1)),race_class:values('RACE_CLASS',r.racecourse).filter(v=>v!=='新馬')};
    const autoCourse=key==='course'&&options.course.length===1&&r.course===options.course[0];
-   const control=key==='race_date'?`<input type="date" id="${prefix}StepInput" data-race="${mode}" data-key="${key}" value="${esc(r[key])}">`:
+   const control=key==='race_date'?`<div class="focus-date-field"><span data-date-value aria-hidden="true">${esc(r[key]?r[key].replaceAll('-','/'):'選択')}</span><input type="date" id="${prefix}StepInput" data-race="${mode}" data-key="${key}" value="${esc(r[key])}"></div>`:
      autoCourse?`<div class="suit-auto-value">${esc(r.course)}</div><p class="suit-auto-note">自動判定 ✓</p>`:
      `<select id="${prefix}StepInput" data-race="${mode}" data-key="${key}">${opts(options[key],r[key])}</select>`;
    $(m.root).innerHTML=`<div class="card suit-step-card"><p class="suit-progress">${state[m.step]+1} / 9</p>
@@ -271,6 +271,7 @@
  });
  document.addEventListener('change',async e=>{const el=e.target;
    if(el.dataset.race){const mode=el.dataset.race,m=raceMode(mode),r=state[m.race],old=r[el.dataset.key];r[el.dataset.key]=el.value;
+     if(el.dataset.key==='race_date'){const visible=el.parentElement.querySelector('[data-date-value]');if(visible)visible.textContent=el.value?el.value.replaceAll('-','/'):'選択';}
      if(mode==='s'){
        if(old!==el.value&&['racecourse','surface','distance'].includes(el.dataset.key))r.course='';
        if(['racecourse','surface','distance'].includes(el.dataset.key))syncRace(r,'s');
