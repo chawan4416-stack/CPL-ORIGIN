@@ -83,6 +83,14 @@ body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hid
 #suitability #addHorse{color:#496957}
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
+/* Race entry: five readable rows without a fixed toolbar. */
+nav,#suitability #horseTabs{position:static}
+#suitRace .card:not(.race-compact){padding:15px 16px;margin:6px 0}
+#suitRace h2{font-size:17px;margin-bottom:10px}
+#suitRace .suit-race-fields{gap:10px 12px}
+#suitRace .suit-race-fields label{font-size:14px;font-weight:600}
+#suitRace .suit-race-fields label:first-child{grid-column:1/-1}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:50px;margin-top:4px;font-size:16px}
 /* Dark Focus Design: quiet controls, distinct work area, selected observations first. */
 :root{color-scheme:dark;background:#0b0d0c;color:#f0f2ee}
 body{background:#0b0d0c;color:#f0f2ee}
