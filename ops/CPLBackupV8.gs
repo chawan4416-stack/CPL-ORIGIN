@@ -9,7 +9,7 @@ const CPL_V8_TABLES = [
   ['race_runner_evaluations','race_id,revision_no,horse_number'],
   ['race_runner_outcomes','race_id,horse_number'],
   ['suitability_observations','race_id,id'],
-  ['condition_observations','race_id,horse_number']
+  ['condition_observations','race_id,id']
 ];
 const CPL_V8_FOLDER = 'CPL_BACKUP_DEV_V8';
 
