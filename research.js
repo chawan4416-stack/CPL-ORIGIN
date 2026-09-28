@@ -41,7 +41,7 @@
    field_size:Array.from({length:18},(_,i)=>String(i+1))};
    const classValues=values('RACE_CLASS',r.racecourse).filter(v=>mode!=='s'||v!=='新馬');
    selections.race_class=classValues;
-   return `<div class="card"><h2>レース情報</h2><div class="fields${mode==='s'?' suit-race-fields':''}">${(mode==='s'?suitabilityFields:fields).map(([key,label])=>`<label>${label}${key==='race_date'?
+   return `<div class="card">${mode==='s'?'':'<h2>レース情報</h2>'}<div class="fields${mode==='s'?' suit-race-fields':''}">${(mode==='s'?suitabilityFields:fields).map(([key,label])=>`<label>${mode==='s'?`<span class="race-field-name">${esc(label)}</span>`:esc(label)}${key==='race_date'?
     `<input type="date" data-race="${mode}" data-key="${key}" value="${esc(r[key])}">`:
     `<select data-race="${mode}" data-key="${key}">${opts(selections[key],r[key])}</select>`}</label>`).join('')}
     ${mode==='c'&&classValues.length?`<label>競走条件（任意）<select data-race="${mode}" data-key="race_class">${opts(classValues,r.race_class)}</select></label>`:''}</div></div>`;}
