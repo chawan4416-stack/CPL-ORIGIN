@@ -223,3 +223,19 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .suit-edit-list button strong{color:#e5e8df;font-weight:650}
 #suitRace .suit-step-card:has(.suit-edit-list){min-height:0}
 #suitRace .suit-step-card:has(.suit-edit-list)>.suit-step-back{align-self:flex-start}
+
+/* Horse entry: reclaim vertical space without reducing readable type or touch targets. */
+#suitability #suitRace .race-compact{margin:4px 0 4px;padding:6px 11px}
+#suitability .suitability-card{padding:7px 12px 4px;margin:4px 0 0}
+#suitability #horseTabs{margin:-7px -12px 2px;padding:3px 12px}
+#suitability #horseTabs button{min-height:44px}
+#suitability .rank-popularity{padding:5px 6px 7px}
+#suitability .rank-popularity label{line-height:1.2}
+#suitability .rank-popularity select{height:46px;margin-top:4px}
+#suitability .group{padding:3px 0 2px}
+#suitability .group strong{margin-bottom:3px}
+#suitability .focus-choices{gap:5px}
+#suitability .hind-pair{gap:6px}
+#suitability .hind-pair+.hind-pair{margin-top:4px}
+#suitability #addHorse{min-height:38px;padding:3px;margin:1px 0 0}
+#suitability #saveSuitability{min-height:54px;margin:4px 0 0}
