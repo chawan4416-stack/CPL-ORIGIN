@@ -157,24 +157,12 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
 
-/* Keep the native date picker while centering its displayed value on iPhone. */
+/* Suitability race form: spacious rows and visible field surfaces. Keep last in the cascade. */
+#suitRace .card:not(.race-compact){padding:24px 16px}
+#suitRace .suit-race-fields{column-gap:12px;row-gap:60px}
+#suitRace .suit-race-fields label{color:#f2f5f1}
+#suitRace .suit-race-fields .race-field-name{display:inline-block;background:#16476c;border:1px solid #447da3;border-radius:7px;color:#fff;padding:3px 9px;font-size:13px;font-weight:700;line-height:1.3}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:62px;margin-top:10px;font-size:16px;background:#334039;border-color:#66786b;color:#cbd5cd}
 #suitRace .suit-race-fields input[type=date]{text-align:center;line-height:normal;padding:0 10px}
 #suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;min-height:100%;text-align:center}
 #suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{display:flex;align-items:center;justify-content:center;width:100%}
-/* Give the five race rows more breathing room and put labels ahead of values. */
-#suitRace .suit-race-fields{gap:12px 12px}
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:56px;color:#cbd5cd}
-#suitRace .suit-race-fields label{color:#f2f5f1}
-/* Blue identifies the race fields; the selected values remain quiet on charcoal. */
-#suitRace .suit-race-fields .race-field-name{display:inline-block;background:#16476c;border:1px solid #447da3;border-radius:7px;color:#fff;padding:3px 9px;font-size:13px;font-weight:700;line-height:1.3}
-/* Raise the input surface above the charcoal race card. */
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{background:#334039;border-color:#66786b}
-/* Separate neighboring race rows without reducing touch targets. */
-#suitRace .suit-race-fields{row-gap:19px}
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{margin-top:7px}
-/* Expanded race entry gets its own screenful of breathing room. */
-#suitRace .card:not(.race-compact){padding:24px 16px}
-#suitRace .suit-race-fields{row-gap:36px}
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:62px;margin-top:10px}
-/* Keep a clear pause between one completed row and the next label. */
-#suitRace .suit-race-fields{row-gap:60px}
