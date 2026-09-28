@@ -83,10 +83,45 @@ body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hid
 #suitability #addHorse{color:#496957}
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
-/* Dark outer canvas; the condition and observation cards keep their own surfaces. */
-:root,body{background:#0b0d0c;color:#f0f2ee}
-nav{background:#0b0d0c}
-.card{color:#252a26}
+/* Dark Focus Design: quiet controls, distinct work area, selected observations first. */
+:root{color-scheme:dark;background:#0b0d0c;color:#f0f2ee}
+body{background:#0b0d0c;color:#f0f2ee}
 header b,body:has(#suitability:not([hidden])) header b{color:#f0f2ee}
 header small,header a,body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hidden])) header a{color:#b9c8bc}
-#suitability h1{color:#e4ece4}
+a{color:#a8cdb5}
+nav{background:#0b0d0c}
+button{background:#202923;border-color:#46564a;color:#e1eae2}
+button.active,.choice.active,.tabs button.active{background:#317b56;border-color:#317b56;color:#fff}
+nav button,#workspace:has(#suitability:not([hidden])) nav button{background:#171e1a;border-color:#35443a;color:#b7c3b9;font-weight:500}
+nav button.active,#workspace:has(#suitability:not([hidden])) nav button.active{background:#243d2e;border-color:#649174;color:#e6f4e9;box-shadow:inset 0 -2px 0 #79b58f;font-weight:650}
+.card{background:#191f1b;color:#f0f2ee;box-shadow:none}
+h1,#suitability h1{color:#e8efe9}
+h2{color:#f0f2ee}
+.help{color:#b1bdb2}
+label{color:#b9c5bb}
+select,input[type=date]{background:#252e28;border-color:#4c5f51;color:#f3f6f2}
+.group{border-color:#354339}
+#suitRace .card{background:#191f1b;box-shadow:none}
+#suitRace h2{color:#f0f2ee}
+#suitRace label{color:#b9c5bb}
+#suitRace .race-summary strong{color:#f0f2ee}
+#suitRace .race-summary span{color:#b7c4b9}
+#suitRace .race-summary button{background:#26332a;border-color:#526b57;color:#d5e8d8}
+#suitability .suitability-card{background:#17271e}
+#suitability #horseTabs{background:#17271e;box-shadow:none}
+#suitability #horseTabs button{background:#222e26;border-color:#465c4b;color:#d4e0d6}
+#suitability #horseTabs button small{color:#a6b7a9}
+#suitability #horseTabs button.active{background:#294d35;border-color:#75a884;color:#f2f8f3;box-shadow:inset 0 -3px 0 #9bca9f}
+#suitability #horseTabs button.active small{color:#d1e5d5}
+#suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#a2c5aa}
+#suitability .rank-popularity label,#suitability .group strong{color:#bac7bc}
+#suitability .rank-popularity select{background:#25372b;border-color:#63836b;color:#f0f5ef}
+#suitability .choice{background:#253129;border-color:#4a5e4d;color:#e2e9e2;font-weight:500}
+#suitability .choice.active{background:#317b56;border-color:#59a777;color:#fff;font-weight:750}
+#suitability #addHorse{color:#b1d4b8}
+.primary,#suitability #saveSuitability,#login{background:#285e43;border-color:#4d8c62;color:#fff;font-weight:700}
+#suitability #saveSuitability:active{background:#214e37}
+.matrix-row button[data-count="0"]{background:#202822;color:#a5b3a7}
+#silhouette svg path{fill:#93a58f}
+#toneBreakdown{border-color:#3a493d}
+.result-row{border-color:#354239}
