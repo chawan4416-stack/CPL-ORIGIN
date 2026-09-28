@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260928-29"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-30"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性入力</button><button data-view="condition">状態入力</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -13,4 +13,4 @@
 <section id="summary" class="view" hidden><h1>研究集計</h1><div id="filters" class="card fields"></div><div class="card"><div class="row"><h2>胸前 × トモ</h2><button id="merge">詳細 24通り</button></div><p class="help">対象条件の記録済み好走馬に占める割合です。全出走馬に対する好走率ではありません。</p><p id="sample"></p><div id="silhouette" aria-hidden="true"><svg viewBox="0 0 180 90"><path d="M16 51 Q28 42 49 44 Q67 23 104 37 L135 34 L145 15 L153 16 L157 39 L169 47 L164 56 L151 56 L143 49 L132 53 L123 81 L114 81 L111 55 L71 59 L58 81 L49 81 L50 58 L30 60 Z" fill="#665e49"/></svg></div><div id="matrix"></div><div id="toneBreakdown"></div></div><div class="card"><h2>状態研究</h2><p class="help">目立った馬を選んだ記録内の成績です。未記録馬・未選択項目は母数に入りません。</p><div id="conditionSummary"></div></div></section>
 <section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="research.js?v=20260928-12"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="research.js?v=20260929-13"></script></body></html>
