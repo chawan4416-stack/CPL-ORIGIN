@@ -309,20 +309,17 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #condition .condition-choices button:last-child{grid-column:span 2}
 #condition #saveCondition{min-height:54px;margin:4px 0 12px;background:#315e4d;border-color:#63816e;color:#f1f0e7}
 
-/* Align date with other race values while centering it vertically in its control. */
+/* Constrain iOS date inputs to the same Focus field box as the selects. */
+#suitRace .suit-step-control,
+#conditionRace .suit-step-control{
+  width:100%;
+  max-width:100%;
+}
 #suitRace .suit-step-control input[type=date],
 #conditionRace .suit-step-control input[type=date]{
-  text-align:left;
-}
-#suitRace .suit-step-control input[type=date]::-webkit-date-and-time-value,
-#conditionRace .suit-step-control input[type=date]::-webkit-date-and-time-value,
-#suitRace .suit-step-control input[type=date]::-webkit-datetime-edit,
-#conditionRace .suit-step-control input[type=date]::-webkit-datetime-edit{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  width:100%;
-  height:100%;
-  min-height:100%;
+  min-width:0;
+  max-width:100%;
+  box-sizing:border-box;
+  padding:12px 16px;
   text-align:left;
 }
