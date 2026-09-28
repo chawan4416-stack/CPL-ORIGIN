@@ -176,3 +176,5 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .card:not(.race-compact){padding:24px 16px}
 #suitRace .suit-race-fields{row-gap:36px}
 #suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:62px;margin-top:10px}
+/* Keep a clear pause between one completed row and the next label. */
+#suitRace .suit-race-fields{row-gap:60px}
