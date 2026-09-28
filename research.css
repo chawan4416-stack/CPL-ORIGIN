@@ -41,3 +41,29 @@ nav button{font-size:12px;padding:5px 2px}
 #suitability #saveSuitability{min-height:54px;margin:5px 0 12px}
 .account-actions{margin:24px 0}
 @media(max-width:390px){#suitability .choice{font-size:13px}#suitability .chest-choices{gap:5px}}
+/* Third pass: data choices lead; tabs and navigation indicate location. No geometry changes. */
+body:has(#suitability:not([hidden])) header b{color:#324b3d;font-weight:650}
+body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hidden])) header a{color:#687c6c;font-weight:500}
+#suitability h1{color:#617467;font-weight:600}
+#workspace:has(#suitability:not([hidden])) nav button{background:#f9faf7;border-color:#d9e1d7;color:#617367;font-weight:500}
+#workspace:has(#suitability:not([hidden])) nav button.active{background:#e7f0e7;border-color:#a6c0ac;color:#28553e;font-weight:650;box-shadow:inset 0 -2px 0 #638b70}
+#suitRace .race-summary strong{color:#35483a;font-weight:650}
+#suitRace .race-summary span{color:#68786b;font-weight:400}
+#suitRace .race-summary button{background:#f8faf7;border-color:#cbd8ca;color:#456752;font-weight:500}
+#suitability #horseTabs button{background:#f9faf7;border-color:#c9d5c9;color:#4c6053;font-weight:500}
+#suitability #horseTabs button span{font-weight:650}
+#suitability #horseTabs button small{color:#748378;font-weight:400}
+#suitability #horseTabs button.active{background:#e8f2e8;border-color:#83a58d;color:#254f3b;box-shadow:inset 0 -3px 0 #4c7b5c}
+#suitability #horseTabs button.active span{font-weight:750}
+#suitability #horseTabs button.active small{color:#3a624a;font-weight:500}
+#suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#557861;font-weight:600}
+#suitability .rank-popularity>strong{color:#2b5741;font-weight:750}
+#suitability .rank-popularity label{color:#66776a;font-weight:500}
+#suitability .rank-popularity select{background:#f7faf6;border-color:#9cb5a0;color:#2b513b;font-weight:650}
+#suitability .group{border-color:#edf0ea}
+#suitability .group strong{color:#647569;font-weight:500}
+#suitability .choice{background:#fbfcfa;border-color:#cbd6cb;color:#365746;font-weight:500}
+#suitability .choice.active{background:#315e4d;border-color:#315e4d;color:#fff;font-weight:750}
+#suitability #addHorse{color:#64816d;font-weight:500}
+#suitability #saveSuitability{background:#e3eee4;border-color:#8da995;color:#28533e;font-weight:700}
+#suitability #saveSuitability:active{background:#cfe2d2}
