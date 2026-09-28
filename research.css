@@ -156,3 +156,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #addHorse{color:#44644f}
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
+
+/* Keep the native date picker while centering its displayed value on iPhone. */
+#suitRace .suit-race-fields input[type=date]{text-align:center;line-height:normal;padding:0 10px}
+#suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;min-height:100%;text-align:center}
+#suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{display:flex;align-items:center;justify-content:center;width:100%}
