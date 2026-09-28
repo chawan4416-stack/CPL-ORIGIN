@@ -10,7 +10,7 @@
    {auth:{storageKey:`cpl-dev-${ref}-all-runner-beta-auth`}});
  const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
  const blankRace=()=>({race_date:today(),racecourse:'',race_number:'1',surface:'',distance:'',course:'',track_condition:'',field_size:'',race_class:''});
- const newHorse=(rank=1)=>({horse_number:'',finish_position:String(rank),chest:'',hindquarter:'',tone:''});
+ const newHorse=(rank=1)=>({popularity:'',finish_position:String(rank),chest:'',hindquarter:'',tone:''});
  const blankCondition=()=>({horse_number:'',outcome_status:'placed',finish_position:'1',popularity:'',chaka:false,awkward_gait:false,agitation:null,sweating:null,fast_walking:false});
  const state={user:null,masters:{},sRace:blankRace(),cRace:blankRace(),horses:[newHorse(1),newHorse(2),newHorse(3)],current:0,
    condition:blankCondition(),filter:{},merge:false,view:'suitability',records:[]};
@@ -39,7 +39,7 @@
  function choice(group,value,label,current){return `<button type="button" class="choice${current===value?' active':''}" data-group="${group}" data-value="${esc(value)}" aria-pressed="${current===value}">${esc(label)}</button>`;}
  function renderHorse(){const h=state.horses[state.current],tabs=$('horseTabs'),previousScroll=tabs.scrollLeft;
    tabs.innerHTML=state.horses.map((x,i)=>
-   `<button type="button" data-horse-tab="${i}" class="${state.current===i?'active':''}" aria-current="${state.current===i?'true':'false'}"><span>${esc(x.finish_position)}着</span><small>${x.horse_number?esc(x.horse_number)+'番':'未選択'}</small></button>`).join('');
+   `<button type="button" data-horse-tab="${i}" class="${state.current===i?'active':''}" aria-current="${state.current===i?'true':'false'}"><span>${esc(x.finish_position)}着</span><small>${x.popularity?esc(x.popularity)+'番人気':x.legacy_horse_number?'旧馬番 '+esc(x.legacy_horse_number):'未選択'}</small></button>`).join('');
    tabs.scrollLeft=previousScroll;
    const selected=tabs.children[state.current];
    if(selected){if(selected.offsetLeft<tabs.scrollLeft)tabs.scrollLeft=selected.offsetLeft;
@@ -47,7 +47,8 @@
        tabs.scrollLeft=selected.offsetLeft+selected.offsetWidth-tabs.clientWidth;}
    const numbers=Array.from({length:Number(state.sRace.field_size)||18},(_,i)=>String(i+1));
    $('horseEditor').innerHTML=`<div class="fields"><label>公式着順<select data-horse-field="finish_position">${opts(['1','2','3'],h.finish_position)}</select></label>
-      <label>馬番<select data-horse-field="horse_number">${opts(numbers,h.horse_number)}</select></label></div>
+      <label>人気<select data-horse-field="popularity">${opts(numbers,h.popularity)}</select></label></div>
+      ${h.legacy_horse_number&&!h.popularity?`<p class="help">旧記録の馬番は${esc(h.legacy_horse_number)}番です。保存する際は公式の人気を選択してください。</p>`:''}
       <div class="group"><strong>胸前</strong><div class="choices">${values('SUITABILITY','CHEST').map(v=>choice('chest',v,v,h.chest)).join('')}</div></div>
       <div class="group"><strong>トモ</strong>${[['シャープ','シャープ−','シャープ'],['厚','厚−','厚'],['重厚','重厚−','重厚']].map(([label,a,b])=>
         `<div class="row"><span>${label}</span><div class="choices">${[a,b].map(v=>choice('hindquarter',v,v,h.hindquarter)).join('')}</div></div>`).join('')}</div>
@@ -69,6 +70,7 @@
  function restore(){try{const d=JSON.parse(localStorage.getItem(draftKey())||'null');if(d?.version!==1)return;
    Object.assign(state,{sRace:d.sRace||blankRace(),cRace:d.cRace||blankRace(),horses:d.horses||[newHorse()],
       current:d.current||0,condition:d.condition||blankCondition(),view:d.view||'suitability',filter:d.filter||{},merge:!!d.merge});
+   state.horses=state.horses.map(h=>h.popularity!==undefined?h:{...h,legacy_horse_number:h.horse_number||'',popularity:''});
    state.current=Math.min(state.current,state.horses.length-1);
    setTimeout(()=>window.scrollTo(0,d.scrollY||0),100);}catch{}}
  let noticeTimer;
@@ -86,17 +88,17 @@
  function validRace(r,mode){const missing=fields.find(([key])=>!r[key]);if(missing)
    invalid(`レース情報「${missing[1]}」が未入力です。`,`[data-race="${mode}"][data-key="${missing[0]}"]`);}
  async function saveSuitability(){try{validRace(state.sRace,'s');
-   for(let i=0;i<state.horses.length;i++){const h=state.horses[i],label=`${h.finish_position||'?'}着${h.horse_number?`・${h.horse_number}番`:''}`;
-     for(const [key,name,selector] of [['horse_number','馬番','[data-horse-field="horse_number"]'],
+   for(let i=0;i<state.horses.length;i++){const h=state.horses[i],label=`${h.finish_position||'?'}着${h.popularity?`・${h.popularity}番人気`:''}`;
+     for(const [key,name,selector] of [['popularity','人気','[data-horse-field="popularity"]'],
        ['finish_position','公式着順','[data-horse-field="finish_position"]'],['chest','胸前','[data-group="chest"]'],
        ['hindquarter','トモ','[data-group="hindquarter"]'],['tone','ハリ','[data-group="tone"]']])
        if(!h[key])invalid(`${label}の「${name}」が未入力です。`,selector,i);}
-   const seen=new Map();for(let i=0;i<state.horses.length;i++){const h=state.horses[i],first=seen.get(h.horse_number);
-     if(first!==undefined)invalid(`馬番${h.horse_number}番が重複しています（${first+1}頭目と${i+1}頭目）。`,`[data-horse-field="horse_number"]`,i);
-     seen.set(h.horse_number,i);}
+   const seen=new Map();for(let i=0;i<state.horses.length;i++){const h=state.horses[i],first=seen.get(h.popularity);
+     if(first!==undefined)invalid(`${h.popularity}番人気が重複しています（${first+1}頭目と${i+1}頭目）。`,`[data-horse-field="popularity"]`,i);
+     seen.set(h.popularity,i);}
    if(!state.horses.some(h=>Number(h.finish_position)===1))
      invalid('公式1着馬がいません。少なくとも1頭を1着に設定してください。','[data-horse-field="finish_position"]',0);
-   const rows=state.horses.map(h=>({horse_number:Number(h.horse_number),finish_position:Number(h.finish_position),
+   const rows=state.horses.map(h=>({popularity:Number(h.popularity),finish_position:Number(h.finish_position),
      chest:h.chest,hindquarter:h.hindquarter,tone:h.tone}));
    $('saveSuitability').disabled=true;await checked(db.rpc('save_suitability_research',{p_race:state.sRace,p_horses:rows}));
    state.horses=[newHorse(1),newHorse(2),newHorse(3)];state.current=0;renderHorse();draft();notice('適性研究を保存しました。',true);
@@ -135,7 +137,7 @@
  }catch(e){notice(`集計できませんでした：${e.message}`)}}
  async function records(){try{const [races,suits,conditions]=await Promise.all([
    checked(db.from('races').select('id,race_date,racecourse,race_number,surface,distance,course,track_condition,field_size,race_class').order('race_date',{ascending:false}).limit(100)),
-   checked(db.from('suitability_observations').select('race_id,horse_number,finish_position,chest,hindquarter,tone')),
+   checked(db.from('suitability_observations').select('race_id,horse_number,popularity,finish_position,chest,hindquarter,tone')),
    checked(db.from('condition_observations').select('race_id,horse_number,outcome_status,finish_position,popularity,chaka,awkward_gait,agitation,sweating,fast_walking'))]);
    state.records=races.map(r=>({...r,suitability:suits.filter(s=>s.race_id===r.id),conditions:conditions.filter(c=>c.race_id===r.id)}));
    $('recordsList').innerHTML=state.records.filter(r=>r.suitability.length||r.conditions.length).map(r=>
@@ -153,7 +155,7 @@
    else if(b.dataset.openSuit){const r=state.records.find(x=>x.id===b.dataset.openSuit);if(!r)return;
      state.sRace={race_date:r.race_date,racecourse:r.racecourse,race_number:String(r.race_number),surface:r.surface,
        distance:String(r.distance),course:r.course,track_condition:r.track_condition,field_size:String(r.field_size),race_class:r.race_class||''};
-     state.horses=r.suitability.map(x=>({horse_number:String(x.horse_number),finish_position:String(x.finish_position),
+     state.horses=r.suitability.map(x=>({popularity:x.popularity?String(x.popularity):'',legacy_horse_number:x.horse_number?String(x.horse_number):'',finish_position:String(x.finish_position),
        chest:x.chest,hindquarter:x.hindquarter,tone:x.tone||''}));state.current=0;renderRaces();show('suitability');window.scrollTo(0,0);}
    else if(b.dataset.openCondition){const r=state.records.find(x=>x.id===b.dataset.openCondition);
      const c=r?.conditions.find(x=>x.horse_number===Number(b.dataset.number));if(!c)return;
