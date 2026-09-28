@@ -125,3 +125,10 @@ select,input[type=date]{background:#252e28;border-color:#4c5f51;color:#f3f6f2}
 #silhouette svg path{fill:#93a58f}
 #toneBreakdown{border-color:#3a493d}
 .result-row{border-color:#354239}
+/* Blue marks navigation and completion; green remains reserved for observed values. */
+nav button.active,#workspace:has(#suitability:not([hidden])) nav button.active{background:#183f5d;border-color:#5a97bf;color:#f3f8fc;box-shadow:inset 0 -2px 0 #83bce0}
+#suitability #horseTabs button.active{background:#214b69;border-color:#6da9d0;color:#fff;box-shadow:inset 0 -3px 0 #99c6e2}
+#suitability #horseTabs button.active small{color:#d9eaf6}
+.primary,#suitability #saveSuitability,#login{background:#145f94;border-color:#4f99c6;color:#fff}
+#suitability #saveSuitability:active{background:#104d78}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #83bce0;outline-offset:2px}
