@@ -158,11 +158,11 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #saveSuitability:active{background:#244b3d}
 
 /* Suitability race form: spacious rows and visible field surfaces. Keep last in the cascade. */
-#suitRace .card:not(.race-compact){padding:24px 16px}
-#suitRace .suit-race-fields{column-gap:12px;row-gap:60px}
+#suitRace .card:not(.race-compact){padding:20px 16px}
+#suitRace .suit-race-fields{column-gap:24px;row-gap:18px}
 #suitRace .suit-race-fields label{color:#f2f5f1}
 #suitRace .suit-race-fields .race-field-name{display:inline-block;background:#16476c;border:1px solid #447da3;border-radius:7px;color:#fff;padding:3px 9px;font-size:13px;font-weight:700;line-height:1.3}
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:62px;margin-top:10px;font-size:16px;background:#334039;border-color:#66786b;color:#cbd5cd}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:54px;margin-top:7px;font-size:16px;background:#334039;border-color:#66786b;color:#cbd5cd}
 #suitRace .suit-race-fields input[type=date]{text-align:center;line-height:normal;padding:0 10px}
 #suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;min-height:100%;text-align:center}
 #suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{display:flex;align-items:center;justify-content:center;width:100%}
