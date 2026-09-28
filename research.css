@@ -249,3 +249,14 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 
 /* Keep feature navigation available until the suitability horse workspace is open. */
 #workspace:has(> #suitability:not([hidden]) #suitHorseWork:not([hidden])) > nav{display:none}
+
+/* Final horse viewport fit: distribute a few saved pixels across nonessential gaps. */
+body:has(#suitability:not([hidden]) #suitHorseWork:not([hidden])) header{height:40px}
+#suitability #suitRace .race-compact{margin:2px 0;padding:4px 11px}
+#suitability .suitability-card{padding-bottom:2px}
+#suitability .rank-popularity{padding:1px 6px}
+#suitability .popularity-grid button{min-height:36px}
+#suitability .group{padding:2px 0 1px}
+#suitability .hind-pair+.hind-pair{margin-top:3px}
+#suitability #addHorse{min-height:32px;padding:2px;margin:0}
+#suitability #saveSuitability{margin-top:2px}
