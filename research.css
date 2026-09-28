@@ -157,12 +157,33 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
 #suitability #saveSuitability:active{background:#244b3d}
 
-/* Suitability race form: spacious rows and visible field surfaces. Keep last in the cascade. */
-#suitRace .card:not(.race-compact){padding:20px 16px}
-#suitRace .suit-race-fields{column-gap:24px;row-gap:18px}
-#suitRace .suit-race-fields label{color:#f2f5f1}
-#suitRace .suit-race-fields .race-field-name{display:inline-block;background:#16476c;border:1px solid #447da3;border-radius:7px;color:#fff;padding:3px 9px;font-size:13px;font-weight:700;line-height:1.3}
-#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:54px;margin-top:7px;font-size:16px;background:#334039;border-color:#66786b;color:#cbd5cd}
+/* Sixth pass: four dark values. Scope the changes to suitability research. */
+#workspace:has(#suitability:not([hidden])) nav button.active{background:#2b4034;border-color:#667d6b;color:#e2e7dd;box-shadow:inset 0 -2px 0 #64866c}
+#suitRace .card{background:#1c221e;color:#e5e7df}
+#suitRace .card:not(.race-compact){padding:16px}
+#suitRace .suit-race-fields{column-gap:24px;row-gap:12px}
+#suitRace .suit-race-fields label{color:#aeb8ad;font-size:13px;font-weight:500}
+#suitRace .suit-race-fields .race-field-name{display:inline;background:transparent;border:0;border-radius:0;color:#aeb8ad;padding:0;font-size:13px;font-weight:500;line-height:1.3}
+#suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:50px;margin-top:5px;font-size:16px;background:#28312b;border-color:#49564d;color:#e3e6dc}
+#suitRace .race-summary strong{color:#e3e6dc}
+#suitRace .race-summary span{color:#aeb8ad}
+#suitRace .race-summary button{background:#303a33;border-color:#58685b;color:#e3e6dc}
 #suitRace .suit-race-fields input[type=date]{text-align:center;line-height:normal;padding:0 10px}
 #suitRace .suit-race-fields input[type=date]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;min-height:100%;text-align:center}
 #suitRace .suit-race-fields input[type=date]::-webkit-datetime-edit{display:flex;align-items:center;justify-content:center;width:100%}
+#suitability .suitability-card{background:#343d36;color:#e3e6dc;color-scheme:dark}
+#suitability #horseTabs{background:#343d36}
+#suitability #horseTabs button{background:#3c463e;border-color:#58665b;color:#d9ded4}
+#suitability #horseTabs button small{color:#b5c0b4}
+#suitability #horseTabs button.active{background:#45564a;border-color:#819b84;color:#ebeee5;box-shadow:inset 0 -3px 0 #85a389}
+#suitability #horseTabs button.active small{color:#d0dfd0}
+#suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#c4d7c5}
+#suitability .rank-popularity label,#suitability .group strong{color:#d6ddd3}
+#suitability .rank-popularity select{background:#3e4840;border-color:#647568;color:#e7e9df}
+#suitability .suitability-card .help{color:#b6c0b4}
+#suitability .choice{background:#3e4840;border-color:#657268;color:#e3e6dc;font-weight:500}
+#suitability .choice.active{background:#315e4d;border-color:#63816e;color:#f1f0e7;font-weight:750}
+#suitability #addHorse{color:#cedacb}
+#suitability #saveSuitability{background:#315e4d;border-color:#63816e;color:#f1f0e7}
+#suitability #saveSuitability:active{background:#294e40}
+#workspace:has(#suitability:not([hidden])) button:focus-visible,#suitability select:focus-visible,#suitRace select:focus-visible,#suitRace input:focus-visible{outline-color:#9abc9f}
