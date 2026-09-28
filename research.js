@@ -37,8 +37,14 @@
  function renderRaces(){syncRace(state.sRace);syncRace(state.cRace);$('suitRace').innerHTML=raceHTML(state.sRace,'s');$('conditionRace').innerHTML=raceHTML(state.cRace,'c');
    renderHorse();renderConditionResult();}
  function choice(group,value,label,current){return `<button type="button" class="choice${current===value?' active':''}" data-group="${group}" data-value="${esc(value)}" aria-pressed="${current===value}">${esc(label)}</button>`;}
- function renderHorse(){const h=state.horses[state.current];$('horseTabs').innerHTML=state.horses.map((x,i)=>
-   `<button type="button" data-horse-tab="${i}" class="${state.current===i?'active':''}">${esc(x.finish_position)}着・${x.horse_number?esc(x.horse_number)+'番':'馬番未選択'}</button>`).join('');
+ function renderHorse(){const h=state.horses[state.current],tabs=$('horseTabs'),previousScroll=tabs.scrollLeft;
+   tabs.innerHTML=state.horses.map((x,i)=>
+   `<button type="button" data-horse-tab="${i}" class="${state.current===i?'active':''}" aria-current="${state.current===i?'true':'false'}"><span>${esc(x.finish_position)}着</span><small>${x.horse_number?esc(x.horse_number)+'番':'未選択'}</small></button>`).join('');
+   tabs.scrollLeft=previousScroll;
+   const selected=tabs.children[state.current];
+   if(selected){if(selected.offsetLeft<tabs.scrollLeft)tabs.scrollLeft=selected.offsetLeft;
+     else if(selected.offsetLeft+selected.offsetWidth>tabs.scrollLeft+tabs.clientWidth)
+       tabs.scrollLeft=selected.offsetLeft+selected.offsetWidth-tabs.clientWidth;}
    const numbers=Array.from({length:Number(state.sRace.field_size)||18},(_,i)=>String(i+1));
    $('horseEditor').innerHTML=`<div class="fields"><label>公式着順<select data-horse-field="finish_position">${opts(['1','2','3'],h.finish_position)}</select></label>
       <label>馬番<select data-horse-field="horse_number">${opts(numbers,h.horse_number)}</select></label></div>
