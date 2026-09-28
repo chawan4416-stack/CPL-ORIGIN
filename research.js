@@ -68,7 +68,7 @@
      else if(selected.offsetLeft+selected.offsetWidth>tabs.scrollLeft+tabs.clientWidth)
        tabs.scrollLeft=selected.offsetLeft+selected.offsetWidth-tabs.clientWidth;}
    const numbers=Array.from({length:Number(state.sRace.field_size)||18},(_,i)=>String(i+1));
-   $('horseEditor').innerHTML=`<div class="rank-popularity"><strong>${esc(h.finish_position)}着</strong>
+   $('horseEditor').innerHTML=`<div class="rank-popularity">
       <label>人気<select data-horse-field="popularity">${opts(numbers,h.popularity)}</select></label></div>
       ${h.legacy_horse_number&&!h.popularity?`<p class="help">旧記録の馬番は${esc(h.legacy_horse_number)}番です。保存する際は公式の人気を選択してください。</p>`:''}
       <div class="group"><strong>胸前</strong><div class="focus-choices chest-choices">${values('SUITABILITY','CHEST').map(v=>choice('chest',v,v,h.chest)).join('')}</div></div>
