@@ -165,3 +165,5 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .suit-race-fields{gap:12px 12px}
 #suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:56px;color:#cbd5cd}
 #suitRace .suit-race-fields label{color:#f2f5f1}
+/* Blue identifies the race fields; the selected values remain quiet on charcoal. */
+#suitRace .suit-race-fields .race-field-name{display:inline-block;background:#16476c;border:1px solid #447da3;border-radius:7px;color:#fff;padding:3px 9px;font-size:13px;font-weight:700;line-height:1.3}
