@@ -162,8 +162,8 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitRace .card{background:#1c221e;color:#e5e7df}
 #suitRace .card:not(.race-compact){padding:16px}
 #suitRace .suit-race-fields{column-gap:24px;row-gap:12px}
-#suitRace .suit-race-fields label{color:#aeb8ad;font-size:13px;font-weight:500}
-#suitRace .suit-race-fields .race-field-name{display:inline;background:transparent;border:0;border-radius:0;color:#aeb8ad;padding:0;font-size:13px;font-weight:500;line-height:1.3}
+#suitRace .suit-race-fields label{color:#aeb8ad;font-size:16px;font-weight:500}
+#suitRace .suit-race-fields .race-field-name{display:inline;background:transparent;border:0;border-radius:0;color:#aeb8ad;padding:0;font-size:16px;font-weight:500;line-height:1.3}
 #suitRace .suit-race-fields select,#suitRace .suit-race-fields input[type=date]{height:50px;margin-top:5px;font-size:16px;background:#28312b;border-color:#49564d;color:#e3e6dc}
 #suitRace .race-summary strong{color:#e3e6dc}
 #suitRace .race-summary span{color:#aeb8ad}
@@ -179,7 +179,9 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability #horseTabs button.active small{color:#d0dfd0}
 #suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#c4d7c5}
 #suitability .rank-popularity label,#suitability .group strong{color:#d6ddd3}
-#suitability .rank-popularity select{background:#3e4840;border-color:#647568;color:#e7e9df}
+#suitability .rank-popularity{display:block;padding:20px 6px 24px}
+#suitability .rank-popularity label{display:block;font-size:16px;line-height:1.35;font-weight:500}
+#suitability .rank-popularity select{display:block;width:100%;max-width:none;height:56px;margin-top:10px;background:#3e4840;border-color:#647568;color:#e7e9df;font-size:16px}
 #suitability .suitability-card .help{color:#b6c0b4}
 #suitability .choice{background:#3e4840;border-color:#657268;color:#e3e6dc;font-weight:500}
 #suitability .choice.active{background:#315e4d;border-color:#63816e;color:#f1f0e7;font-weight:750}
