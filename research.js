@@ -21,9 +21,9 @@
    condition:blankCondition(),filter:{},merge:false,view:'suitability',records:[]};
  const fields=[['race_date','開催日'],['racecourse','競馬場'],['race_number','レース'],['surface','芝・ダート'],
    ['distance','距離'],['course','コース形態'],['track_condition','馬場状態'],['field_size','頭数']];
- const suitabilityFields=[['race_date','開催日'],['racecourse','競馬場'],['surface','芝・ダート'],
-   ['distance','距離'],['course','コース形態'],['track_condition','馬場状態'],['field_size','頭数'],
-   ['race_class','競走条件'],['race_number','レース']];
+ const suitabilityFields=[['race_date','開催日'],['racecourse','競馬場'],['race_number','レース'],
+   ['surface','芝・ダート'],['distance','距離'],['course','コース形態'],
+   ['track_condition','馬場状態'],['field_size','頭数'],['race_class','競走条件']];
  const raceComplete=r=>suitabilityFields.every(([key])=>!!r[key])&&r.race_class!=='新馬';
  const opts=(values,selected,placeholder='選択')=>`<option value="">${placeholder}</option>`+values.map(v=>`<option value="${esc(v)}"${String(v)===String(selected)?' selected':''}>${esc(v)}</option>`).join('');
  const values=(category,key)=>(state.masters[`${category}:${key}`]||[]).map(x=>x.option_value);
