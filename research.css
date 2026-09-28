@@ -1,32 +1,43 @@
 :root{color-scheme:light;font-family:system-ui,-apple-system,sans-serif;background:#f3f0e8;color:#252a26}*{box-sizing:border-box}body{margin:0}.app{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px 60px}header{height:58px;display:flex;align-items:center;justify-content:space-between}header small{font-size:.64em;color:#667064}a{color:#315e4d}nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:sticky;top:0;background:#f3f0e8;padding:8px 0;z-index:2}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #9aa89c;background:#fff;border-radius:12px;padding:11px 10px;min-height:44px;color:#1f3f32}nav button{font-size:13px;padding:7px 2px}button.active,.choice.active,.tabs button.active{background:#315e4d;color:white;border-color:#315e4d}.primary{width:100%;background:#315e4d;color:white;font-weight:700;margin:12px 0}.secondary{margin:8px 0}.card{background:#fff;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #2d403011}h1{font-size:1.55rem;margin:18px 0 4px}h2{font-size:1.08rem;margin:0 0 12px}p{margin:5px 0 12px}.help{font-size:13px;color:#5d665d}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}label{display:block;font-size:13px;color:#4a594d}select,input[type=date]{display:block;width:100%;height:44px;margin-top:4px;border-radius:10px;border:1px solid #bbc4b7;background:white;padding:0 8px;color:#202820}.choices{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0}#horseTabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;position:sticky;top:60px;z-index:1;background:#fff;margin:0 -16px 12px;padding:8px 16px;scrollbar-width:thin;box-shadow:0 6px 8px -8px #243b2d}#horseTabs button{flex:0 0 calc((100% - 12px)/3);min-width:0;padding:5px 2px;line-height:1.15;font-weight:700}#horseTabs small{display:block;font-size:11px;font-weight:500;margin-top:3px}.choice{min-width:86px}.group{border-top:1px solid #e5e9e0;padding:10px 0}.group strong{display:block;margin-bottom:5px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.row h2{margin:0}.matrix-row{display:grid;grid-template-columns:82px repeat(6,minmax(0,1fr));gap:2px;margin:2px 0;align-items:stretch}.matrix-row button{font-size:11px;min-width:0;padding:4px 1px;min-height:48px;border-radius:6px}.matrix-row .label{font-size:12px;align-self:center}.matrix-head{font-size:10px;text-align:center;word-break:break-all}.matrix-row button[data-count="0"]{background:#f3f4f0;color:#666}#silhouette{width:50%;max-width:240px;margin:0 auto}#silhouette svg{width:100%;height:auto}#toneBreakdown{border-top:1px solid #ddd;padding-top:10px;margin-top:12px}.result-row{border-bottom:1px solid #e6e9df;padding:8px 0}#message{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(580px,calc(100vw - 24px));z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #a53327;border-radius:14px;background:#fff7f5;box-shadow:0 5px 24px #14251a44;color:#8e261e;font-size:15px;font-weight:700;line-height:1.45}#message[hidden]{display:none}#message.ok{color:#245340;border-color:#79a58d;background:#eff9f0}#message button{flex:0 0 auto;min-height:40px;padding:5px 10px;background:transparent;border-color:currentColor;color:inherit;font-size:13px}@media(max-width:390px){.app{padding-left:10px;padding-right:10px}.matrix-row{grid-template-columns:67px repeat(6,minmax(0,1fr))}.matrix-row button{font-size:10px}}
-/* Focus Design: suitability input only. */
-#suitability h1{margin:12px 0 6px}
-#suitRace .card{margin:8px 0 10px}
-#suitRace .race-compact{padding:12px 14px}
-.race-summary{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* Focus Design: keep the 44px touch targets and remove accumulated vertical spacing. */
+header{height:46px}
+header b{font-size:16px}
+header a{font-size:14px}
+nav{padding:4px 0 3px}
+nav button{font-size:12px;padding:5px 2px}
+#suitability h1{font-size:1.1rem;line-height:1.2;margin:5px 0 3px}
+#suitRace .card{padding:11px 12px;margin:5px 0 6px}
+#suitRace h2{font-size:15px;margin-bottom:7px}
+#suitRace .fields{gap:7px 8px}
+#suitRace label{font-size:12px}
+#suitRace select,#suitRace input[type=date]{height:44px;margin-top:2px}
+#suitRace .race-compact{padding:8px 11px}
+.race-summary{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .race-summary div{min-width:0}
-.race-summary strong,.race-summary span{display:block;line-height:1.45}
-.race-summary strong{font-size:16px}
-.race-summary span{font-size:13px;color:#4a594d;white-space:normal}
-.race-summary button{flex:0 0 auto;min-height:44px;padding:8px 12px}
-.race-collapse{width:100%;margin:0 0 8px}
-.suitability-card{padding:12px 14px}
-#suitability #horseTabs{margin:-12px -14px 8px;padding:8px 14px}
-#suitability #horseTabs button{min-height:52px}
-#suitability .rank-popularity{display:flex;align-items:center;gap:14px;padding:4px 0 10px}
-#suitability .rank-popularity>strong{font-size:23px;white-space:nowrap;color:#1f3f32}
-#suitability .rank-popularity label{display:flex;align-items:center;gap:8px;flex:1;font-size:15px;font-weight:700}
-#suitability .rank-popularity select{margin:0;flex:1;min-width:0;max-width:180px}
-#suitability .group{padding:9px 0 7px}
-#suitability .group strong{font-size:16px;margin-bottom:8px}
-#suitability .focus-choices{display:grid;gap:7px}
+.race-summary strong,.race-summary span{display:block;line-height:1.3}
+.race-summary strong{font-size:15px}
+.race-summary span{font-size:12px;color:#4a594d}
+.race-summary button{flex:0 0 auto;min-height:44px;padding:7px 10px;font-size:13px}
+.race-collapse{width:100%;margin:0 0 5px}
+.suitability-card{padding:9px 12px 8px;margin:6px 0 0}
+#suitability #horseTabs{top:51px;margin:-9px -12px 3px;padding:4px 12px}
+#suitability #horseTabs button{min-height:46px;padding:2px;line-height:1.1;font-size:14px}
+#suitability #horseTabs small{margin-top:2px;font-size:10.5px;white-space:nowrap}
+#suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#315e4d;font-weight:700}
+#suitability .rank-popularity{display:flex;align-items:center;gap:12px;padding:0 0 4px}
+#suitability .rank-popularity>strong{font-size:19px;white-space:nowrap;color:#1f3f32}
+#suitability .rank-popularity label{display:flex;align-items:center;gap:7px;flex:1;font-size:14px;font-weight:700}
+#suitability .rank-popularity select{height:44px;margin:0;flex:1;min-width:0;max-width:180px}
+#suitability .group{padding:5px 0 4px}
+#suitability .group strong{font-size:14px;line-height:1.2;margin-bottom:4px}
+#suitability .focus-choices{display:grid;gap:6px}
 #suitability .chest-choices{grid-template-columns:repeat(4,minmax(0,1fr))}
 #suitability .tone-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
-#suitability .hind-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-#suitability .hind-pair+.hind-pair{margin-top:11px}
-#suitability .choice{min-width:0;min-height:48px;padding:8px 3px;font-size:15px;font-weight:650;background:#fff;color:#1f3f32;border-color:#9aa89c}
+#suitability .hind-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#suitability .hind-pair+.hind-pair{margin-top:6px}
+#suitability .choice{min-width:0;min-height:44px;padding:6px 3px;font-size:14px;font-weight:650;background:#fff;color:#1f3f32;border-color:#9aa89c}
 #suitability .choice.active{background:#315e4d;color:#fff;border-color:#315e4d}
-#suitability #addHorse{margin:9px 0 0}
-#suitability #saveSuitability{min-height:54px;margin:8px 0 18px}
+#suitability #addHorse{border:0;background:transparent;min-height:44px;margin:0;padding:5px 3px;font-size:13px;text-decoration:underline}
+#suitability #saveSuitability{min-height:54px;margin:5px 0 12px}
 .account-actions{margin:24px 0}
 @media(max-width:390px){#suitability .choice{font-size:13px}#suitability .chest-choices{gap:5px}}
