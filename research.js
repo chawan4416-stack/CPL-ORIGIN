@@ -130,7 +130,8 @@
      ${c.outcome_status==='finished'?numberGrid('finish_position','着順',c.finish_position,size):''}
      ${c.outcome_status!=='scratched'?numberGrid('popularity','人気',c.popularity,size):''}
      </div>`;}
- const draftKey=()=>`CPL_DEV_${ref}_RESEARCH_V1_${state.user?.id}`;
+ const legacyDraftKey=()=>`CPL_DEV_${ref}_RESEARCH_V1_${state.user?.id}`;
+ const draftKey=()=>`CPL_DEV_${ref}_RESEARCH_V1_BASELINE_20260929_${state.user?.id}`;
  function draft(){if(!state.user)return;try{localStorage.setItem(draftKey(),JSON.stringify({version:1,sRace:state.sRace,sRaceExpanded:state.sRaceExpanded,
    sRaceStage:state.sRaceStage,sRaceStep:state.sRaceStep,sRaceEditing:state.sRaceEditing,cRace:state.cRace,
    cRaceStage:state.cRaceStage,cRaceStep:state.cRaceStep,cRaceEditing:state.cRaceEditing,
@@ -296,7 +297,8 @@
  document.addEventListener('visibilitychange',()=>{if(document.hidden)draft();});window.addEventListener('pagehide',draft);
  let initialized=false;
  async function auth(session){if(session?.user){if(initialized&&state.user?.id===session.user.id)return;
-   state.user=session.user;initialized=true;try{await loadMasters();restore();renderRaces();renderChoices();$('filters').innerHTML=filterHTML();
+   state.user=session.user;initialized=true;try{localStorage.removeItem(legacyDraftKey());}catch{}
+   try{await loadMasters();restore();renderRaces();renderChoices();$('filters').innerHTML=filterHTML();
      $('auth').hidden=true;$('workspace').hidden=false;show(state.view);if(state.view==='summary')await summary();if(state.view==='records')await records();
    }catch(e){notice(`初期化できませんでした：${e.message}`)}}else{state.user=null;initialized=false;$('auth').hidden=false;$('workspace').hidden=true;}}
  db.auth.onAuthStateChange((event,session)=>{if(event==='TOKEN_REFRESHED')return;setTimeout(()=>auth(session),0);});
