@@ -154,7 +154,7 @@
  $('addHorse').onclick=()=>{if(state.horses.length>=18)return notice('最大18頭です。');state.horses.push(newHorse(3));state.current=state.horses.length-1;renderHorse();draft();};
  $('saveSuitability').onclick=saveSuitability;$('saveCondition').onclick=saveCondition;
  $('merge').onclick=async()=>{state.merge=!state.merge;draft();await summary();};
- $('login').onclick=async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.href}});if(error)notice(error.message);};
+ $('login').onclick=async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:`${location.origin}${location.pathname}`}});if(error)notice(error.message);};
  $('logout').onclick=async()=>{await db.auth.signOut();};
  document.addEventListener('visibilitychange',()=>{if(document.hidden)draft();});window.addEventListener('pagehide',draft);
  let initialized=false;
