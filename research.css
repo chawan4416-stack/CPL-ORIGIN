@@ -67,3 +67,19 @@ body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hid
 #suitability #addHorse{color:#64816d;font-weight:500}
 #suitability #saveSuitability{background:#e3eee4;border-color:#8da995;color:#28533e;font-weight:700}
 #suitability #saveSuitability:active{background:#cfe2d2}
+/* Fourth pass: race conditions, research work, and save action use distinct surfaces. */
+#suitRace .card{background:#fff}
+#suitRace .race-summary strong{color:#303830}
+#suitRace .race-summary span{color:#505a53}
+#suitability .suitability-card{background:#edf5ed}
+#suitability #horseTabs{background:#edf5ed;box-shadow:none}
+#suitability #horseTabs button{background:#f8fbf7;color:#35433a}
+#suitability #horseTabs button.active{background:#dcebdd;color:#254f3b;border-color:#83a58d}
+#suitability .rank-popularity label,#suitability .group strong{color:#4b554d}
+#suitability .rank-popularity select{background:#fff;color:#29352c;border-color:#b9c9ba}
+#suitability .group{border-top:0}
+#suitability .choice{background:#fff;border-color:#c7d2c7;color:#303a32}
+#suitability .choice.active{background:#315e4d;border-color:#315e4d;color:#fff}
+#suitability #addHorse{color:#496957}
+#suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
+#suitability #saveSuitability:active{background:#244b3d}
