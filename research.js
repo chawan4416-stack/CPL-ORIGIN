@@ -80,19 +80,32 @@
    for(const row of rows)(state.masters[`${row.category}:${row.field_key}`]||=[]).push(row);}
  function show(view){state.view=view;document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==view);
    document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));draft();}
- function validRace(r){if(fields.some(([key])=>!r[key]))throw Error('レース情報の必須項目を入力してください。');}
- async function saveSuitability(){try{validRace(state.sRace);const rows=state.horses.map(h=>({horse_number:Number(h.horse_number),
-   finish_position:Number(h.finish_position),chest:h.chest,hindquarter:h.hindquarter,tone:h.tone||null}));
-   if(rows.some(h=>!h.horse_number||!h.finish_position||!h.chest||!h.hindquarter||!h.tone)||
-      new Set(rows.map(h=>h.horse_number)).size!==rows.length)throw Error('各馬の馬番・胸前・トモ・ハリを入力し、馬番の重複を解消してください。');
-   if(!rows.some(h=>h.finish_position===1))throw Error('公式1着馬を含めてください。');
+ function invalid(message,selector,horseIndex){if(horseIndex!==undefined){state.current=horseIndex;renderHorse();draft();}
+   const target=document.querySelector(selector);if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));
+   throw Error(message);}
+ function validRace(r,mode){const missing=fields.find(([key])=>!r[key]);if(missing)
+   invalid(`レース情報「${missing[1]}」が未入力です。`,`[data-race="${mode}"][data-key="${missing[0]}"]`);}
+ async function saveSuitability(){try{validRace(state.sRace,'s');
+   for(let i=0;i<state.horses.length;i++){const h=state.horses[i],label=`${h.finish_position||'?'}着${h.horse_number?`・${h.horse_number}番`:''}`;
+     for(const [key,name,selector] of [['horse_number','馬番','[data-horse-field="horse_number"]'],
+       ['finish_position','公式着順','[data-horse-field="finish_position"]'],['chest','胸前','[data-group="chest"]'],
+       ['hindquarter','トモ','[data-group="hindquarter"]'],['tone','ハリ','[data-group="tone"]']])
+       if(!h[key])invalid(`${label}の「${name}」が未入力です。`,selector,i);}
+   const seen=new Map();for(let i=0;i<state.horses.length;i++){const h=state.horses[i],first=seen.get(h.horse_number);
+     if(first!==undefined)invalid(`馬番${h.horse_number}番が重複しています（${first+1}頭目と${i+1}頭目）。`,`[data-horse-field="horse_number"]`,i);
+     seen.set(h.horse_number,i);}
+   if(!state.horses.some(h=>Number(h.finish_position)===1))
+     invalid('公式1着馬がいません。少なくとも1頭を1着に設定してください。','[data-horse-field="finish_position"]',0);
+   const rows=state.horses.map(h=>({horse_number:Number(h.horse_number),finish_position:Number(h.finish_position),
+     chest:h.chest,hindquarter:h.hindquarter,tone:h.tone}));
    $('saveSuitability').disabled=true;await checked(db.rpc('save_suitability_research',{p_race:state.sRace,p_horses:rows}));
    state.horses=[newHorse(1),newHorse(2),newHorse(3)];state.current=0;renderHorse();draft();notice('適性研究を保存しました。',true);
  }catch(e){notice(`保存できませんでした：${e.message}`)}finally{$('saveSuitability').disabled=false;}}
- async function saveCondition(){try{validRace(state.cRace);const c=state.condition;
-   if(!c.horse_number||!conditionChoices.some(([k])=>{const [f,v]=k.split(':');return v?c[f]===v:c[f]===true;}))
-      throw Error('馬番と気になった状態を選んでください。');
-   if(c.outcome_status!=='scratched'&&!c.popularity)throw Error('公式人気を選んでください。');
+ async function saveCondition(){try{validRace(state.cRace,'c');const c=state.condition;
+   if(!c.horse_number)invalid('状態研究の「馬番」が未入力です。','#cHorse');
+   if(!conditionChoices.some(([k])=>{const [f,v]=k.split(':');return v?c[f]===v:c[f]===true;}))
+     invalid(`${c.horse_number}番の気になった状態を1つ以上選んでください。`,'#conditionChoices');
+   if(c.outcome_status!=='scratched'&&!c.popularity)invalid(`${c.horse_number}番の「人気」が未入力です。`,'#cPopularity');
    $('saveCondition').disabled=true;
    await checked(db.rpc('save_condition_research',{p_race:state.cRace,p_horse:{...c,horse_number:Number(c.horse_number),
       finish_position:c.outcome_status==='placed'?Number(c.finish_position):null,
