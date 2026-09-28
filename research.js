@@ -11,11 +11,17 @@
  const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')};
  const blankRace=()=>({race_date:today(),racecourse:'',race_number:'1',surface:'',distance:'',course:'',track_condition:'',field_size:'',race_class:''});
  const newHorse=(rank=1)=>({popularity:'',finish_position:String(rank),chest:'',hindquarter:'',tone:''});
+ function orderHorses(horses){const rows=[...horses].sort((a,b)=>Number(a.finish_position)-Number(b.finish_position));
+   for(const rank of ['1','2','3'])if(!rows.some(x=>x.finish_position===rank)){
+     const at=rows.findIndex(x=>Number(x.finish_position)>Number(rank));
+     rows.splice(at<0?rows.length:at,0,newHorse(Number(rank)));}
+   return rows;}
  const blankCondition=()=>({horse_number:'',outcome_status:'placed',finish_position:'1',popularity:'',chaka:false,awkward_gait:false,agitation:null,sweating:null,fast_walking:false});
- const state={user:null,masters:{},sRace:blankRace(),cRace:blankRace(),horses:[newHorse(1),newHorse(2),newHorse(3)],current:0,
+ const state={user:null,masters:{},sRace:blankRace(),cRace:blankRace(),sRaceExpanded:true,horses:[newHorse(1),newHorse(2),newHorse(3)],current:0,
    condition:blankCondition(),filter:{},merge:false,view:'suitability',records:[]};
  const fields=[['race_date','開催日'],['racecourse','競馬場'],['race_number','レース'],['surface','芝・ダート'],
    ['distance','距離'],['course','コース形態'],['track_condition','馬場状態'],['field_size','頭数']];
+ const raceComplete=r=>fields.every(([key])=>!!r[key]);
  const opts=(values,selected,placeholder='選択')=>`<option value="">${placeholder}</option>`+values.map(v=>`<option value="${esc(v)}"${String(v)===String(selected)?' selected':''}>${esc(v)}</option>`).join('');
  const values=(category,key)=>(state.masters[`${category}:${key}`]||[]).map(x=>x.option_value);
  const distances=r=>{const prefix=`COURSE_DISTANCE:${r.racecourse}:${r.surface}:`;
@@ -34,7 +40,19 @@
     `<input type="date" data-race="${mode}" data-key="${key}" value="${esc(r[key])}">`:
     `<select data-race="${mode}" data-key="${key}">${opts(selections[key],r[key])}</select>`}</label>`).join('')}
     ${classValues.length?`<label>競走条件（任意）<select data-race="${mode}" data-key="race_class">${opts(classValues,r.race_class)}</select></label>`:''}</div></div>`;}
- function renderRaces(){syncRace(state.sRace);syncRace(state.cRace);$('suitRace').innerHTML=raceHTML(state.sRace,'s');$('conditionRace').innerHTML=raceHTML(state.cRace,'c');
+ function renderSuitRace(){const r=state.sRace,complete=raceComplete(r);
+   if(!complete)state.sRaceExpanded=true;
+   if(complete&&!state.sRaceExpanded){
+     const date=r.race_date.split('-');
+     $('suitRace').innerHTML=`<div class="card race-compact"><div class="race-summary">
+       <div><strong>${esc(Number(date[1]))}/${esc(Number(date[2]))}　${esc(r.racecourse)}${esc(r.race_number)}R</strong>
+       <span>${esc(r.surface)}${esc(r.distance)}m・${esc(r.course)}｜${esc(r.track_condition)}｜${esc(r.field_size)}頭</span></div>
+       <button type="button" data-race-toggle="open">変更</button></div></div>`;
+   }else{
+     $('suitRace').innerHTML=raceHTML(r,'s')+
+       (complete?'<button type="button" class="race-collapse" data-race-toggle="close">レース情報を閉じる</button>':'');
+   }}
+ function renderRaces(){syncRace(state.sRace);syncRace(state.cRace);renderSuitRace();$('conditionRace').innerHTML=raceHTML(state.cRace,'c');
    renderHorse();renderConditionResult();}
  function choice(group,value,label,current){return `<button type="button" class="choice${current===value?' active':''}" data-group="${group}" data-value="${esc(value)}" aria-pressed="${current===value}">${esc(label)}</button>`;}
  function renderHorse(){const h=state.horses[state.current],tabs=$('horseTabs'),previousScroll=tabs.scrollLeft;
@@ -46,14 +64,14 @@
      else if(selected.offsetLeft+selected.offsetWidth>tabs.scrollLeft+tabs.clientWidth)
        tabs.scrollLeft=selected.offsetLeft+selected.offsetWidth-tabs.clientWidth;}
    const numbers=Array.from({length:Number(state.sRace.field_size)||18},(_,i)=>String(i+1));
-   $('horseEditor').innerHTML=`<div class="fields"><label>公式着順<select data-horse-field="finish_position">${opts(['1','2','3'],h.finish_position)}</select></label>
+   $('horseEditor').innerHTML=`<div class="rank-popularity"><strong>${esc(h.finish_position)}着</strong>
       <label>人気<select data-horse-field="popularity">${opts(numbers,h.popularity)}</select></label></div>
       ${h.legacy_horse_number&&!h.popularity?`<p class="help">旧記録の馬番は${esc(h.legacy_horse_number)}番です。保存する際は公式の人気を選択してください。</p>`:''}
-      <div class="group"><strong>胸前</strong><div class="choices">${values('SUITABILITY','CHEST').map(v=>choice('chest',v,v,h.chest)).join('')}</div></div>
-      <div class="group"><strong>トモ</strong>${[['シャープ','シャープ−','シャープ'],['厚','厚−','厚'],['重厚','重厚−','重厚']].map(([label,a,b])=>
-        `<div class="row"><span>${label}</span><div class="choices">${[a,b].map(v=>choice('hindquarter',v,v,h.hindquarter)).join('')}</div></div>`).join('')}</div>
-      <div class="group"><strong>ハリ</strong><div class="choices">${values('SUITABILITY','TONE').map(v=>choice('tone',v,v,h.tone)).join('')}</div></div>
-      ${state.horses.length>3?'<button type="button" data-remove-horse class="secondary">この馬を外す</button>':''}`;}
+      <div class="group"><strong>胸前</strong><div class="focus-choices chest-choices">${values('SUITABILITY','CHEST').map(v=>choice('chest',v,v,h.chest)).join('')}</div></div>
+      <div class="group"><strong>トモ</strong><div class="hind-choices">${[['シャープ−','シャープ'],['厚−','厚'],['重厚−','重厚']].map(pair=>
+        `<div class="hind-pair">${pair.map(v=>choice('hindquarter',v,v,h.hindquarter)).join('')}</div>`).join('')}</div></div>
+      <div class="group"><strong>ハリ</strong><div class="focus-choices tone-choices">${values('SUITABILITY','TONE').map(v=>choice('tone',v,v,h.tone)).join('')}</div></div>
+      ${state.horses.filter(x=>x.finish_position===h.finish_position).length>1?'<button type="button" data-remove-horse class="secondary">この同着馬を外す</button>':''}`;}
  const conditionChoices=[['chaka','チャカつき'],['awkward_gait','ぎこちない歩様'],['agitation:あり','イレ込み・あり'],
    ['agitation:強','イレ込み・強'],['sweating:あり','発汗・あり'],['sweating:強','発汗・強'],['fast_walking','早歩き']];
  function renderChoices(){$('conditionChoices').innerHTML=conditionChoices.map(([key,label])=>{const [field,value]=key.split(':');
@@ -65,12 +83,15 @@
    $('cRankWrap').hidden=c.outcome_status!=='placed';$('cPopularityWrap').hidden=c.outcome_status==='scratched';
    $('cPopularity').innerHTML=opts(Array.from({length:size},(_,i)=>String(i+1)),c.popularity);}
  const draftKey=()=>`CPL_DEV_${ref}_RESEARCH_V1_${state.user?.id}`;
- function draft(){if(!state.user)return;try{localStorage.setItem(draftKey(),JSON.stringify({version:1,sRace:state.sRace,cRace:state.cRace,
+ function draft(){if(!state.user)return;try{localStorage.setItem(draftKey(),JSON.stringify({version:1,sRace:state.sRace,sRaceExpanded:state.sRaceExpanded,cRace:state.cRace,
    horses:state.horses,current:state.current,condition:state.condition,view:state.view,filter:state.filter,merge:state.merge,scrollY:scrollY}));}catch{notice('下書きを保存できませんでした。');}}
  function restore(){try{const d=JSON.parse(localStorage.getItem(draftKey())||'null');if(d?.version!==1)return;
    Object.assign(state,{sRace:d.sRace||blankRace(),cRace:d.cRace||blankRace(),horses:d.horses||[newHorse()],
       current:d.current||0,condition:d.condition||blankCondition(),view:d.view||'suitability',filter:d.filter||{},merge:!!d.merge});
    state.horses=state.horses.map(h=>h.popularity!==undefined?h:{...h,legacy_horse_number:h.horse_number||'',popularity:''});
+   const selected=state.horses[state.current];state.horses=orderHorses(state.horses);
+   state.current=Math.max(0,state.horses.indexOf(selected));
+   state.sRaceExpanded=typeof d.sRaceExpanded==='boolean'?d.sRaceExpanded:!raceComplete(state.sRace);
    state.current=Math.min(state.current,state.horses.length-1);
    setTimeout(()=>window.scrollTo(0,d.scrollY||0),100);}catch{}}
  let noticeTimer;
@@ -85,19 +106,20 @@
  function invalid(message,selector,horseIndex){if(horseIndex!==undefined){state.current=horseIndex;renderHorse();draft();}
    const target=document.querySelector(selector);if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));
    throw Error(message);}
- function validRace(r,mode){const missing=fields.find(([key])=>!r[key]);if(missing)
-   invalid(`レース情報「${missing[1]}」が未入力です。`,`[data-race="${mode}"][data-key="${missing[0]}"]`);}
+ function validRace(r,mode){const missing=fields.find(([key])=>!r[key]);if(missing){
+   if(mode==='s'){state.sRaceExpanded=true;renderSuitRace();}
+   invalid(`レース情報「${missing[1]}」が未入力です。`,`[data-race="${mode}"][data-key="${missing[0]}"]`);}}
  async function saveSuitability(){try{validRace(state.sRace,'s');
    for(let i=0;i<state.horses.length;i++){const h=state.horses[i],label=`${h.finish_position||'?'}着${h.popularity?`・${h.popularity}番人気`:''}`;
      for(const [key,name,selector] of [['popularity','人気','[data-horse-field="popularity"]'],
-       ['finish_position','公式着順','[data-horse-field="finish_position"]'],['chest','胸前','[data-group="chest"]'],
+       ['chest','胸前','[data-group="chest"]'],
        ['hindquarter','トモ','[data-group="hindquarter"]'],['tone','ハリ','[data-group="tone"]']])
        if(!h[key])invalid(`${label}の「${name}」が未入力です。`,selector,i);}
    const seen=new Map();for(let i=0;i<state.horses.length;i++){const h=state.horses[i],first=seen.get(h.popularity);
      if(first!==undefined)invalid(`${h.popularity}番人気が重複しています（${first+1}頭目と${i+1}頭目）。`,`[data-horse-field="popularity"]`,i);
      seen.set(h.popularity,i);}
    if(!state.horses.some(h=>Number(h.finish_position)===1))
-     invalid('公式1着馬がいません。少なくとも1頭を1着に設定してください。','[data-horse-field="finish_position"]',0);
+     invalid('1着馬がいません。1着のタブから入力してください。','[data-horse-tab="0"]',0);
    const rows=state.horses.map(h=>({popularity:Number(h.popularity),finish_position:Number(h.finish_position),
      chest:h.chest,hindquarter:h.hindquarter,tone:h.tone}));
    $('saveSuitability').disabled=true;await checked(db.rpc('save_suitability_research',{p_race:state.sRace,p_horses:rows}));
@@ -149,14 +171,16 @@
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
    if(b.dataset.view){show(b.dataset.view);if(state.view==='summary')await summary();if(state.view==='records')await records();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
+   else if(b.dataset.raceToggle){state.sRaceExpanded=b.dataset.raceToggle==='open';renderSuitRace();draft();}
    else if(b.dataset.group){state.horses[state.current][b.dataset.group]=b.dataset.value;renderHorse();draft();}
    else if(b.dataset.condition){const [field,value]=b.dataset.condition.split(':');state.condition[field]=value?
      (state.condition[field]===value?null:value):!state.condition[field];renderChoices();draft();}
    else if(b.dataset.openSuit){const r=state.records.find(x=>x.id===b.dataset.openSuit);if(!r)return;
      state.sRace={race_date:r.race_date,racecourse:r.racecourse,race_number:String(r.race_number),surface:r.surface,
        distance:String(r.distance),course:r.course,track_condition:r.track_condition,field_size:String(r.field_size),race_class:r.race_class||''};
-     state.horses=r.suitability.map(x=>({popularity:x.popularity?String(x.popularity):'',legacy_horse_number:x.horse_number?String(x.horse_number):'',finish_position:String(x.finish_position),
-       chest:x.chest,hindquarter:x.hindquarter,tone:x.tone||''}));state.current=0;renderRaces();show('suitability');window.scrollTo(0,0);}
+     state.horses=orderHorses(r.suitability.map(x=>({popularity:x.popularity?String(x.popularity):'',legacy_horse_number:x.horse_number?String(x.horse_number):'',finish_position:String(x.finish_position),
+       chest:x.chest,hindquarter:x.hindquarter,tone:x.tone||''})));
+     state.current=0;state.sRaceExpanded=false;renderRaces();show('suitability');window.scrollTo(0,0);}
    else if(b.dataset.openCondition){const r=state.records.find(x=>x.id===b.dataset.openCondition);
      const c=r?.conditions.find(x=>x.horse_number===Number(b.dataset.number));if(!c)return;
      state.cRace={race_date:r.race_date,racecourse:r.racecourse,race_number:String(r.race_number),surface:r.surface,
@@ -167,15 +191,20 @@
    else if(b.dataset.removeHorse!==undefined){state.horses.splice(state.current,1);state.current=Math.max(0,state.current-1);renderHorse();draft();}
  });
  document.addEventListener('change',async e=>{const el=e.target;
-   if(el.dataset.race){const r=el.dataset.race==='s'?state.sRace:state.cRace;r[el.dataset.key]=el.value;
+   if(el.dataset.race){const r=el.dataset.race==='s'?state.sRace:state.cRace,wasComplete=raceComplete(r);r[el.dataset.key]=el.value;
      if(['racecourse','surface','distance'].includes(el.dataset.key)){syncRace(r);renderRaces();}
-     if(el.dataset.key==='field_size')renderRaces();draft();}
+     if(el.dataset.key==='field_size')renderRaces();
+     if(el.dataset.race==='s'&&!wasComplete&&raceComplete(r)){state.sRaceExpanded=false;renderSuitRace();}
+     draft();}
    else if(el.dataset.horseField){state.horses[state.current][el.dataset.horseField]=el.value;renderHorse();draft();}
    else if(el.dataset.filter){if(el.value)state.filter[el.dataset.filter]=el.value;else delete state.filter[el.dataset.filter];draft();await summary();}
  });
  for(const [id,key] of [['cHorse','horse_number'],['cOutcome','outcome_status'],['cRank','finish_position'],['cPopularity','popularity']])
    $(id).addEventListener('change',e=>{state.condition[key]=e.target.value;if(key==='outcome_status')renderConditionResult();draft();});
- $('addHorse').onclick=()=>{if(state.horses.length>=18)return notice('最大18頭です。');state.horses.push(newHorse(3));state.current=state.horses.length-1;renderHorse();draft();};
+ $('addHorse').onclick=()=>{if(state.horses.length>=18)return notice('最大18頭です。');
+   const rank=state.horses[state.current].finish_position;
+   let at=state.current+1;while(at<state.horses.length&&state.horses[at].finish_position===rank)at++;
+   state.horses.splice(at,0,newHorse(Number(rank)));state.current=at;renderHorse();draft();};
  $('saveSuitability').onclick=saveSuitability;$('saveCondition').onclick=saveCondition;
  $('merge').onclick=async()=>{state.merge=!state.merge;draft();await summary();};
  $('login').onclick=async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:`${location.origin}${location.pathname}`}});if(error)notice(error.message);};
