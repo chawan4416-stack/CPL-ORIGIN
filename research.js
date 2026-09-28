@@ -21,7 +21,10 @@
    condition:blankCondition(),filter:{},merge:false,view:'suitability',records:[]};
  const fields=[['race_date','開催日'],['racecourse','競馬場'],['race_number','レース'],['surface','芝・ダート'],
    ['distance','距離'],['course','コース形態'],['track_condition','馬場状態'],['field_size','頭数']];
- const raceComplete=r=>fields.every(([key])=>!!r[key]);
+ const suitabilityFields=[['race_date','開催日'],['racecourse','競馬場'],['surface','芝・ダート'],
+   ['distance','距離'],['course','コース形態'],['track_condition','馬場状態'],['field_size','頭数'],
+   ['race_class','競走条件'],['race_number','レース']];
+ const raceComplete=r=>suitabilityFields.every(([key])=>!!r[key])&&r.race_class!=='新馬';
  const opts=(values,selected,placeholder='選択')=>`<option value="">${placeholder}</option>`+values.map(v=>`<option value="${esc(v)}"${String(v)===String(selected)?' selected':''}>${esc(v)}</option>`).join('');
  const values=(category,key)=>(state.masters[`${category}:${key}`]||[]).map(x=>x.option_value);
  const distances=r=>{const prefix=`COURSE_DISTANCE:${r.racecourse}:${r.surface}:`;
@@ -29,17 +32,19 @@
    return [...new Set(d.length?d:values('DISTANCE',r.racecourse))].sort((a,b)=>Number(a)-Number(b));};
  const courses=r=>values('COURSE_DISTANCE',`${r.racecourse}:${r.surface}:${r.distance}`).length?
    values('COURSE_DISTANCE',`${r.racecourse}:${r.surface}:${r.distance}`):values('COURSE',r.racecourse);
- function syncRace(r){const ds=distances(r);if(!ds.includes(String(r.distance)))r.distance=ds[0]||'';
+ function syncRace(r,mode='c'){const ds=distances(r);if(!ds.includes(String(r.distance)))r.distance=ds[0]||'';
    const cs=courses(r);if(!cs.includes(r.course))r.course=cs.length===1?cs[0]:'';
-   const cls=values('RACE_CLASS',r.racecourse);if(!cls.includes(r.race_class))r.race_class='';}
+   const cls=values('RACE_CLASS',r.racecourse).filter(v=>mode!=='s'||v!=='新馬');
+   if(!cls.includes(r.race_class))r.race_class='';}
  function raceHTML(r,mode){const selections={racecourse:values('RACE','RACECOURSE'),race_number:Array.from({length:12},(_,i)=>String(i+1)),
    surface:values('RACE','SURFACE'),distance:distances(r),course:courses(r),track_condition:values('RACE','TRACK_CONDITION'),
    field_size:Array.from({length:18},(_,i)=>String(i+1))};
-   const classValues=values('RACE_CLASS',r.racecourse);
-   return `<div class="card"><h2>レース情報</h2><div class="fields">${fields.map(([key,label])=>`<label>${label}${key==='race_date'?
+   const classValues=values('RACE_CLASS',r.racecourse).filter(v=>mode!=='s'||v!=='新馬');
+   selections.race_class=classValues;
+   return `<div class="card"><h2>レース情報</h2><div class="fields${mode==='s'?' suit-race-fields':''}">${(mode==='s'?suitabilityFields:fields).map(([key,label])=>`<label>${label}${key==='race_date'?
     `<input type="date" data-race="${mode}" data-key="${key}" value="${esc(r[key])}">`:
     `<select data-race="${mode}" data-key="${key}">${opts(selections[key],r[key])}</select>`}</label>`).join('')}
-    ${classValues.length?`<label>競走条件（任意）<select data-race="${mode}" data-key="race_class">${opts(classValues,r.race_class)}</select></label>`:''}</div></div>`;}
+    ${mode==='c'&&classValues.length?`<label>競走条件（任意）<select data-race="${mode}" data-key="race_class">${opts(classValues,r.race_class)}</select></label>`:''}</div></div>`;}
  function renderSuitRace(){const r=state.sRace,complete=raceComplete(r);
    if(!complete)state.sRaceExpanded=true;
    if(complete&&!state.sRaceExpanded){
@@ -47,13 +52,13 @@
      const courseLabel={'内回り':'内','外回り':'外'}[r.course]||r.course;
      $('suitRace').innerHTML=`<div class="card race-compact"><div class="race-summary">
        <div><strong>${esc(Number(date[1]))}/${esc(Number(date[2]))}　${esc(r.racecourse)}${esc(r.race_number)}R</strong>
-       <span>${esc(r.surface)}${esc(r.distance)}m・${esc(courseLabel)}｜${esc(r.track_condition)}｜${esc(r.field_size)}頭</span></div>
+       <span>${esc(r.surface)}${esc(r.distance)}m・${esc(courseLabel)}｜${esc(r.track_condition)}｜${esc(r.field_size)}頭｜${esc(r.race_class)}</span></div>
        <button type="button" data-race-toggle="open">変更</button></div></div>`;
    }else{
      $('suitRace').innerHTML=raceHTML(r,'s')+
        (complete?'<button type="button" class="race-collapse" data-race-toggle="close">レース情報を閉じる</button>':'');
    }}
- function renderRaces(){syncRace(state.sRace);syncRace(state.cRace);renderSuitRace();$('conditionRace').innerHTML=raceHTML(state.cRace,'c');
+ function renderRaces(){syncRace(state.sRace,'s');syncRace(state.cRace,'c');renderSuitRace();$('conditionRace').innerHTML=raceHTML(state.cRace,'c');
    renderHorse();renderConditionResult();}
  function choice(group,value,label,current){return `<button type="button" class="choice${current===value?' active':''}" data-group="${group}" data-value="${esc(value)}" aria-pressed="${current===value}">${esc(label)}</button>`;}
  function renderHorse(){const h=state.horses[state.current],tabs=$('horseTabs'),previousScroll=tabs.scrollLeft;
@@ -110,7 +115,7 @@
  function invalid(message,selector,horseIndex){if(horseIndex!==undefined){state.current=horseIndex;renderHorse();draft();}
    const target=document.querySelector(selector);if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));
    throw Error(message);}
- function validRace(r,mode){const missing=fields.find(([key])=>!r[key]);if(missing){
+ function validRace(r,mode){const missing=(mode==='s'?suitabilityFields:fields).find(([key])=>!r[key]||(mode==='s'&&key==='race_class'&&r[key]==='新馬'));if(missing){
    if(mode==='s'){state.sRaceExpanded=true;renderSuitRace();}
    invalid(`レース情報「${missing[1]}」が未入力です。`,`[data-race="${mode}"][data-key="${missing[0]}"]`);}}
  async function saveSuitability(){try{validRace(state.sRace,'s');
