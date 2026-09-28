@@ -68,7 +68,7 @@ body:has(#suitability:not([hidden])) header small,body:has(#suitability:not([hid
 #suitability #saveSuitability{background:#e3eee4;border-color:#8da995;color:#28533e;font-weight:700}
 #suitability #saveSuitability:active{background:#cfe2d2}
 /* Fourth pass: race conditions, research work, and save action use distinct surfaces. */
-#suitRace .card{background:#fff}
+#suitRace .card{background:#eae7de;box-shadow:none}
 #suitRace .race-summary strong{color:#303830}
 #suitRace .race-summary span{color:#505a53}
 #suitability .suitability-card{background:#edf5ed}
