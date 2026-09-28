@@ -132,3 +132,19 @@ nav button.active,#workspace:has(#suitability:not([hidden])) nav button.active{b
 .primary,#suitability #saveSuitability,#login{background:#145f94;border-color:#4f99c6;color:#fff}
 #suitability #saveSuitability:active{background:#104d78}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #83bce0;outline-offset:2px}
+/* Fifth pass: a light work surface inside the dark research room. */
+#suitability .suitability-card{background:#f7f8f6;color:#252b27;color-scheme:light}
+#suitability #horseTabs{background:#f7f8f6}
+#suitability #horseTabs button{background:#f0f2f0;border-color:#d0d8d1;color:#39473e}
+#suitability #horseTabs button small{color:#617066}
+#suitability #horseTabs button.active{background:#e4edf2;border-color:#8daec0;color:#204b62;box-shadow:inset 0 -3px 0 #6b97af}
+#suitability #horseTabs button.active small{color:#3e6478}
+#suitability #horseTabs button[data-complete="true"]:not(.active) small{color:#526c59}
+#suitability .rank-popularity label,#suitability .group strong{color:#47534a}
+#suitability .rank-popularity select{background:#fff;border-color:#afbeb2;color:#252e27}
+#suitability .suitability-card .help{color:#56645a}
+#suitability .choice{background:#fff;border-color:#d0d8d1;color:#2c352f;font-weight:500}
+#suitability .choice.active{background:#315e4d;border-color:#315e4d;color:#fff;font-weight:750}
+#suitability #addHorse{color:#44644f}
+#suitability #saveSuitability{background:#315e4d;border-color:#315e4d;color:#fff}
+#suitability #saveSuitability:active{background:#244b3d}
