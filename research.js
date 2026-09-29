@@ -183,7 +183,9 @@
    const rows=state.horses.map(h=>({popularity:Number(h.popularity),finish_position:Number(h.finish_position),
      chest:h.chest,hindquarter:h.hindquarter,tone:h.tone}));
    $('saveSuitability').disabled=true;await checked(db.rpc('save_suitability_research',{p_race:state.sRace,p_horses:rows}));
-   state.horses=[newHorse(1),newHorse(2),newHorse(3)];state.current=0;renderHorse();draft();notice('適性研究を保存しました。',true);
+   state.sRace=blankRace();state.sRaceExpanded=true;state.sRaceStage='steps';state.sRaceStep=0;state.sRaceEditing=false;
+   state.horses=[newHorse(1),newHorse(2),newHorse(3)];state.current=0;
+   renderFocusRace('s');renderHorse();window.scrollTo(0,0);draft();notice('適性研究を保存しました。',true);
  }catch(e){notice(`保存できませんでした：${e.message}`)}finally{$('saveSuitability').disabled=false;}}
  async function saveCondition(){try{validRace(state.cRace,'c');const c=state.condition,size=Number(state.cRace.field_size);
    if(!conditionChoices.some(([k])=>{const [f,v]=k.split(':');return v?c[f]===v:c[f]===true;}))
