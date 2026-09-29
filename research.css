@@ -371,7 +371,7 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .summary-empty[hidden],#summary [hidden]{display:none}
 #summary .horse-art{position:relative;width:100%;max-width:570px;margin:6px auto 0;aspect-ratio:1536/1024;background:radial-gradient(ellipse at 50% 50%,#314237 0%,#27332c 70%);border-radius:12px;overflow:hidden}
 #summary .horse-art svg{display:block;width:100%;height:100%;transform:translateX(-3%)}
-#summary .horse-patch{stroke:none;opacity:.7;mix-blend-mode:multiply}
+#summary .horse-patch{stroke:none;opacity:.84;mix-blend-mode:multiply}
 #summary #horseChestFill{fill:var(--chest-color,transparent)}
 #summary #horseHindFill{fill:var(--hind-color,transparent)}
 #summary .horse-callout{fill:none;stroke-width:3;stroke-linecap:round}

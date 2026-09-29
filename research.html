@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-43"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-44"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -17,8 +17,8 @@
     <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
       <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
-        <path id="horseChestFill" class="horse-patch" d="M491 388 C521 345 576 326 625 356 C667 390 677 465 647 521 C617 554 565 580 519 545 C481 510 461 431 491 388 Z"/>
-        <path id="horseHindFill" class="horse-patch" d="M1028 291 C1078 246 1188 257 1242 311 C1290 357 1294 440 1253 518 C1215 555 1152 552 1100 511 C1057 477 1038 435 1028 382 C1021 343 1016 315 1028 291 Z"/>
+        <path id="horseChestFill" class="horse-patch" d="M575 325 C616 318 651 343 673 379 C691 411 679 463 655 508 C633 544 600 558 572 560 C530 562 507 535 491 492 C473 450 478 414 502 385 C526 357 548 334 575 325 Z"/>
+        <path id="horseHindFill" class="horse-patch" d="M1011 303 C1065 266 1121 242 1160 251 C1208 262 1251 285 1272 318 C1280 344 1275 400 1265 447 C1259 484 1241 523 1214 541 C1176 554 1138 524 1105 489 C1082 466 1059 442 1043 415 C1024 384 1008 336 1011 303 Z"/>
         <path class="horse-callout chest-callout" d="M301 686 L568 458"/><circle class="horse-dot chest-dot" cx="568" cy="458" r="9"/>
         <path class="horse-callout hind-callout" d="M1312 158 L1154 382"/><circle class="horse-dot hind-dot" cx="1154" cy="382" r="9"/>
       </svg><span class="horse-tag chest-tag"><small>胸前</small><b id="chestValue"></b></span><span class="horse-tag hind-tag"><small>トモ</small><b id="hindValue"></b></span>
