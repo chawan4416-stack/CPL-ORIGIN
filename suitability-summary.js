@@ -6,6 +6,7 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, () => {
   const chestOrder = ['シャープ', '厚−', '厚', '重厚'];
   const hindOrder = ['シャープ−', 'シャープ', '厚−', '厚', '重厚−', '重厚'];
+  const filterKeys = ['racecourse', 'surface', 'distance', 'course', 'track_condition'];
   const colors = Object.freeze({
     'シャープ−': '#94C6D9', 'シャープ': '#468FB4',
     '厚−': '#E8D78E', '厚': '#EAA54D',
@@ -32,5 +33,8 @@
         percentage: n ? Math.round(matching.length / n * 1000) / 10 : 0, tone_breakdown};
     }));
   }
-  return {colors, chestOrder, hindOrder, summarize, fromObservations};
+  const ready = filter => filterKeys.every(key => !!filter?.[key]);
+  const sameFilters = (a, b) => !!a && !!b && filterKeys.every(key => String(a[key] ?? '') === String(b[key] ?? ''));
+  const snapshot = filter => Object.fromEntries(filterKeys.map(key => [key, filter[key]]));
+  return {colors, chestOrder, hindOrder, filterKeys, ready, sameFilters, snapshot, summarize, fromObservations};
 });
