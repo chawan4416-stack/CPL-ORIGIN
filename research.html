@@ -10,7 +10,33 @@
 <section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
 <div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
 <button id="saveCondition" class="primary">状態と結果を保存</button></div></section>
-<section id="summary" class="view" hidden><h1>研究集計</h1><div id="filters" class="card fields"></div><div class="card"><div class="row"><h2>胸前 × トモ</h2><button id="merge">詳細 24通り</button></div><p class="help">対象条件の記録済み好走馬に占める割合です。全出走馬に対する好走率ではありません。</p><p id="sample"></p><div id="silhouette" aria-hidden="true"><svg viewBox="0 0 180 90"><path d="M16 51 Q28 42 49 44 Q67 23 104 37 L135 34 L145 15 L153 16 L157 39 L169 47 L164 56 L151 56 L143 49 L132 53 L123 81 L114 81 L111 55 L71 59 L58 81 L49 81 L50 58 L30 60 Z" fill="#665e49"/></svg></div><div id="matrix"></div><div id="toneBreakdown"></div></div><div class="card"><h2>状態研究</h2><p class="help">目立った馬を選んだ記録内の成績です。未記録馬・未選択項目は母数に入りません。</p><div id="conditionSummary"></div></div></section>
+<section id="summary" class="view" hidden><h1>適性研究 集計</h1>
+  <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
+  <div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><span id="sample"></span></div>
+    <div id="summaryEmpty" class="summary-empty" hidden></div>
+    <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
+      <svg viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><clipPath id="horseBodyClip"><path d="M254 148 C310 137 349 156 411 155 C459 157 480 139 531 140 C563 138 588 157 601 192 C609 218 602 246 580 270 L543 265 C506 244 475 258 441 269 C395 279 340 276 302 263 C278 274 239 267 214 250 C190 227 186 205 197 183 C211 162 230 153 254 148 Z"/></clipPath></defs>
+        <g class="horse-line" stroke-linecap="round" stroke-linejoin="round">
+          <path class="horse-tail" d="M589 183 C628 202 655 256 647 314 C644 339 631 353 625 362 C634 316 621 283 607 261"/>
+          <path class="horse-limb" d="M242 252 C237 290 238 315 226 342 L219 382 L205 396 L206 402 L251 402 L258 394 L246 382 L259 346 L277 292 L283 256 Z"/>
+          <path class="horse-limb" d="M283 258 C288 299 304 327 299 360 L291 388 L280 396 L282 402 L325 402 L333 394 L317 386 L319 351 C321 312 310 276 310 258 Z"/>
+          <path class="horse-limb" d="M517 252 C519 296 528 317 517 351 L510 384 L495 396 L496 402 L543 402 L550 394 L535 385 L551 348 C562 316 554 279 558 255 Z"/>
+          <path class="horse-limb" d="M562 248 C587 282 594 306 587 330 L580 377 L565 394 L569 402 L615 402 L621 394 L603 382 L609 337 C616 302 605 270 592 242 Z"/>
+          <path class="horse-neck" d="M256 155 C223 133 203 95 181 71 C166 54 151 50 139 60 L125 74 L130 97 C119 111 96 126 88 144 L68 170 C61 185 67 201 84 207 L115 205 C126 192 138 183 154 181 C171 179 186 196 198 216 L220 243 L274 213 Z"/>
+          <path class="horse-body" d="M254 148 C310 137 349 156 411 155 C459 157 480 139 531 140 C563 138 588 157 601 192 C609 218 602 246 580 270 L543 265 C506 244 475 258 441 269 C395 279 340 276 302 263 C278 274 239 267 214 250 C190 227 186 205 197 183 C211 162 230 153 254 148 Z"/>
+          <g clip-path="url(#horseBodyClip)"><path id="horseChestFill" class="horse-patch" d="M217 176 C242 155 264 164 280 184 C289 203 281 243 271 271 C252 279 223 267 211 247 C199 227 200 195 217 176 Z"/><path id="horseHindFill" class="horse-patch" d="M519 147 C562 137 592 162 606 189 C618 224 600 258 573 282 C550 277 530 259 517 241 C501 219 498 172 519 147 Z"/></g>
+          <path class="horse-detail" d="M181 71 C174 93 159 108 148 124 M131 99 C137 114 135 136 122 156 M86 181 C99 183 110 180 117 175 M104 197 Q113 195 119 190 M206 157 Q235 162 252 183 M280 185 Q290 221 278 251 M516 161 Q502 192 512 226 M563 258 Q582 238 585 213 M294 251 Q350 267 405 261 M421 258 Q462 245 489 248"/>
+          <path class="horse-mane" d="M188 71 L199 89 L206 81 L212 105 L222 101 L226 123 L239 118 L246 140 L261 137"/>
+          <circle class="horse-eye" cx="118" cy="143" r="3.6"/><circle class="horse-eye" cx="81" cy="183" r="2.6"/>
+        </g>
+      </svg><span class="horse-tag chest-tag">胸前 <b id="chestValue"></b></span><span class="horse-tag hind-tag">トモ <b id="hindValue"></b></span>
+    </div></div>
+  </div>
+  <div id="topCombos" class="card summary-top" hidden><h2>上位の馬体組み合わせ</h2><div id="topComboList"></div></div>
+  <button id="detailsToggle" class="summary-details-button" type="button" hidden aria-expanded="false">詳細を見る <span aria-hidden="true">›</span></button>
+  <div id="summaryDetails" class="card summary-details" hidden><h2>胸前 × トモ　24通り</h2><div id="matrix"></div><details class="condition-detail"><summary>状態研究の集計</summary><div id="conditionSummary"></div></details></div>
+</section>
 <section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="research.js?v=20260929-17"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="suitability-summary.js?v=20260929-1"></script><script src="research.js?v=20260929-19"></script></body></html>
