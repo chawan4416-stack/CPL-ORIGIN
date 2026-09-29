@@ -410,3 +410,32 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .condition-detail{margin-top:16px;padding-top:11px;border-top:1px solid #405442;color:#c8d5c8}
 #summary .condition-detail summary{cursor:pointer;min-height:40px}
 @media(max-width:390px){#summary .summary-filters{gap:8px;padding:11px}#summary .combo-row{grid-template-columns:32px minmax(0,1fr) auto;gap:5px;padding:6px}#summary .combo-chip{padding:4px 5px;font-size:13px}#summary .combo-count b{font-size:14px}}
+
+/* Condition summary shares the five filters; all new rules are scoped to its panel. */
+#summary .summary-switch{display:flex;gap:8px;margin:0 0 10px}
+#summary .summary-switch button{flex:1;min-height:44px;padding:8px;background:#19231d;border-color:#455849;color:#bdccbf;font-size:15px}
+#summary .summary-switch button.active{background:#304c3b;border-color:#83ae91;color:#e9eee5;box-shadow:inset 0 -2px #83ae91}
+#summary #conditionSummaryPanel .card{padding:14px;margin:0 0 10px}
+#summary .condition-summary-select strong{display:block;margin-bottom:8px;font-size:15px}
+#summary .condition-summary-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#summary .condition-summary-choices button{min-width:0;min-height:44px;padding:7px 5px;background:#2d3b32;border-color:#526657;color:#e5ebe2;font-size:13px}
+#summary .condition-summary-choices button.active{background:#305641;border-color:#87b99a;box-shadow:inset 0 0 0 1px #87b99a}
+#summary .condition-metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+#summary .condition-metrics>div{padding:15px 9px;background:#304137;border:1px solid #526c58;border-radius:10px;text-align:center}
+#summary .condition-metrics small{display:block;color:#c7d4c6;font-size:13px}
+#summary .condition-metrics b{display:block;margin-top:4px;color:#e9eee4;font-size:27px}
+#summary .condition-comparison{margin-top:14px;padding-top:12px;border-top:1px solid #455a49}
+#summary .condition-comparison strong{display:block;margin-bottom:7px;font-size:14px}
+#summary .condition-comparison table{width:100%;border-collapse:collapse;font-size:14px;text-align:right}
+#summary .condition-comparison th,#summary .condition-comparison td{padding:6px 4px;border-bottom:1px solid #405345}
+#summary .condition-comparison th:first-child{text-align:left;font-weight:500}
+#summary .condition-comparison th{color:#c2d0c2}
+#summary .condition-advanced{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:15px}
+#summary .condition-advanced label{min-width:0;color:#b5c2b5;font-size:13px}
+#summary .condition-advanced select{width:100%;min-width:0;height:44px;background:#303e33;border-color:#526657;color:#e8ede5;font-size:16px}
+#summary .condition-summary-details h2{margin:0 0 9px;font-size:16px}
+#summary .condition-distribution-row{display:grid;grid-template-columns:36px minmax(0,1fr) 46px 52px;align-items:center;gap:7px;min-height:35px;font-size:13px}
+#summary .condition-distribution-track{height:8px;background:#303e34;border-radius:6px;overflow:hidden}
+#summary .condition-distribution-track span{display:block;height:100%;background:#80ad8b}
+#summary .condition-distribution-row b,#summary .condition-distribution-row em{text-align:right;font-style:normal;font-weight:500}
+#summary #conditionSpecialCounts{margin:12px 0 0;color:#bdcbbc;font-size:13px}
