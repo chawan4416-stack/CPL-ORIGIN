@@ -22,5 +22,15 @@
       hindOrder.indexOf(a.hindquarter) - hindOrder.indexOf(b.hindquarter));
     return {n, ranked, top: ranked.slice(0, 3)};
   }
-  return {colors, chestOrder, hindOrder, summarize};
+  function fromObservations(observations) {
+    const n = observations.length;
+    return chestOrder.flatMap(chest => hindOrder.map(hindquarter => {
+      const matching = observations.filter(row => row.chest === chest && row.hindquarter === hindquarter);
+      const tone_breakdown = Object.fromEntries(['パンパン', '普通', 'ゴム感', '未観察'].map(tone =>
+        [tone, matching.filter(row => (row.tone || '未観察') === tone).length]));
+      return {chest, hindquarter, observations: matching.length, total: n,
+        percentage: n ? Math.round(matching.length / n * 1000) / 10 : 0, tone_breakdown};
+    }));
+  }
+  return {colors, chestOrder, hindOrder, summarize, fromObservations};
 });
