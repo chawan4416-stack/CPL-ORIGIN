@@ -198,27 +198,58 @@
       popularity:c.outcome_status==='scratched'?null:Number(c.popularity)}}));
    state.condition=blankCondition();renderChoices();renderConditionResult();draft();notice('状態と公式結果を保存しました。',true);
  }catch(e){notice(`保存できませんでした：${e.message}`)}finally{$('saveCondition').disabled=false;}}
- function filterHTML(){const f=state.filter;return [['racecourse','競馬場',values('RACE','RACECOURSE')],
-   ['surface','芝・ダート',values('RACE','SURFACE')],['course','コース形態',[...new Set(Object.entries(state.masters)
-     .filter(([k])=>k.startsWith('COURSE:')||k.startsWith('COURSE_DISTANCE:')).flatMap(([,a])=>a.map(x=>x.option_value)))]],
-   ['distance','距離',[...new Set(Object.keys(state.masters).filter(k=>k.startsWith('COURSE_DISTANCE:')).map(k=>k.split(':').at(-1)))].sort((a,b)=>Number(a)-Number(b))],
-   ['track_condition','馬場',values('RACE','TRACK_CONDITION')]].map(([key,label,items])=>
-     `<label>${label}<select data-filter="${key}">${opts(items,f[key],'すべて')}</select></label>`).join('');}
- async function summary(){try{const [rows,conditions]=await Promise.all([
-   checked(db.rpc('research_suitability_distribution',{p_filter:state.filter,p_merge:state.merge})),
-   checked(db.rpc('research_condition_summary',{p_filter:state.filter}))]);
-   $('merge').textContent=state.merge?'統合 18通り':'詳細 24通り';$('sample').textContent=`母数：${rows[0]?.total||0}頭`;
-   const chests=state.merge?['シャープ','厚','重厚']:['シャープ','厚−','厚','重厚'];
-   const hind=['シャープ−','シャープ','厚−','厚','重厚−','重厚'];
-   $('matrix').innerHTML=`<div class="matrix-row"><span></span>${hind.map(v=>`<span class="matrix-head">${v}</span>`).join('')}</div>`+
-     chests.map(chest=>`<div class="matrix-row"><b class="label">胸前 ${chest}</b>${hind.map(h=>{const r=rows.find(x=>x.chest===chest&&x.hindquarter===h);
-       return `<button data-combo="${esc(chest)}|${esc(h)}" data-count="${r?.observations||0}" style="background:${r?.observations?'#dbe9d9':''}">${r?.observations||0}件<br>${r?.percentage||0}%</button>`;}).join('')}</div>`).join('');
-   $('toneBreakdown').textContent='組み合わせを選ぶとハリの内訳を表示します。';
-   $('matrix').onclick=e=>{const b=e.target.closest('[data-combo]');if(!b)return;const [ch,h]=b.dataset.combo.split('|');
-     const r=rows.find(x=>x.chest===ch&&x.hindquarter===h);const t=r?.tone_breakdown||{};
-     $('toneBreakdown').textContent=`胸前 ${ch} × トモ ${h}：${r?.observations||0}件／${r?.percentage||0}%　ハリ：パンパン ${t['パンパン']||0}・普通 ${t['普通']||0}・ゴム感 ${t['ゴム感']||0}・未観察 ${t['未観察']||0}`;};
-   $('conditionSummary').innerHTML=conditions.length?conditions.map(c=>`<div class="result-row"><b>${esc(c.condition_key)}</b>　${c.recorded}件<br>1〜3着 ${c.placed}／着外 ${c.other_finish}／中止 ${c.dnf}／取消 ${c.scratched}</div>`).join(''):'対象の状態記録はありません。';
- }catch(e){notice(`集計できませんでした：${e.message}`)}}
+ const summaryTools=window.CPLSuitabilitySummary;
+ const summaryKeys=['racecourse','surface','distance','course','track_condition'];
+ let summaryRequest=0,summaryRows=[];
+ function syncSummaryFilters(){const f=state.filter;
+   if(!values('RACE','RACECOURSE').includes(f.racecourse))delete f.racecourse;
+   if(!values('RACE','SURFACE').includes(f.surface))delete f.surface;
+   if(!f.racecourse||!f.surface||!distances(f).includes(String(f.distance)))delete f.distance;
+   if(!f.distance)delete f.course;
+   else{const list=courses(f);if(list.length===1)f.course=list[0];else if(!list.includes(f.course))delete f.course;}
+   if(!values('RACE','TRACK_CONDITION').includes(f.track_condition))delete f.track_condition;
+ }
+ function filterHTML(){const f=state.filter;return [
+   ['racecourse','競馬場',values('RACE','RACECOURSE')],['surface','芝・ダート',values('RACE','SURFACE')],
+   ['distance','距離',f.racecourse&&f.surface?distances(f):[]],
+   ['course','コース形態',f.distance?courses(f):[]],
+   ['track_condition','馬場状態',values('RACE','TRACK_CONDITION')]
+ ].map(([key,label,items])=>`<label>${label}<select data-filter="${key}" aria-label="${label}" ${!items.length?'disabled':''} required>${opts(items,f[key])}</select></label>`).join('');}
+ function summaryChoice(index){const item=summaryTools.summarize(summaryRows).top[index];if(!item)return;
+   const art=$('horseArt');art.style.setProperty('--chest-color',summaryTools.colors[item.chest]);
+   art.style.setProperty('--hind-color',summaryTools.colors[item.hindquarter]);
+   art.setAttribute('aria-label',`胸前 ${item.chest}、トモ ${item.hindquarter}`);
+   $('chestValue').textContent=item.chest;$('hindValue').textContent=item.hindquarter;
+   document.querySelectorAll('#topComboList .combo-row').forEach((button,i)=>{
+     button.classList.toggle('active',i===index);button.setAttribute('aria-pressed',String(i===index));});
+ }
+ function renderSummaryDetail(){const {chestOrder,hindOrder}=summaryTools;
+   $('matrix').innerHTML=`<div class="matrix-row"><span></span>${hindOrder.map(v=>`<span class="matrix-head">${esc(v)}</span>`).join('')}</div>`+
+     chestOrder.map(chest=>`<div class="matrix-row"><b class="label">${esc(chest)}</b>${hindOrder.map(hind=>{
+       const row=summaryRows.find(x=>x.chest===chest&&x.hindquarter===hind);
+       return `<button type="button" disabled data-count="${Number(row?.observations||0)}">${Number(row?.observations||0)}頭<br>${Number(row?.percentage||0).toFixed(1)}%</button>`;}).join('')}</div>`).join('');
+ }
+ async function loadConditionDetail(){try{const conditions=await checked(db.rpc('research_condition_summary',{p_filter:state.filter}));
+   $('conditionSummary').innerHTML=conditions.length?conditions.map(c=>`<div class="result-row"><b>${esc(c.condition_key)}</b>　${Number(c.recorded)}件<br>1〜3着 ${Number(c.placed)}／着外 ${Number(c.other_finish)}／中止 ${Number(c.dnf)}／取消 ${Number(c.scratched)}</div>`).join(''):'対象の状態記録はありません。';
+ }catch(e){notice(`状態集計を取得できませんでした：${e.message}`)}}
+ async function summary(){const token=++summaryRequest,f=state.filter;
+   $('summaryTitle').textContent=summaryKeys.every(key=>!!f[key])?
+     `${f.racecourse}　${f.surface}${f.distance}m　${f.course}　${f.track_condition}`:'適性研究データ';
+   $('summaryVisual').hidden=true;$('topCombos').hidden=true;$('detailsToggle').hidden=true;$('summaryDetails').hidden=true;
+   $('detailsToggle').setAttribute('aria-expanded','false');$('sample').textContent='';summaryRows=[];
+   if(!summaryKeys.every(key=>!!f[key])){$('summaryEmpty').textContent='5つの条件を選択';$('summaryEmpty').hidden=false;return;}
+   try{const rows=await checked(db.rpc('research_suitability_distribution',{p_filter:Object.fromEntries(summaryKeys.map(key=>[key,f[key]])),p_merge:false}));
+     if(token!==summaryRequest)return;
+     summaryRows=rows;const {n,top}=summaryTools.summarize(rows);
+     $('sample').textContent=`適性研究 1〜3着　n = ${n}頭`;
+     if(!n){$('summaryEmpty').textContent='該当データなし';$('summaryEmpty').hidden=false;return;}
+     $('summaryEmpty').hidden=true;$('summaryVisual').hidden=false;$('topCombos').hidden=false;$('detailsToggle').hidden=false;
+     $('topComboList').innerHTML=top.map((item,i)=>`<button type="button" class="combo-row" data-summary-choice="${i}" aria-pressed="false">
+       <span class="combo-rank">${i+1}位</span><span class="combo-values"><span class="combo-chip" style="--chip-color:${summaryTools.colors[item.chest]}"><small>胸前</small>${esc(item.chest)}</span><span class="combo-times">×</span>
+       <span class="combo-chip" style="--chip-color:${summaryTools.colors[item.hindquarter]}"><small>トモ</small>${esc(item.hindquarter)}</span></span>
+       <span class="combo-count"><b>${item.count}頭</b>${item.percentage.toFixed(1)}%</span></button>`).join('');
+     summaryChoice(0);
+   }catch(e){if(token===summaryRequest){$('summaryEmpty').textContent='集計を取得できませんでした';$('summaryEmpty').hidden=false;notice(`集計できませんでした：${e.message}`)}}}
  async function records(){try{const [races,suits,conditions]=await Promise.all([
    checked(db.from('races').select('id,race_date,racecourse,race_number,surface,distance,course,track_condition,field_size,race_class').order('race_date',{ascending:false}).limit(100)),
    checked(db.from('suitability_observations').select('race_id,horse_number,popularity,finish_position,chest,hindquarter,tone')),
@@ -231,7 +262,7 @@
        ${r.conditions.map(c=>`<button data-open-condition="${r.id}" data-observation-id="${c.id}">状態 ${c.outcome_status==='finished'?c.finish_position+'着':c.outcome_status==='dnf'?'競走中止':'出走取消'}${c.popularity?'・'+c.popularity+'人気':''}を開く</button>`).join('')}</div>`).join('')||'<div class="card">研究記録はありません。</div>';
  }catch(e){notice(`記録を読めませんでした：${e.message}`)}}
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
-   if(b.dataset.view){show(b.dataset.view);if(state.view==='summary')await summary();if(state.view==='records')await records();}
+   if(b.dataset.view){show(b.dataset.view);if(state.view==='summary'){window.scrollTo(0,0);await summary();}if(state.view==='records')await records();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
    else if(b.dataset.raceBack){const mode=b.dataset.raceBack,m=raceMode(mode);clearTimeout(raceStepTimer[mode]);state[m.step]=Math.max(0,state[m.step]-1);renderFocusRace(mode);draft();}
    else if(b.dataset.raceNext){const mode=b.dataset.raceNext,m=raceMode(mode),[key,label]=suitSteps[state[m.step]];
@@ -284,14 +315,21 @@
      draft();clearTimeout(raceStepTimer[mode]);
      if(el.dataset.key!=='race_date'&&el.value){const at=state[m.step];
        raceStepTimer[mode]=setTimeout(()=>{if(state[m.stage]==='steps'&&state[m.step]===at)moveRaceStep(mode);},180);}}
-   else if(el.dataset.filter){if(el.value)state.filter[el.dataset.filter]=el.value;else delete state.filter[el.dataset.filter];draft();await summary();}
+   else if(el.dataset.filter){const key=el.dataset.filter,previous=state.filter[key];
+     if(el.value)state.filter[key]=el.value;else delete state.filter[key];
+     if(previous!==el.value&&['racecourse','surface','distance'].includes(key))delete state.filter.course;
+     syncSummaryFilters();$('filters').innerHTML=filterHTML();draft();await summary();}
  });
  $('addHorse').onclick=()=>{if(state.horses.length>=18)return notice('最大18頭です。');
    const rank=state.horses[state.current].finish_position;
    let at=state.current+1;while(at<state.horses.length&&state.horses[at].finish_position===rank)at++;
    state.horses.splice(at,0,newHorse(Number(rank)));state.current=at;renderHorse();draft();};
  $('saveSuitability').onclick=saveSuitability;$('saveCondition').onclick=saveCondition;
- $('merge').onclick=async()=>{state.merge=!state.merge;draft();await summary();};
+ $('topComboList').onclick=e=>{const button=e.target.closest('[data-summary-choice]');if(button)summaryChoice(Number(button.dataset.summaryChoice));};
+ $('detailsToggle').onclick=async()=>{const opening=$('summaryDetails').hidden;
+   $('summaryDetails').hidden=!opening;$('detailsToggle').setAttribute('aria-expanded',String(opening));
+   $('detailsToggle').firstChild.textContent=opening?'詳細を閉じる ':'詳細を見る ';
+   if(opening){renderSummaryDetail();await loadConditionDetail();}};
  $('login').onclick=async()=>{const {error}=await db.auth.signInWithOAuth({provider:'google',options:{redirectTo:new URL('./',location.href).href}});if(error)notice(error.message);};
  $('logout').onclick=async()=>{await db.auth.signOut();};
  $('messageDismiss').onclick=()=>{clearTimeout(noticeTimer);$('message').hidden=true;};
@@ -299,7 +337,7 @@
  let initialized=false;
  async function auth(session){if(session?.user){if(initialized&&state.user?.id===session.user.id)return;
    state.user=session.user;initialized=true;try{localStorage.removeItem(legacyDraftKey());}catch{}
-   try{await loadMasters();restore();renderRaces();renderChoices();$('filters').innerHTML=filterHTML();
+   try{await loadMasters();restore();renderRaces();renderChoices();syncSummaryFilters();$('filters').innerHTML=filterHTML();
      $('auth').hidden=true;$('workspace').hidden=false;show(state.view);if(state.view==='summary')await summary();if(state.view==='records')await records();
    }catch(e){notice(`初期化できませんでした：${e.message}`)}}else{state.user=null;initialized=false;$('auth').hidden=false;$('workspace').hidden=true;}}
  db.auth.onAuthStateChange((event,session)=>{if(event==='TOKEN_REFRESHED')return;setTimeout(()=>auth(session),0);});

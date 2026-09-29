@@ -8,7 +8,7 @@ const output=process.argv[2]&&resolve(process.argv[2]);
 if(!output||output===root||output.startsWith(root+'/'))throw Error('An unused output directory outside the repository is required');
 try{await readdir(output);throw Error('Output directory must not exist');}
 catch(error){if(error.code!=='ENOENT')throw error;}
-const files=['index.html','research.html','research.css','research.js','auth-return.js','supabase/config.js'];
+const files=['index.html','research.html','research.css','research.js','suitability-summary.js','assets/horse-ink-diagram.webp','auth-return.js','supabase/config.js'];
 const prodRef='ekgislctkribtztazvsd',devRef='kczisspagwqzdvaeemir';
 const config=await readFile(join(root,'supabase/config.js'),'utf8');
 const page=await readFile(join(root,'research.html'),'utf8');
@@ -18,8 +18,8 @@ if(!config.includes(`https://${prodRef}.supabase.co`)||!config.includes('sb_publ
  !script.includes(`const ref='${prodRef}'`)||!script.includes('config?.projectRef===ref'))
  throw Error('Formal Supabase routing or guard is missing');
 for(const name of files){
- const content=await readFile(join(root,name),'utf8');
- if(content.includes(devRef)||/CPL-DEV|CPL_BETA_CONFIG/.test(content))throw Error(`DEV reference in ${name}`);
+ const content=await readFile(join(root,name));
+ if(content.toString('utf8').includes(devRef)||/CPL-DEV|CPL_BETA_CONFIG/.test(content.toString('utf8')))throw Error(`DEV reference in ${name}`);
  const dest=join(output,name);await mkdir(dirname(dest),{recursive:true});await copyFile(join(root,name),dest);
 }
 const published=[];
