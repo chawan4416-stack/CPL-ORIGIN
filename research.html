@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-38"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-39"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -15,21 +15,10 @@
   <div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><span id="sample"></span></div>
     <div id="summaryEmpty" class="summary-empty" hidden></div>
     <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
-      <svg viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs><clipPath id="horseBodyClip"><path d="M254 148 C310 137 349 156 411 155 C459 157 480 139 531 140 C563 138 588 157 601 192 C609 218 602 246 580 270 L543 265 C506 244 475 258 441 269 C395 279 340 276 302 263 C278 274 239 267 214 250 C190 227 186 205 197 183 C211 162 230 153 254 148 Z"/></clipPath></defs>
-        <g class="horse-line" stroke-linecap="round" stroke-linejoin="round">
-          <path class="horse-tail" d="M589 183 C628 202 655 256 647 314 C644 339 631 353 625 362 C634 316 621 283 607 261"/>
-          <path class="horse-limb" d="M242 252 C237 290 238 315 226 342 L219 382 L205 396 L206 402 L251 402 L258 394 L246 382 L259 346 L277 292 L283 256 Z"/>
-          <path class="horse-limb" d="M283 258 C288 299 304 327 299 360 L291 388 L280 396 L282 402 L325 402 L333 394 L317 386 L319 351 C321 312 310 276 310 258 Z"/>
-          <path class="horse-limb" d="M517 252 C519 296 528 317 517 351 L510 384 L495 396 L496 402 L543 402 L550 394 L535 385 L551 348 C562 316 554 279 558 255 Z"/>
-          <path class="horse-limb" d="M562 248 C587 282 594 306 587 330 L580 377 L565 394 L569 402 L615 402 L621 394 L603 382 L609 337 C616 302 605 270 592 242 Z"/>
-          <path class="horse-neck" d="M256 155 C223 133 203 95 181 71 C166 54 151 50 139 60 L125 74 L130 97 C119 111 96 126 88 144 L68 170 C61 185 67 201 84 207 L115 205 C126 192 138 183 154 181 C171 179 186 196 198 216 L220 243 L274 213 Z"/>
-          <path class="horse-body" d="M254 148 C310 137 349 156 411 155 C459 157 480 139 531 140 C563 138 588 157 601 192 C609 218 602 246 580 270 L543 265 C506 244 475 258 441 269 C395 279 340 276 302 263 C278 274 239 267 214 250 C190 227 186 205 197 183 C211 162 230 153 254 148 Z"/>
-          <g clip-path="url(#horseBodyClip)"><path id="horseChestFill" class="horse-patch" d="M217 176 C242 155 264 164 280 184 C289 203 281 243 271 271 C252 279 223 267 211 247 C199 227 200 195 217 176 Z"/><path id="horseHindFill" class="horse-patch" d="M519 147 C562 137 592 162 606 189 C618 224 600 258 573 282 C550 277 530 259 517 241 C501 219 498 172 519 147 Z"/></g>
-          <path class="horse-detail" d="M181 71 C174 93 159 108 148 124 M131 99 C137 114 135 136 122 156 M86 181 C99 183 110 180 117 175 M104 197 Q113 195 119 190 M206 157 Q235 162 252 183 M280 185 Q290 221 278 251 M516 161 Q502 192 512 226 M563 258 Q582 238 585 213 M294 251 Q350 267 405 261 M421 258 Q462 245 489 248"/>
-          <path class="horse-mane" d="M188 71 L199 89 L206 81 L212 105 L222 101 L226 123 L239 118 L246 140 L261 137"/>
-          <circle class="horse-eye" cx="118" cy="143" r="3.6"/><circle class="horse-eye" cx="81" cy="183" r="2.6"/>
-        </g>
+      <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <image href="assets/horse-lineart.webp" width="1536" height="1024"/>
+        <path id="horseChestFill" class="horse-patch" d="M474 380 C506 340 559 323 610 360 C655 394 674 458 648 514 C619 553 549 581 498 544 C456 510 441 430 474 380 Z"/>
+        <path id="horseHindFill" class="horse-patch" d="M997 284 C1054 243 1168 251 1223 311 C1261 355 1245 467 1171 550 C1134 562 1106 532 1068 508 C1020 473 997 426 992 378 C988 334 983 310 997 284 Z"/>
       </svg><span class="horse-tag chest-tag">胸前 <b id="chestValue"></b></span><span class="horse-tag hind-tag">トモ <b id="hindValue"></b></span>
     </div></div>
   </div>

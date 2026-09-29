@@ -369,17 +369,11 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .summary-context span{font-size:13px;color:#bdcabe}
 #summary .summary-empty{min-height:180px;display:grid;place-items:center;color:#b8c4b8;font-size:15px;text-align:center}
 #summary .summary-empty[hidden],#summary [hidden]{display:none}
-#summary .horse-art{position:relative;width:100%;max-width:570px;margin:6px auto 0;aspect-ratio:720/430;background:radial-gradient(ellipse at 50% 50%,#314237 0%,#27332c 70%);border-radius:12px;overflow:hidden}
+#summary .horse-art{position:relative;width:100%;max-width:570px;margin:6px auto 0;aspect-ratio:1536/1024;background:radial-gradient(ellipse at 50% 50%,#314237 0%,#27332c 70%);border-radius:12px;overflow:hidden}
 #summary .horse-art svg{display:block;width:100%;height:100%}
-#summary .horse-line{stroke:#d9e4d8;stroke-width:3}
-#summary .horse-tail{fill:none;stroke-width:12;stroke:#809589}
-#summary .horse-limb,#summary .horse-neck,#summary .horse-body{fill:#9eaea2}
-#summary .horse-patch{stroke:none;opacity:.82}
+#summary .horse-patch{stroke:none;opacity:.55;mix-blend-mode:multiply}
 #summary #horseChestFill{fill:var(--chest-color,transparent)}
 #summary #horseHindFill{fill:var(--hind-color,transparent)}
-#summary .horse-detail,#summary .horse-mane{fill:none;stroke:#435a4a;stroke-width:2.6}
-#summary .horse-mane{stroke-width:4}
-#summary .horse-eye{fill:#17271c;stroke:none}
 #summary .horse-tag{position:absolute;display:flex;align-items:center;gap:5px;padding:3px 7px;border:1px solid #8da693;border-radius:7px;background:#1a2720df;color:#d7e3d8;font-size:12px;white-space:nowrap}
 #summary .horse-tag b{color:#f1f0e8}
 #summary .chest-tag{left:3%;bottom:15%}
