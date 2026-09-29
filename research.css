@@ -367,6 +367,14 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .summary-context{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:3px 12px}
 #summary .summary-context strong{font-size:17px;line-height:1.4}
 #summary .summary-context span{font-size:13px;color:#bdcabe}
+#summary #suitabilitySummaryPanel .summary-context{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 8px}
+#summary #suitabilitySummaryPanel .summary-context strong{min-width:0}
+#summary #suitabilitySummaryPanel .summary-context span{grid-column:1/-1}
+#summary #runSuitabilitySummary{min-height:44px;padding:7px 9px;border:1px solid #638b70;border-radius:8px;background:#25392e;color:#e7eee7;font-size:12px;font-weight:700;white-space:nowrap}
+#summary #runSuitabilitySummary.changed{background:#216f50;border-color:#83d4aa;color:#f5fff8;box-shadow:inset 0 0 0 1px #83d4aa}
+#summary #runSuitabilitySummary:disabled{opacity:.65;background:#334039;border-color:#617267;color:#c2ccc3;box-shadow:none}
+#summary #summaryVisual.pending,#summary #topCombos.pending{opacity:.66}
+#summary .combo-row:disabled,#summary .summary-details-button:disabled{cursor:default}
 #summary .summary-empty{min-height:180px;display:grid;place-items:center;color:#b8c4b8;font-size:15px;text-align:center}
 #summary .summary-empty[hidden],#summary [hidden]{display:none}
 #summary .horse-art{position:relative;width:100%;max-width:570px;margin:6px auto 0;aspect-ratio:1536/1024;background:radial-gradient(ellipse at 50% 50%,#314237 0%,#27332c 70%);border-radius:12px;overflow:hidden}
