@@ -1,6 +1,21 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const {summarize, fromObservations, colors, chestOrder, hindOrder} = require('../suitability-summary.js');
+const {summarize, fromObservations, colors, chestOrder, hindOrder, ready, sameFilters, snapshot} = require('../suitability-summary.js');
+
+test('draft conditions stay separate from the confirmed search and require five valid values', () => {
+  const draft={racecourse:'東京',surface:'芝',distance:'1600',course:'外回り',track_condition:'良'};
+  assert.equal(ready(draft),true);
+  const applied=snapshot(draft);
+  draft.racecourse='中山';
+  draft.course='';
+  assert.equal(ready(draft),false);
+  assert.equal(sameFilters(draft,applied),false);
+  assert.equal(applied.racecourse,'東京');
+  draft.course='右回り';
+  assert.equal(ready(draft),true);
+  assert.equal(sameFilters(draft,applied),false);
+  assert.equal(sameFilters(snapshot(draft),draft),true);
+});
 
 test('24 recorded combinations use one denominator and stable rank on ties', () => {
   const rows = chestOrder.flatMap(chest => hindOrder.map(hindquarter => ({
