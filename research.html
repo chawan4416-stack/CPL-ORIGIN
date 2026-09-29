@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-41"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-42"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -16,10 +16,12 @@
     <div id="summaryEmpty" class="summary-empty" hidden></div>
     <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
       <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path id="horseChestFill" class="horse-patch" d="M498 391 C528 347 585 326 632 367 C665 400 682 465 650 524 C618 563 566 582 524 545 C484 511 473 440 498 391 Z"/>
-        <path id="horseHindFill" class="horse-patch" d="M1047 290 C1107 246 1204 258 1261 309 C1308 357 1310 447 1258 517 C1223 558 1165 553 1117 514 C1079 478 1050 435 1042 385 C1036 343 1033 314 1047 290 Z"/>
-        <image href="assets/horse-symboli-lineart.webp" width="1536" height="1024"/>
-      </svg><span class="horse-tag chest-tag">胸前 <b id="chestValue"></b></span><span class="horse-tag hind-tag">トモ <b id="hindValue"></b></span>
+        <image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
+        <path id="horseChestFill" class="horse-patch" d="M491 388 C521 345 576 326 625 356 C667 390 677 465 647 521 C617 554 565 580 519 545 C481 510 461 431 491 388 Z"/>
+        <path id="horseHindFill" class="horse-patch" d="M1028 291 C1078 246 1188 257 1242 311 C1290 357 1294 440 1253 518 C1215 555 1152 552 1100 511 C1057 477 1038 435 1028 382 C1021 343 1016 315 1028 291 Z"/>
+        <path class="horse-callout chest-callout" d="M301 686 L568 458"/><circle class="horse-dot chest-dot" cx="568" cy="458" r="9"/>
+        <path class="horse-callout hind-callout" d="M1312 158 L1154 382"/><circle class="horse-dot hind-dot" cx="1154" cy="382" r="9"/>
+      </svg><span class="horse-tag chest-tag"><small>胸前</small><b id="chestValue"></b></span><span class="horse-tag hind-tag"><small>トモ</small><b id="hindValue"></b></span>
     </div></div>
   </div>
   <div id="topCombos" class="card summary-top" hidden><h2>上位の馬体組み合わせ</h2><div id="topComboList"></div></div>
