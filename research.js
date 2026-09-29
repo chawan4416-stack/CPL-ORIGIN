@@ -170,7 +170,7 @@
  async function loadMasters(){const rows=await checked(db.from('master_options').select('category,field_key,option_value,sort_order').eq('active',true).order('sort_order'));
    for(const row of rows)(state.masters[`${row.category}:${row.field_key}`]||=[]).push(row);}
  function show(view){state.view=view;document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==view);
-   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===(view==='summary'?state.summaryMode:view)));draft();}
+   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));draft();}
  function invalid(message,selector,horseIndex){if(horseIndex!==undefined){state.current=horseIndex;renderHorse();draft();}
    const target=document.querySelector(selector);if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));
    throw Error(message);}
@@ -359,6 +359,7 @@
    }catch(e){if(token===conditionRequest){$('conditionSummaryEmpty').textContent='集計を取得できませんでした';$('conditionSummaryEmpty').hidden=false;notice(`状態集計を取得できませんでした：${e.message}`)}}
  }
  async function summary(){
+   $('summary').classList.toggle('suitability-summary-view',state.summaryMode==='suitability');
    $('summaryHeading').textContent=state.summaryMode==='condition'?'状態研究 集計':'適性研究 集計';
    $('suitabilitySummaryPanel').hidden=state.summaryMode!=='suitability';
    $('conditionSummaryPanel').hidden=state.summaryMode!=='condition';
@@ -380,7 +381,7 @@
        ${r.conditions.map(c=>`<button data-open-condition="${r.id}" data-observation-id="${c.id}">状態 ${c.outcome_status==='finished'?c.finish_position+'着':c.outcome_status==='dnf'?'競走中止':'出走取消'}${c.popularity?'・'+c.popularity+'人気':''}を開く</button>`).join('')}</div>`).join('')||'<div class="card">研究記録はありません。</div>';
  }catch(e){notice(`記録を読めませんでした：${e.message}`)}}
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
-   if(b.dataset.view){show(b.dataset.view);if(state.view==='summary'){window.scrollTo(0,0);await summary();}if(state.view==='records')await records();}
+   if(b.dataset.view){if(b.dataset.view==='summary')state.summaryMode='suitability';show(b.dataset.view);if(state.view==='summary'){window.scrollTo(0,0);await summary();}if(state.view==='records')await records();}
    else if(b.dataset.openSummary){state.summaryMode=b.dataset.openSummary;show('summary');window.scrollTo(0,0);await summary();}
    else if(b.dataset.summaryCondition){state.summaryCondition=b.dataset.summaryCondition;renderConditionSummaryChoices();renderConditionSummary();draft();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
