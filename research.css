@@ -415,6 +415,11 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 nav{grid-template-columns:repeat(3,minmax(0,1fr))}
 .summary-entry{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;margin:8px 0 14px;padding:8px 14px;background:#26342a;border-color:#556b59;color:#dce7dd;font-size:14px;font-weight:700}
 .summary-entry span{font-size:22px;line-height:1}
+#summary .suitability-detail-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
+#summary .suitability-detail-filters label{min-width:0;color:#b5c2b5;font-size:13px}
+#summary .suitability-detail-filters select{height:44px;min-width:0;background:#303e33;border-color:#4b5e50;color:#e8ede5}
+#summary .detail-sample{margin:0 0 12px;color:#bdcabe;font-size:13px}
+#summary .tone-heading{margin:18px 0 4px}
 #summary #conditionSummaryPanel .card{padding:14px;margin:0 0 10px}
 #summary .condition-summary-select strong{display:block;margin-bottom:8px;font-size:15px}
 #summary .condition-summary-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
