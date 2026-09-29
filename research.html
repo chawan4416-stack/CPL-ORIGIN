@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-47"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-48"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -18,8 +18,11 @@
       <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs><mask id="horseBodyMask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024" style="mask-type:alpha"><image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/></mask></defs>
         <image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
-        <path id="horseChestFill" class="horse-patch" mask="url(#horseBodyMask)" d="M480 391 C503 383 543 405 582 436 C624 469 649 507 657 533 C664 548 665 566 664 573 C638 580 613 598 597 619 C588 632 586 646 583 660 C576 624 567 597 545 581 C515 564 492 550 484 526 C476 505 478 468 478 444 C476 423 477 402 480 391 Z"/>
-        <path id="horseHindFill" class="horse-patch" mask="url(#horseBodyMask)" d="M1008 272 C1047 244 1097 240 1138 251 C1201 266 1250 292 1272 335 C1290 382 1282 452 1265 507 C1255 547 1242 584 1230 606 C1194 613 1149 630 1110 635 C1091 596 1077 549 1051 520 C1023 492 1002 467 997 429 C986 379 987 326 1008 272 Z"/>
+        <!-- Fixed anatomical paths; only their fill colors change with the selected result. -->
+        <path id="horseChestFill" class="horse-patch" mask="url(#horseBodyMask)" d="M489 375 C509 388 535 409 557 427 C577 445 602 462 620 482 L647 511 C656 527 659 548 654 563 C632 565 611 580 598 602 L583 648 C575 616 565 595 542 582 C519 568 495 558 482 535 C472 517 472 491 469 467 C466 435 471 398 489 375 Z"/>
+        <path id="horseHindFill" class="horse-patch" mask="url(#horseBodyMask)" d="M1006 276 C1032 254 1072 244 1104 246 C1143 247 1170 258 1202 272 C1235 288 1255 309 1270 337 C1283 363 1287 399 1281 433 L1268 497 C1259 535 1249 573 1231 610 C1218 613 1208 620 1197 626 L1179 648 C1170 617 1154 590 1136 575 C1122 565 1110 563 1098 556 C1082 542 1078 523 1059 508 C1033 488 1015 469 1003 437 C992 409 994 371 994 343 C996 317 999 294 1006 276 Z"/>
+        <!-- The original ink sits above the fills, preserving contours and muscle hatching. -->
+        <image class="horse-ink-front" href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
         <path class="horse-callout chest-callout" d="M301 686 L568 458"/><circle class="horse-dot chest-dot" cx="568" cy="458" r="9"/>
         <path class="horse-callout hind-callout" d="M1312 158 L1154 382"/><circle class="horse-dot hind-dot" cx="1154" cy="382" r="9"/>
       </svg><span class="horse-tag chest-tag"><small>胸前</small><b id="chestValue"></b></span><span class="horse-tag hind-tag"><small>トモ</small><b id="hindValue"></b></span>
