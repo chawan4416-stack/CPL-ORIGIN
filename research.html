@@ -1,17 +1,16 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-56"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260929-57"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
-<section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
+<section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="records">記録</button></nav>
 <div id="message" role="status" aria-live="polite" hidden><span id="messageText"></span><button id="messageDismiss" type="button" aria-label="通知を閉じる">閉じる</button></div>
-<section id="suitability" class="view"><div id="suitRace"></div><div id="suitHorseWork" hidden><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></div></section>
+<section id="suitability" class="view"><div id="suitRace"></div><div id="suitHorseWork" hidden><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></div><button type="button" class="summary-entry" data-open-summary="suitability">適性研究 集計を見る <span aria-hidden="true">›</span></button></section>
 <section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
 <div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
-<button id="saveCondition" class="primary">状態と結果を保存</button></div></section>
+<button id="saveCondition" class="primary">状態と結果を保存</button></div><button type="button" class="summary-entry" data-open-summary="condition">状態研究 集計を見る <span aria-hidden="true">›</span></button></section>
 <section id="summary" class="view" hidden><h1 id="summaryHeading">適性研究 集計</h1>
-  <div class="summary-switch" role="group" aria-label="集計する研究"><button type="button" data-summary-mode="suitability" class="active" aria-pressed="true">適性研究</button><button type="button" data-summary-mode="condition" aria-pressed="false">状態研究</button></div>
   <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
   <div id="suitabilitySummaryPanel">
   <div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><span id="sample"></span></div>
@@ -36,11 +35,13 @@
   </div>
   <div id="conditionSummaryPanel" hidden>
     <div class="card condition-summary-select"><strong>状態</strong><div id="summaryConditionChoices" class="condition-summary-choices" role="group" aria-label="研究する状態"></div></div>
-    <div class="card condition-summary-main"><div class="summary-context"><strong id="conditionSummaryTitle"></strong><span id="conditionSample"></span></div>
+    <div class="card condition-summary-main"><div class="summary-context"><strong id="conditionSummaryTitle"></strong></div><div class="condition-summary-heading"><strong id="conditionSelectedName"></strong><span id="conditionSample"></span></div>
       <div id="conditionSummaryEmpty" class="summary-empty" hidden></div>
-      <div id="conditionMetrics" class="condition-metrics" hidden><div><small>複勝圏</small><b id="conditionPlaced"></b></div><div><small>着外</small><b id="conditionOther"></b></div></div>
-      <div id="conditionComparison" class="condition-comparison" hidden></div>
+      <div id="conditionMetrics" class="condition-metrics" hidden><div class="condition-placed-hero"><small>複勝圏</small><b id="conditionPlaced"></b></div>
+        <div class="condition-places"><span>1着 <b id="conditionFirst"></b></span><span>2着 <b id="conditionSecond"></b></span><span>3着 <b id="conditionThird"></b></span></div>
+        <div class="condition-other-row"><span>着外</span><b id="conditionOther"></b></div></div>
     </div>
+    <div id="conditionComparison" class="card condition-comparison" hidden></div>
     <button id="conditionDetailsToggle" class="summary-details-button" type="button" hidden aria-expanded="false">詳細を見る <span aria-hidden="true">›</span></button>
     <div id="conditionSummaryDetails" class="card condition-summary-details" hidden>
       <div class="condition-advanced"><label>クラス<select id="conditionClassFilter"></select></label><label>人気<select id="conditionPopularityFilter"></select></label></div>
@@ -50,4 +51,4 @@
 </section>
 <section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="suitability-summary.js?v=20260929-1"></script><script src="condition-summary.js?v=20260929-1"></script><script src="research.js?v=20260929-56"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="suitability-summary.js?v=20260929-1"></script><script src="condition-summary.js?v=20260929-1"></script><script src="research.js?v=20260929-57"></script></body></html>

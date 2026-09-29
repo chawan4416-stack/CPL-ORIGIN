@@ -167,7 +167,7 @@
  async function loadMasters(){const rows=await checked(db.from('master_options').select('category,field_key,option_value,sort_order').eq('active',true).order('sort_order'));
    for(const row of rows)(state.masters[`${row.category}:${row.field_key}`]||=[]).push(row);}
  function show(view){state.view=view;document.querySelectorAll('.view').forEach(v=>v.hidden=v.id!==view);
-   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));draft();}
+   document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===(view==='summary'?state.summaryMode:view)));draft();}
  function invalid(message,selector,horseIndex){if(horseIndex!==undefined){state.current=horseIndex;renderHorse();draft();}
    const target=document.querySelector(selector);if(target)requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));
    throw Error(message);}
@@ -271,14 +271,19 @@
  }
  function renderConditionSummary(){const key=state.summaryCondition,result=conditionTools.summarize(conditionRows,key);
    $('conditionSummaryTitle').textContent=summaryKeys.every(k=>!!state.filter[k])?
-     `${state.filter.racecourse}　${state.filter.surface}${state.filter.distance}m　${state.filter.course}　${state.filter.track_condition}　${key}`:key;
-   $('conditionSample').textContent=result.n?`n = ${result.n}件`:'';
+     `${state.filter.racecourse}　${state.filter.surface}${state.filter.distance}m　${state.filter.course}　${state.filter.track_condition}`:'状態研究データ';
+   $('conditionSelectedName').textContent=key;
    const ready=summaryKeys.every(k=>!!state.filter[k]);
+   $('conditionSample').textContent=ready?`状態研究データ　n = ${result.n}件`:'';
    $('conditionSummaryEmpty').hidden=ready&&result.n>0;
    $('conditionSummaryEmpty').textContent=ready?'該当データなし':'5つの条件を選択';
    $('conditionMetrics').hidden=!ready||!result.n;
    $('conditionPlaced').textContent=result.n?`${result.placedPercentage.toFixed(1)}%`:'';
    $('conditionOther').textContent=result.n?`${result.otherPercentage.toFixed(1)}%`:'';
+   for(const [rank,id] of [[1,'conditionFirst'],[2,'conditionSecond'],[3,'conditionThird']]){
+     const count=result.finishes.find(x=>x.rank===rank)?.count||0;
+     $(id).textContent=result.n?`${(count/result.n*100).toFixed(1)}%`:'';
+   }
    const comparison=ready?conditionTools.comparison(conditionRows,key):null;
    $('conditionComparison').hidden=!comparison;
    if(comparison){const label=key.split('・')[0];
@@ -307,8 +312,6 @@
    $('summaryHeading').textContent=state.summaryMode==='condition'?'状態研究 集計':'適性研究 集計';
    $('suitabilitySummaryPanel').hidden=state.summaryMode!=='suitability';
    $('conditionSummaryPanel').hidden=state.summaryMode!=='condition';
-   document.querySelectorAll('[data-summary-mode]').forEach(b=>{
-     const active=b.dataset.summaryMode===state.summaryMode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
    if(state.summaryMode==='condition'){++summaryRequest;await conditionSummary();}
    else{++conditionRequest;await suitabilitySummary();}
  }
@@ -325,7 +328,7 @@
  }catch(e){notice(`記録を読めませんでした：${e.message}`)}}
  document.addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;
    if(b.dataset.view){show(b.dataset.view);if(state.view==='summary'){window.scrollTo(0,0);await summary();}if(state.view==='records')await records();}
-   else if(b.dataset.summaryMode){state.summaryMode=b.dataset.summaryMode;draft();await summary();}
+   else if(b.dataset.openSummary){state.summaryMode=b.dataset.openSummary;show('summary');window.scrollTo(0,0);await summary();}
    else if(b.dataset.summaryCondition){state.summaryCondition=b.dataset.summaryCondition;renderConditionSummaryChoices();renderConditionSummary();draft();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
    else if(b.dataset.raceBack){const mode=b.dataset.raceBack,m=raceMode(mode);clearTimeout(raceStepTimer[mode]);state[m.step]=Math.max(0,state[m.step]-1);renderFocusRace(mode);draft();}
