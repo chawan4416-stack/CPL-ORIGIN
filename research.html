@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://ekgislctkribtztazvsd.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究</title><link rel="stylesheet" href="research.css?v=20260929-49"></head>
+<title>CPL｜適性・状態研究</title><link rel="stylesheet" href="research.css?v=20260930-65"></head>
 <body><main class="app"><header><b>CPL <small>研究室</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">Googleでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -10,9 +10,9 @@
 <section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
 <div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
 <button id="saveCondition" class="primary">状態と結果を保存</button></div></section>
-<section id="summary" class="view" hidden><h1>適性研究 集計</h1>
+<section id="summary" class="view" hidden><div class="summary-mode-switch" aria-label="集計種別"><span class="active" aria-current="page">適性</span><button type="button" disabled title="準備中">状態</button></div>
   <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
-  <div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><span id="sample"></span></div>
+  <div id="suitabilitySummaryPanel"><div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><button id="runSuitabilitySummary" type="button" disabled>この条件で集計</button><span id="sample"></span></div>
     <div id="summaryEmpty" class="summary-empty" hidden></div>
     <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
       <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -30,8 +30,8 @@
   </div>
   <div id="topCombos" class="card summary-top" hidden><h2>上位の馬体組み合わせ</h2><div id="topComboList"></div></div>
   <button id="detailsToggle" class="summary-details-button" type="button" hidden aria-expanded="false">詳細を見る <span aria-hidden="true">›</span></button>
-  <div id="summaryDetails" class="card summary-details" hidden><h2>胸前 × トモ　24通り</h2><div id="matrix"></div><details class="condition-detail"><summary>状態研究の集計</summary><div id="conditionSummary"></div></details></div>
+  <div id="summaryDetails" class="card summary-details" hidden><div class="suitability-detail-filters"><label>クラス<select id="suitabilityClassFilter"></select></label><label>人気<select id="suitabilityPopularityFilter"></select></label></div><p id="suitabilityDetailSample" class="detail-sample"></p><h2>胸前 × トモ　24通り</h2><div id="matrix"></div><h2 class="tone-heading">ハリ</h2><div id="suitabilityToneDetail"></div></div></div>
 </section>
 <section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script src="suitability-summary.js?v=20260929-1"></script><script src="research.js?v=20260929-21"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script src="suitability-summary.js?v=20260930-65"></script><script src="research.js?v=20260930-65"></script></body></html>
