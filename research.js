@@ -360,7 +360,7 @@
  }
  async function summary(){
    $('summary').classList.toggle('suitability-summary-view',state.summaryMode==='suitability');
-   $('summaryHeading').textContent=state.summaryMode==='condition'?'状態研究 集計':'適性研究 集計';
+   $('summaryHeading').hidden=state.summaryMode!=='condition';
    $('suitabilitySummaryPanel').hidden=state.summaryMode!=='suitability';
    $('conditionSummaryPanel').hidden=state.summaryMode!=='condition';
    if(state.summaryMode==='condition'){++summaryRequest;++detailRequest;summaryBusy=false;$('filters').innerHTML=filterHTML();await conditionSummary();}
