@@ -288,8 +288,8 @@
    $('summaryDetails').hidden=true;$('detailsToggle').setAttribute('aria-expanded','false');$('detailsToggle').firstChild.textContent='詳細を見る ';
    $('summaryEmpty').textContent=summaryError|| (f?'該当データなし':'5つの条件を選択');$('summaryEmpty').hidden=!!n;
    $('topComboList').innerHTML=top.map((item,i)=>`<button type="button" class="combo-row" data-summary-choice="${i}" aria-pressed="false">
-       <span class="combo-rank">${i+1}位</span><span class="combo-values"><span class="combo-chip" style="--chip-color:${summaryTools.colors[item.chest]}"><small>胸前</small>${esc(item.chest)}</span><span class="combo-times">×</span>
-       <span class="combo-chip" style="--chip-color:${summaryTools.colors[item.hindquarter]}"><small>トモ</small>${esc(item.hindquarter)}</span></span>
+       <span class="combo-rank">${i+1}位</span><span class="combo-values"><span class="combo-chip" data-eval="${esc(item.chest)}"><small>胸前</small>${esc(item.chest)}</span><span class="combo-times">×</span>
+       <span class="combo-chip" data-eval="${esc(item.hindquarter)}"><small>トモ</small>${esc(item.hindquarter)}</span></span>
        <span class="combo-count"><b>${item.count}頭</b>${item.percentage.toFixed(1)}%</span></button>`).join('');
    if(n)summaryChoice(0);
    else{const art=$('horseArt');art.style.removeProperty('--chest-color');art.style.removeProperty('--hind-color');art.setAttribute('aria-label','該当データなし');$('chestValue').textContent='';$('hindValue').textContent='';}
