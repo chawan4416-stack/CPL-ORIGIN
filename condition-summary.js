@@ -6,6 +6,11 @@
   'use strict';
   const choices=['チャカつき','ぎこちない歩様','早歩き','イレ込み・あり','イレ込み・強','発汗・あり','発汗・強'];
   const popularityBands=[{label:'1～3人気',min:1,max:3},{label:'4～6人気',min:4,max:6},{label:'7人気以下',min:7,max:18}];
+  const classOrder=['未勝利','1勝クラス','2勝クラス','3勝クラス','リステッド','オープン','G3','G2','G1'];
+  const classNames=masters=>{
+    const active=new Set(masters.filter(row=>row.category==='RACE_CLASS').map(row=>row.option_value));
+    return classOrder.filter(name=>active.has(name));
+  };
   const has=(row,key)=>({
     'チャカつき':()=>row.chaka===true,
     'ぎこちない歩様':()=>row.awkward_gait===true,
@@ -33,5 +38,5 @@
         Number(row.popularity)>=band.min&&Number(row.popularity)<=band.max),[])})),
       classes:classValues.map(label=>({label,...summarize(matching.filter(row=>row.races?.race_class===label),[])}))};
   }
-  return Object.freeze({choices,popularityBands,has,summarize,analyze});
+  return Object.freeze({choices,popularityBands,classNames,has,summarize,analyze});
 });
