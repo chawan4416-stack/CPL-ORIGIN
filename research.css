@@ -425,6 +425,7 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .combo-count{font-size:13px;white-space:nowrap;text-align:right}
 #summary .combo-count b{display:block;color:#e8ede5;font-size:16px}
 #summary .summary-details-button{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:49px;padding:10px 17px;margin:0 0 18px;background:#26342a;color:#dce7dd;border-color:#556b59;font-weight:700}
+#summary #detailsToggle[hidden]{display:none}
 #summary .summary-details-button span{font-size:23px;line-height:1}
 #summary .summary-details{padding:14px;margin:0 0 16px;overflow-x:auto}
 #summary .summary-details h2{font-size:16px}
