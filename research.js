@@ -19,7 +19,7 @@
  const blankCondition=()=>({id:null,outcome_status:'finished',finish_position:'',popularity:'',chaka:false,awkward_gait:false,agitation:null,sweating:null,fast_walking:false});
  const state={user:null,masters:{},sRace:blankRace(),cRace:blankRace(),sRaceExpanded:true,sRaceStage:'steps',sRaceStep:0,sRaceEditing:false,cRaceStage:'steps',cRaceStep:0,cRaceEditing:false,horses:[newHorse(1),newHorse(2),newHorse(3)],current:0,
    condition:blankCondition(),filter:{},merge:false,view:'suitability',records:[],
-   summaryMode:'suitability',summaryCondition:'チャカつき',conditionAdvanced:{race_class:'',popularity:''},suitabilityAdvanced:{race_class:'',popularity:''},suitabilityAppliedFilter:null,suitabilityInitialTried:false,conditionAppliedFilter:null,conditionInitialTried:false,conditionExtra:''};
+   summaryMode:'suitability',summaryCondition:'チャカつき',suitabilityAdvanced:{race_class:'',popularity:''},suitabilityAppliedFilter:null,suitabilityInitialTried:false,conditionExtra:''};
  const suitabilityFields=[['race_date','開催日'],['racecourse','競馬場'],['race_number','レース'],
    ['surface','芝・ダート'],['distance','距離'],['course','コース形態'],
    ['track_condition','馬場状態'],['field_size','頭数'],['race_class','競走条件']];
@@ -137,7 +137,7 @@
    sRaceStage:state.sRaceStage,sRaceStep:state.sRaceStep,sRaceEditing:state.sRaceEditing,cRace:state.cRace,
    cRaceStage:state.cRaceStage,cRaceStep:state.cRaceStep,cRaceEditing:state.cRaceEditing,
    horses:state.horses,current:state.current,condition:state.condition,view:state.view,filter:state.filter,merge:state.merge,
-   summaryMode:state.summaryMode,summaryCondition:state.summaryCondition,conditionAdvanced:state.conditionAdvanced,conditionAppliedFilter:state.conditionAppliedFilter,conditionInitialTried:state.conditionInitialTried,conditionExtra:state.conditionExtra,suitabilityAdvanced:state.suitabilityAdvanced,
+   summaryMode:state.summaryMode,summaryCondition:state.summaryCondition,conditionExtra:state.conditionExtra,suitabilityAdvanced:state.suitabilityAdvanced,
    suitabilityAppliedFilter:state.suitabilityAppliedFilter,suitabilityInitialTried:state.suitabilityInitialTried,scrollY:scrollY}));}catch{notice('下書きを保存できませんでした。');}}
  function restore(){try{const d=JSON.parse(localStorage.getItem(draftKey())||'null');if(d?.version!==1)return;
    const saved=d.condition||{},legacy=['placed','finished_other'].includes(saved.outcome_status);
@@ -146,8 +146,7 @@
       view:d.view||'suitability',filter:d.filter||{},merge:!!d.merge,
       summaryMode:d.summaryMode==='condition'?'condition':'suitability',
       summaryCondition:conditionChoices.some(([,label])=>label===d.summaryCondition)?d.summaryCondition:'チャカつき',
-      conditionAdvanced:{race_class:d.conditionAdvanced?.race_class||'',popularity:d.conditionAdvanced?.popularity||''},
-      conditionAppliedFilter:d.conditionAppliedFilter||null,conditionInitialTried:!!d.conditionInitialTried,conditionExtra:d.conditionExtra||'',
+      conditionExtra:d.conditionExtra||'',
       suitabilityAdvanced:{race_class:d.suitabilityAdvanced?.race_class||'',popularity:d.suitabilityAdvanced?.popularity||''},
       suitabilityAppliedFilter:d.suitabilityAppliedFilter||null,suitabilityInitialTried:!!d.suitabilityInitialTried});
    state.cRaceStage=['steps','summary','edit-list','horses'].includes(d.cRaceStage)?d.cRaceStage:'steps';
@@ -309,30 +308,23 @@
    finally{if(token===summaryRequest){summaryBusy=false;paintSuitabilitySummary();$('filters').innerHTML=filterHTML();draft();}}
  }
  const conditionTools=window.CPLConditionSummary;
- let conditionRequest=0,conditionRows=[],conditionBusy=false,conditionError='';
- const conditionPending=()=>!summaryTools.sameFilters(state.filter,state.conditionAppliedFilter);
- const conditionClasses=()=>values('RACE_CLASS',state.conditionAppliedFilter?.racecourse);
+ let conditionRequest=0,conditionRows=[],conditionBusy=false,conditionLoaded=false,conditionError='';
+ const conditionClasses=()=>conditionTools.classNames(Object.values(state.masters).flat());
  const conditionPct=result=>result.n?`${result.placedPercentage.toFixed(1)}%`:'—';
- function conditionControls(){const pending=conditionPending(),ready=summaryTools.ready(state.filter),button=$('runConditionSummary');
-   button.disabled=conditionBusy||!ready;
-   button.textContent=conditionBusy?'集計中…':'この条件で集計';
-   button.classList.toggle('changed',pending&&!conditionBusy&&ready);
-   $('conditionSummaryPanel').classList.toggle('pending',pending||conditionBusy);
-   document.querySelectorAll('#summaryConditionChoices button,#conditionExtraButton,#conditionExtraChoices button,#runConditionCombination')
-     .forEach(el=>el.disabled=pending||conditionBusy||el.id==='runConditionCombination'&&!state.conditionExtra);
-   if(pending||conditionBusy){$('conditionExtraChoices').hidden=true;$('conditionCombinationResult').hidden=true;}
+ function conditionControls(){
+   document.querySelectorAll('#conditionExtraButton,#conditionExtraChoices button,#runConditionCombination')
+     .forEach(el=>el.disabled=!conditionLoaded||conditionBusy||el.id==='runConditionCombination'&&!state.conditionExtra);
+   if(!conditionLoaded||conditionBusy){$('conditionExtraChoices').hidden=true;$('conditionCombinationResult').hidden=true;}
  }
  function renderConditionSummaryChoices(){
    $('summaryConditionChoices').innerHTML=conditionTools.choices.map(label=>
      `<button type="button" data-summary-condition="${esc(label)}" class="${state.summaryCondition===label?'active':''}" aria-pressed="${state.summaryCondition===label}">${esc(label)}</button>`).join('');
  }
  function renderConditionSummaryResult(){
-   const f=state.conditionAppliedFilter,ready=!!f,result=conditionTools.analyze(conditionRows,state.summaryCondition,conditionClasses());
-   $('conditionSummaryTitle').textContent=ready?`${f.racecourse}　${f.surface}${f.distance}m　${f.course}　${f.track_condition}`:'状態研究データ';
-   $('conditionContextSample').textContent=ready?`状態研究データ　n = ${conditionRows.length}頭`:'';
+   const ready=conditionLoaded,result=conditionTools.analyze(conditionRows,state.summaryCondition,conditionClasses());
    $('conditionSelectedName').textContent=`${state.summaryCondition} の成績`;
    $('conditionSample').textContent=ready?`n = ${result.overall.n}頭`:'';
-   $('conditionSummaryEmpty').textContent=conditionError||(ready?'該当データなし':'5つの条件を選択');
+   $('conditionSummaryEmpty').textContent=conditionError||(ready?'該当データなし':'集計中…');
    $('conditionSummaryEmpty').hidden=ready&&result.overall.n>0;
    $('conditionMetrics').hidden=!ready||!result.overall.n;
    if(result.overall.n){$('conditionPlaced').textContent=conditionPct(result.overall);$('conditionOther').textContent=`${result.overall.otherPercentage.toFixed(1)}%`;
@@ -350,23 +342,20 @@
    $('runConditionCombination').disabled=!state.conditionExtra;
    conditionControls();
  }
- async function conditionSummary(reload=false){
-   if(conditionBusy||!reload&&!summaryTools.ready(state.filter))return;
-   const candidate=summaryTools.snapshot(reload?state.conditionAppliedFilter:state.filter);
-   if(!summaryTools.ready(candidate))return;
-   const token=++conditionRequest;conditionBusy=true;conditionError='';conditionControls();$('filters').innerHTML=filterHTML();
+ async function conditionSummary(){
+   if(conditionBusy)return;
+   const token=++conditionRequest;conditionBusy=true;conditionLoaded=false;conditionRows=[];conditionError='';
+   renderConditionSummaryResult();
    try{const rows=[];let offset=0;const size=500;
      for(;;){const page=await checked(db.from('condition_observations')
-       .select('id,chaka,awkward_gait,fast_walking,agitation,sweating,outcome_status,finish_position,popularity,races!inner(racecourse,surface,distance,course,track_condition,race_class)')
-       .eq('races.racecourse',candidate.racecourse).eq('races.surface',candidate.surface)
-       .eq('races.distance',Number(candidate.distance)).eq('races.course',candidate.course)
-       .eq('races.track_condition',candidate.track_condition).order('id').range(offset,offset+size-1));
+       .select('id,chaka,awkward_gait,fast_walking,agitation,sweating,outcome_status,finish_position,popularity,races!inner(race_class)')
+       .order('id').range(offset,offset+size-1));
        if(token!==conditionRequest||state.summaryMode!=='condition')return;
        rows.push(...page);if(page.length<size)break;offset+=size;
      }
-     conditionRows=rows;state.conditionAppliedFilter=candidate;state.conditionExtra='';
-   }catch(e){if(token===conditionRequest){conditionRows=[];state.conditionAppliedFilter=null;conditionError='集計を取得できませんでした';notice(`状態集計を取得できませんでした：${e.message}`);}}
-   finally{if(token===conditionRequest){conditionBusy=false;renderConditionSummaryResult();$('filters').innerHTML=filterHTML();draft();}}
+     conditionRows=rows;conditionLoaded=true;state.conditionExtra='';
+   }catch(e){if(token===conditionRequest){conditionRows=[];conditionLoaded=false;conditionError='集計を取得できませんでした';notice(`状態集計を取得できませんでした：${e.message}`);}}
+   finally{if(token===conditionRequest){conditionBusy=false;renderConditionSummaryResult();draft();}}
  }
  function renderCombination(){const keys=[state.summaryCondition,state.conditionExtra];
    const result=conditionTools.summarize(conditionRows,keys),name=keys.map(esc).join(' × ');
@@ -378,16 +367,15 @@
  async function summary(){
    $('summary').classList.toggle('suitability-summary-view',state.summaryMode==='suitability');
    $('summary').classList.toggle('condition-summary-view',state.summaryMode==='condition');
+   $('filters').hidden=state.summaryMode==='condition';
    document.querySelectorAll('[data-summary-mode]').forEach(b=>{const selected=b.dataset.summaryMode===state.summaryMode;
      b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
    $('suitabilitySummaryPanel').hidden=state.summaryMode!=='suitability';
    $('conditionSummaryPanel').hidden=state.summaryMode!=='condition';
    if(state.summaryMode==='condition'){
-     ++summaryRequest;++detailRequest;summaryBusy=false;$('filters').innerHTML=filterHTML();
-     renderConditionSummaryChoices();renderConditionSummaryResult();
-     if(state.conditionAppliedFilter)await conditionSummary(true);
-     else if(!state.conditionInitialTried){state.conditionInitialTried=true;draft();
-       if(summaryTools.ready(state.filter))await conditionSummary();}
+     ++summaryRequest;++detailRequest;summaryBusy=false;
+     renderConditionSummaryChoices();
+     await conditionSummary();
    }else{++conditionRequest;conditionBusy=false;paintSuitabilitySummary();
      if(state.suitabilityAppliedFilter)await suitabilitySummary(true);
      else if(!state.suitabilityInitialTried){state.suitabilityInitialTried=true;draft();
@@ -408,8 +396,8 @@
    if(b.dataset.view){show(b.dataset.view);if(state.view==='summary'){window.scrollTo(0,0);await summary();}if(state.view==='records')await records();}
    else if(b.dataset.openSummary){state.summaryMode=b.dataset.openSummary;show('summary');window.scrollTo(0,0);await summary();}
    else if(b.dataset.summaryMode){if(state.summaryMode===b.dataset.summaryMode)return;state.summaryMode=b.dataset.summaryMode;draft();await summary();}
-   else if(b.dataset.summaryCondition){if(conditionPending()||conditionBusy)return;state.summaryCondition=b.dataset.summaryCondition;state.conditionExtra='';$('conditionCombinationResult').hidden=true;renderConditionSummaryChoices();renderConditionSummaryResult();draft();}
-   else if(b.dataset.conditionExtra){if(conditionPending()||conditionBusy)return;state.conditionExtra=b.dataset.conditionExtra;$('conditionExtraChoices').hidden=true;$('conditionCombinationResult').hidden=true;renderConditionSummaryResult();draft();}
+   else if(b.dataset.summaryCondition){state.summaryCondition=b.dataset.summaryCondition;state.conditionExtra='';$('conditionCombinationResult').hidden=true;renderConditionSummaryChoices();renderConditionSummaryResult();draft();}
+   else if(b.dataset.conditionExtra){if(!conditionLoaded||conditionBusy)return;state.conditionExtra=b.dataset.conditionExtra;$('conditionExtraChoices').hidden=true;$('conditionCombinationResult').hidden=true;renderConditionSummaryResult();draft();}
    else if(b.dataset.horseTab!==undefined){state.current=Number(b.dataset.horseTab);renderHorse();draft();}
    else if(b.dataset.raceBack){const mode=b.dataset.raceBack,m=raceMode(mode);clearTimeout(raceStepTimer[mode]);state[m.step]=Math.max(0,state[m.step]-1);renderFocusRace(mode);draft();}
    else if(b.dataset.raceNext){const mode=b.dataset.raceNext,m=raceMode(mode),[key,label]=suitSteps[state[m.step]];
@@ -467,7 +455,7 @@
      if(previous!==el.value&&['racecourse','surface','distance'].includes(key))delete state.filter.course;
      if(previous!==el.value)state.suitabilityAdvanced={race_class:'',popularity:''};
      syncSummaryFilters();$('filters').innerHTML=filterHTML();draft();
-     if(state.summaryMode==='condition')conditionControls();else summaryControls();}
+     summaryControls();}
    else if(el.id==='suitabilityClassFilter'||el.id==='suitabilityPopularityFilter'){
      state.suitabilityAdvanced[el.id==='suitabilityClassFilter'?'race_class':'popularity']=el.value;
      draft();await loadSuitabilityDetail();}
@@ -478,9 +466,8 @@
    state.horses.splice(at,0,newHorse(Number(rank)));state.current=at;renderHorse();draft();};
  $('saveSuitability').onclick=saveSuitability;$('saveCondition').onclick=saveCondition;
  $('runSuitabilitySummary').onclick=()=>suitabilitySummary();
- $('runConditionSummary').onclick=()=>conditionSummary();
- $('conditionExtraButton').onclick=()=>{if(conditionPending()||conditionBusy)return;$('conditionExtraChoices').hidden=!$('conditionExtraChoices').hidden;};
- $('runConditionCombination').onclick=()=>{if(conditionPending()||conditionBusy||!state.conditionExtra)return;renderCombination();};
+ $('conditionExtraButton').onclick=()=>{if(!conditionLoaded||conditionBusy)return;$('conditionExtraChoices').hidden=!$('conditionExtraChoices').hidden;};
+ $('runConditionCombination').onclick=()=>{if(!conditionLoaded||conditionBusy||!state.conditionExtra)return;renderCombination();};
  $('topComboList').onclick=e=>{if(summaryPending()||summaryBusy)return;const button=e.target.closest('[data-summary-choice]');if(button)summaryChoice(Number(button.dataset.summaryChoice));};
  $('detailsToggle').onclick=async()=>{if(summaryPending()||summaryBusy)return;const opening=$('summaryDetails').hidden;
    $('summaryDetails').hidden=!opening;$('detailsToggle').setAttribute('aria-expanded',String(opening));
