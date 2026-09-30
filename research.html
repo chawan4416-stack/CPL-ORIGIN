@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260930-65"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260930-66"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -10,7 +10,7 @@
 <section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
 <div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
 <button id="saveCondition" class="primary">状態と結果を保存</button></div><button type="button" class="summary-entry" data-open-summary="condition">状態研究 集計を見る <span aria-hidden="true">›</span></button></section>
-<section id="summary" class="view" hidden><div class="summary-mode-switch" aria-label="集計種別"><span class="active" aria-current="page">適性</span><button type="button" disabled title="準備中">状態</button></div><h1 id="summaryHeading" hidden>状態研究 集計</h1>
+<section id="summary" class="view" hidden><div class="summary-mode-switch" aria-label="集計種別"><button type="button" data-summary-mode="suitability" class="active" aria-pressed="true">適性</button><button type="button" data-summary-mode="condition" aria-pressed="false">状態</button></div>
   <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
   <div id="suitabilitySummaryPanel">
   <div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><button id="runSuitabilitySummary" type="button" disabled>この条件で集計</button><span id="sample"></span></div>
@@ -34,21 +34,21 @@
   <div id="summaryDetails" class="card summary-details" hidden><div class="suitability-detail-filters"><label>クラス<select id="suitabilityClassFilter"></select></label><label>人気<select id="suitabilityPopularityFilter"></select></label></div><p id="suitabilityDetailSample" class="detail-sample"></p><h2>胸前 × トモ　24通り</h2><div id="matrix"></div><h2 class="tone-heading">ハリ</h2><div id="suitabilityToneDetail"></div></div>
   </div>
   <div id="conditionSummaryPanel" hidden>
-    <div class="card condition-summary-select"><strong>状態</strong><div id="summaryConditionChoices" class="condition-summary-choices" role="group" aria-label="研究する状態"></div></div>
-    <div class="card condition-summary-main"><div class="summary-context"><strong id="conditionSummaryTitle"></strong></div><div class="condition-summary-heading"><strong id="conditionSelectedName"></strong><span id="conditionSample"></span></div>
-      <div id="conditionSummaryEmpty" class="summary-empty" hidden></div>
-      <div id="conditionMetrics" class="condition-metrics" hidden><div class="condition-placed-hero"><small>複勝圏</small><b id="conditionPlaced"></b></div>
-        <div class="condition-places"><span>1着 <b id="conditionFirst"></b></span><span>2着 <b id="conditionSecond"></b></span><span>3着 <b id="conditionThird"></b></span></div>
-        <div class="condition-other-row"><span>着外</span><b id="conditionOther"></b></div></div>
+    <div class="card condition-summary-select"><div class="summary-context"><strong id="conditionSummaryTitle">状態研究データ</strong><button id="runConditionSummary" type="button" disabled>この条件で集計</button><span id="conditionContextSample"></span></div>
+      <h2>状態を選択</h2><div id="summaryConditionChoices" class="condition-summary-choices" role="group" aria-label="研究する状態"></div></div>
+    <div class="card condition-summary-main"><div class="condition-summary-heading"><strong id="conditionSelectedName"></strong><span id="conditionSample"></span></div>
+      <div id="conditionSummaryEmpty" class="summary-empty"></div>
+      <div id="conditionMetrics" class="condition-metrics" hidden><div class="condition-metric"><small>複勝圏（1～3着）</small><b id="conditionPlaced"></b><span id="conditionPlacedCount"></span></div><div class="condition-metric"><small>着外（4着以下）</small><b id="conditionOther"></b><span id="conditionOtherCount"></span></div></div>
     </div>
-    <div id="conditionComparison" class="card condition-comparison" hidden></div>
-    <button id="conditionDetailsToggle" class="summary-details-button" type="button" hidden aria-expanded="false">詳細を見る <span aria-hidden="true">›</span></button>
-    <div id="conditionSummaryDetails" class="card condition-summary-details" hidden>
-      <div class="condition-advanced"><label>クラス<select id="conditionClassFilter"></select></label><label>人気<select id="conditionPopularityFilter"></select></label></div>
-      <h2>着順分布</h2><div id="conditionFinishDistribution"></div><p id="conditionSpecialCounts"></p>
+    <div id="conditionPopularity" class="card condition-breakdown" hidden><h2>人気帯別 複勝圏率</h2><div id="conditionPopularityList" class="condition-popularity-list"></div></div>
+    <div id="conditionClasses" class="card condition-breakdown" hidden><h2>クラス別 複勝圏率</h2><div id="conditionClassList" class="condition-class-list"></div></div>
+    <div id="conditionCombination" class="card condition-combination" hidden><h2>状態の組み合わせ研究</h2>
+      <div class="combination-picker"><span id="conditionBaseChip"></span><span aria-hidden="true">×</span><button id="conditionExtraButton" type="button">＋ 条件を追加</button></div>
+      <div id="conditionExtraChoices" class="condition-extra-choices" hidden></div><button id="runConditionCombination" type="button" disabled>この組み合わせで集計</button>
+      <div id="conditionCombinationResult" hidden></div>
     </div>
   </div>
 </section>
 <section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
 </section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="suitability-summary.js?v=20260929-61"></script><script src="condition-summary.js?v=20260929-1"></script><script src="research.js?v=20260930-65"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/beta-config.js?v=20260924-1"></script><script src="suitability-summary.js?v=20260929-61"></script><script src="condition-summary.js?v=20260930-66"></script><script src="research.js?v=20260930-66"></script></body></html>
