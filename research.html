@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://kczisspagwqzdvaeemir.supabase.co; object-src 'none'; base-uri 'self'">
-<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260930-67"></head>
+<title>CPL｜適性・状態研究 DEV</title><link rel="stylesheet" href="research.css?v=20260930-68"></head>
 <body><main class="app"><header><b>CPL <small>研究室・CPL-DEV</small></b><a href="index.html">HOME</a></header>
 <section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">CPL-DEVでログイン</button></section>
 <section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
@@ -9,7 +9,7 @@
 <section id="suitability" class="view"><div id="suitRace"></div><div id="suitHorseWork" hidden><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></div></section>
 <section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
 <div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
-<button id="saveCondition" class="primary">状態と結果を保存</button></div><button type="button" class="summary-entry" data-open-summary="condition">状態研究 集計を見る <span aria-hidden="true">›</span></button></section>
+<button id="saveCondition" class="primary">状態と結果を保存</button></div></section>
 <section id="summary" class="view" hidden><div class="summary-mode-switch" aria-label="集計種別"><button type="button" data-summary-mode="suitability" class="active" aria-pressed="true">適性</button><button type="button" data-summary-mode="condition" aria-pressed="false">状態</button></div>
   <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
   <div id="suitabilitySummaryPanel">
