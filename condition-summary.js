@@ -4,37 +4,34 @@
   else root.CPLConditionSummary=api;
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
-  const choices=['チャカつき','ぎこちない歩様','イレ込み・あり','イレ込み・強',
-    '発汗・あり','発汗・強','早歩き'];
-  function summarize(rows,key){
-    const selected=rows.filter(row=>row.condition_key===key);
-    const distribution=new Map();
-    let dnf=0,scratched=0;
-    for(const row of selected){
-      const count=Number(row.observations);
-      if(!Number.isSafeInteger(count)||count<0)throw Error('Invalid observation count');
-      if(row.outcome_status==='dnf')dnf+=count;
-      else if(row.outcome_status==='scratched')scratched+=count;
-      else if(row.outcome_status==='finished'){
-        const rank=Number(row.finish_position);
-        if(!Number.isInteger(rank)||rank<1||rank>18)throw Error('Invalid official finish');
-        distribution.set(rank,(distribution.get(rank)||0)+count);
-      }
-    }
-    const finishes=[...distribution].sort((a,b)=>a[0]-b[0]).map(([rank,count])=>({
-      rank,count,percentage:0
-    }));
-    const n=finishes.reduce((sum,row)=>sum+row.count,0);
-    const placed=finishes.filter(row=>row.rank<=3).reduce((sum,row)=>sum+row.count,0);
-    const other=n-placed;
-    for(const row of finishes)row.percentage=n?Math.round(row.count/n*1000)/10:0;
-    return {n,placed,other,dnf,scratched,finishes,
-      placedPercentage:n?Math.round(placed/n*1000)/10:null,
-      otherPercentage:n?Math.round(other/n*1000)/10:null};
+  const choices=['チャカつき','ぎこちない歩様','早歩き','イレ込み・あり','イレ込み・強','発汗・あり','発汗・強'];
+  const popularityBands=[{label:'1～3人気',min:1,max:3},{label:'4～6人気',min:4,max:6},{label:'7人気以下',min:7,max:18}];
+  const has=(row,key)=>({
+    'チャカつき':()=>row.chaka===true,
+    'ぎこちない歩様':()=>row.awkward_gait===true,
+    '早歩き':()=>row.fast_walking===true,
+    'イレ込み・あり':()=>row.agitation==='あり',
+    'イレ込み・強':()=>row.agitation==='強',
+    '発汗・あり':()=>row.sweating==='あり',
+    '発汗・強':()=>row.sweating==='強'
+  })[key]?.()===true;
+  const finished=row=>row.outcome_status==='finished'&&Number.isInteger(Number(row.finish_position))&&Number(row.finish_position)>=1;
+  const rate=(placed,n)=>n?Math.round(placed/n*1000)/10:null;
+  function summarize(rows,keys){
+    const selected=rows.filter(row=>keys.every(key=>has(row,key)));
+    const complete=selected.filter(finished);
+    const placed=complete.filter(row=>Number(row.finish_position)<=3).length;
+    const n=complete.length;
+    return {n,placed,other:n-placed,placedPercentage:rate(placed,n),otherPercentage:rate(n-placed,n),
+      dnf:selected.filter(row=>row.outcome_status==='dnf').length,
+      scratched:selected.filter(row=>row.outcome_status==='scratched').length};
   }
-  function comparison(rows,key){
-    const prefix=key?.startsWith('イレ込み・')?'イレ込み':key?.startsWith('発汗・')?'発汗':null;
-    return prefix?['あり','強'].map(level=>({level,...summarize(rows,`${prefix}・${level}`)})):null;
+  function analyze(rows,key,classValues){
+    const matching=rows.filter(row=>has(row,key));
+    return {key,total:matching.length,overall:summarize(matching,[]),
+      popularity:popularityBands.map(band=>({label:band.label,...summarize(matching.filter(row=>
+        Number(row.popularity)>=band.min&&Number(row.popularity)<=band.max),[])})),
+      classes:classValues.map(label=>({label,...summarize(matching.filter(row=>row.races?.race_class===label),[])}))};
   }
-  return Object.freeze({choices,summarize,comparison});
+  return Object.freeze({choices,popularityBands,has,summarize,analyze});
 });
