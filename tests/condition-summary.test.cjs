@@ -1,6 +1,6 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {summarize,analyze,has,choices}=require('../condition-summary.js');
+const {summarize,analyze,has,choices,classNames}=require('../condition-summary.js');
 const row=(finish_position,popularity,race_class,flags={})=>({
   id:crypto.randomUUID(),outcome_status:'finished',finish_position,popularity,
   races:{race_class},chaka:false,awkward_gait:false,fast_walking:false,agitation:null,sweating:null,...flags
@@ -56,4 +56,24 @@ test('all seven labels match persisted condition fields',()=>{
  assert.equal(has({fast_walking:true},'早歩き'),true);
  assert.equal(has({awkward_gait:true},'ぎこちない歩様'),true);
  assert.equal(has({sweating:'あり'},'発汗・強'),false);
+});
+
+test('the chosen state and AND combination span every race condition',()=>{
+ const records=[
+   {...row(1,1,'未勝利',{sweating:'強',agitation:'強'}),races:{racecourse:'東京',surface:'芝',race_class:'未勝利'}},
+   {...row(4,7,'G3',{sweating:'強',agitation:'強'}),races:{racecourse:'札幌',surface:'ダート',race_class:'G3'}},
+   {...row(3,5,'G1',{sweating:'強'}),races:{racecourse:'京都',surface:'芝',race_class:'G1'}}
+ ];
+ const selected=analyze(records,'発汗・強',['未勝利','G3','G1']);
+ assert.deepEqual([selected.overall.n,selected.overall.placed,selected.overall.other],[3,2,1]);
+ assert.deepEqual(selected.classes.map(x=>x.n),[1,1,1]);
+ assert.deepEqual([summarize(records,['発汗・強','イレ込み・強']).n,
+   summarize(records,['発汗・強','イレ込み・強']).placed],[2,1]);
+});
+
+test('class labels come from existing masters; maiden remains and newcomer is excluded',()=>{
+ const names=['新馬','未勝利','1勝クラス','2勝クラス','3勝クラス','リステッド','オープン','G3','G2','G1'];
+ const masters=['東京','札幌'].flatMap(field_key=>names.map(option_value=>({category:'RACE_CLASS',field_key,option_value})));
+ assert.deepEqual(classNames(masters),names.slice(1));
+ assert.equal(classNames(masters).includes('新馬'),false);
 });
