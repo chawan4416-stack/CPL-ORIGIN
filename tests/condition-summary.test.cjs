@@ -1,44 +1,59 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-const {summarize,comparison}=require('../condition-summary.js');
-const row=(condition_key,outcome_status,finish_position,observations=1)=>({condition_key,outcome_status,finish_position,observations});
+const {summarize,analyze,has,choices}=require('../condition-summary.js');
+const row=(finish_position,popularity,race_class,flags={})=>({
+  id:crypto.randomUUID(),outcome_status:'finished',finish_position,popularity,
+  races:{race_class},chaka:false,awkward_gait:false,fast_walking:false,agitation:null,sweating:null,...flags
+});
+const crypto=require('node:crypto');
 
-test('official finishes, ties and status exclusions use finished n',()=>{
- const rows=[row('チャカつき','finished',1),row('チャカつき','finished',3,2),
-   row('チャカつき','finished',4),row('チャカつき','finished',18),
-   row('チャカつき','dnf',null,3),row('チャカつき','scratched',null,2)];
- const result=summarize(rows,'チャカつき');
- assert.deepEqual([result.n,result.placed,result.other,result.dnf,result.scratched],[5,3,2,3,2]);
- assert.equal(result.placedPercentage,60);
- assert.deepEqual(result.finishes.map(x=>[x.rank,x.count,x.percentage]),[[1,1,20],[3,2,40],[4,1,20],[18,1,20]]);
+test('one chosen state uses official 1–3 versus 4+ and excludes special statuses',()=>{
+ const records=[row(1,1,'未勝利',{sweating:'強'}),row(3,4,'未勝利',{sweating:'強'}),row(4,7,'G3',{sweating:'強'}),row(18,8,'G3',{sweating:'強'}),
+   {...row(null,2,'未勝利',{sweating:'強'}),outcome_status:'dnf'},
+   {...row(null,null,'G3',{sweating:'強'}),outcome_status:'scratched'},
+   row(1,1,'G3',{sweating:'あり'})];
+ const result=analyze(records,'発汗・強',['未勝利','G3']);
+ assert.deepEqual([result.total,result.overall.n,result.overall.placed,result.overall.other,result.overall.dnf,result.overall.scratched],[6,4,2,2,1,1]);
+ assert.equal(result.overall.placedPercentage,50);
+ assert.equal(result.popularity[0].n,1);
+ assert.equal(result.popularity[1].n,1);
+ assert.equal(result.popularity[2].n,2);
+ assert.deepEqual(result.classes.map(x=>[x.label,x.n,x.placed]),[['未勝利',2,2],['G3',2,0]]);
 });
 
-test('multiple observed conditions are independent; unselected is not a normal control',()=>{
- const rows=[row('イレ込み・強','finished',8),row('発汗・強','finished',8),row('発汗・強','finished',1)];
- assert.equal(summarize(rows,'イレ込み・強').n,1);
- assert.equal(summarize(rows,'発汗・強').n,2);
- assert.equal(summarize(rows,'チャカつき').n,0);
+test('popularity bands use their own finished denominator and include 7–18',()=>{
+ const records=[row(1,1,'1勝クラス',{chaka:true}),row(4,3,'1勝クラス',{chaka:true}),row(2,4,'1勝クラス',{chaka:true}),
+   row(5,6,'1勝クラス',{chaka:true}),row(3,7,'1勝クラス',{chaka:true}),row(18,18,'1勝クラス',{chaka:true})];
+ const result=analyze(records,'チャカつき',['1勝クラス']);
+ assert.deepEqual(result.popularity.map(x=>[x.n,x.placed,x.placedPercentage]),[[2,1,50],[2,1,50],[2,1,50]]);
 });
 
-test('agitation and sweating intensity comparisons stay separate',()=>{
- const rows=[row('イレ込み・あり','finished',3,3),row('イレ込み・強','finished',4,2),
-   row('発汗・あり','finished',2),row('発汗・強','finished',5,3)];
- assert.deepEqual(comparison(rows,'イレ込み・あり').map(x=>[x.n,x.placed]),[[3,3],[2,0]]);
- assert.deepEqual(comparison(rows,'発汗・強').map(x=>[x.n,x.placed]),[[1,1],[3,0]]);
- assert.equal(comparison(rows,'早歩き'),null);
+test('AND matches the same observation once; different records do not combine',()=>{
+ const both=row(2,5,'オープン',{sweating:'強',agitation:'強'});
+ const records=[both,row(4,7,'オープン',{sweating:'強'}),row(1,2,'オープン',{agitation:'強'}),both];
+ // Database rows have unique IDs; the query returns each record once.
+ const unique=[...new Map(records.map(x=>[x.id,x])).values()];
+ const result=summarize(unique,['発汗・強','イレ込み・強']);
+ assert.deepEqual([result.n,result.placed,result.other],[1,1,0]);
+ assert.equal(summarize(unique,['発汗・強']).n,2);
+ assert.equal(summarize(unique,['イレ込み・強']).n,2);
 });
 
-test('zero and status-only results have no invented percentages or ranks',()=>{
- const absent=summarize([], '早歩き');
- const special=summarize([row('早歩き','dnf',null),row('早歩き','scratched',null)],'早歩き');
- for(const result of [absent,special]){
-   assert.equal(result.n,0);assert.equal(result.placedPercentage,null);
-   assert.equal(result.otherPercentage,null);assert.deepEqual(result.finishes,[]);
- }
- assert.deepEqual([special.dnf,special.scratched],[1,1]);
+test('selected state switches all breakdowns and zero never becomes 0 percent',()=>{
+ const records=[row(1,1,'G1',{sweating:'強'}),row(6,9,'未勝利',{agitation:'あり'})];
+ const sweat=analyze(records,'発汗・強',['未勝利','G1']);
+ const agitation=analyze(records,'イレ込み・あり',['未勝利','G1']);
+ assert.deepEqual([sweat.overall.placed,sweat.popularity[0].placed,sweat.classes[1].placed],[1,1,1]);
+ assert.deepEqual([agitation.overall.placed,agitation.popularity[2].other,agitation.classes[0].other],[0,1,1]);
+ assert.equal(sweat.classes[0].placedPercentage,null);
+ assert.equal(analyze([], '早歩き', ['G1']).overall.placedPercentage,null);
+ assert.equal(summarize(records,['発汗・強','イレ込み・強']).n,0);
+ assert.equal(summarize(records,['発汗・強','イレ込み・強']).otherPercentage,null);
 });
 
-test('numeric data is validated before percentages',()=>{
- assert.throws(()=>summarize([row('早歩き','finished',0)],'早歩き'));
- assert.throws(()=>summarize([row('早歩き','finished',1,-1)],'早歩き'));
+test('all seven labels match persisted condition fields',()=>{
+ assert.equal(choices.length,7);
+ assert.equal(has({fast_walking:true},'早歩き'),true);
+ assert.equal(has({awkward_gait:true},'ぎこちない歩様'),true);
+ assert.equal(has({sweating:'あり'},'発汗・強'),false);
 });
