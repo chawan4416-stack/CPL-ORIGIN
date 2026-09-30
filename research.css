@@ -357,8 +357,8 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 /* Suitability summary: filters, one fixed anatomy, three recorded combinations. */
 #summary{--summary-surface:#1c2520;--summary-work:#27332c;--summary-line:#4b5e50;color:#e4e9df}
 #summary h1{font-size:1.35rem;margin:14px 2px 10px;color:#e8ebe2}
-#summary .summary-mode-switch{display:inline-grid;grid-template-columns:76px 76px;gap:2px;margin:5px 2px 7px;padding:2px;border:1px solid #465b4a;border-radius:9px;background:#18221c}
-#summary .summary-mode-switch span,#summary .summary-mode-switch button{display:grid;place-items:center;min-height:36px;padding:4px 8px;border:0;border-radius:6px;font-size:14px;font-weight:700}
+#summary .summary-mode-switch{display:inline-grid;grid-template-columns:62px 62px;gap:2px;margin:2px 2px 3px;padding:2px;border:1px solid #465b4a;border-radius:9px;background:#18221c}
+#summary .summary-mode-switch span,#summary .summary-mode-switch button{display:grid;place-items:center;min-height:32px;padding:2px 6px;border:0;border-radius:6px;font-size:14px;font-weight:700}
 #summary .summary-mode-switch .active{background:#315e4d;color:#f1f5ed}
 #summary .summary-mode-switch button:disabled{background:transparent;color:#89978a;opacity:1;cursor:default}
 #summary:not(.suitability-summary-view) .summary-mode-switch{display:none}
@@ -413,7 +413,13 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .combo-row.active{border-color:#86bd98;background:#314b3a;box-shadow:inset 0 0 0 1px #86bd98}
 #summary .combo-row .combo-rank{font-weight:700;font-size:14px}
 #summary .combo-values{display:flex;gap:5px;align-items:center;min-width:0}
-#summary .combo-chip{display:flex;flex:0 1 auto;flex-direction:column;min-width:0;max-width:43%;padding:4px 7px;border-radius:7px;background:var(--chip-color);color:#1c2822;line-height:1.15;font-weight:750;text-align:center;font-size:14px;overflow:hidden;text-overflow:ellipsis}
+#summary .combo-chip{display:flex;flex:0 1 auto;flex-direction:column;min-width:0;max-width:43%;padding:4px 7px;border-radius:7px;background:color-mix(in srgb,var(--chip-color) 34%,#25332b);color:#e8ede5;line-height:1.15;font-weight:750;text-align:center;font-size:14px;overflow:hidden;text-overflow:ellipsis}
+#summary .combo-chip[data-eval="シャープ−"]{--chip-color:#94C6D9}
+#summary .combo-chip[data-eval="シャープ"]{--chip-color:#468FB4}
+#summary .combo-chip[data-eval="厚−"]{--chip-color:#E8D78E}
+#summary .combo-chip[data-eval="厚"]{--chip-color:#EAA54D}
+#summary .combo-chip[data-eval="重厚−"]{--chip-color:#E7A0A8}
+#summary .combo-chip[data-eval="重厚"]{--chip-color:#C95F70}
 #summary .combo-chip small{font-size:10px;font-weight:600}
 #summary .combo-times{color:#c6d5c7;font-size:15px}
 #summary .combo-count{font-size:13px;white-space:nowrap;text-align:right}
