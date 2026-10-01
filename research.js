@@ -311,6 +311,9 @@
  let conditionRequest=0,conditionRows=[],conditionBusy=false,conditionLoaded=false,conditionError='';
  const conditionClasses=()=>conditionTools.classNames(Object.values(state.masters).flat());
  const conditionPct=result=>result.n?`${result.placedPercentage.toFixed(1)}%`:'—';
+ const conditionExcludedText=result=>[
+   result.dnf?`競走中止 ${result.dnf}頭`:'',result.scratched?`出走取消 ${result.scratched}頭`:''
+ ].filter(Boolean).join(' / ');
  function conditionControls(){
    document.querySelectorAll('#conditionExtraButton,#conditionExtraChoices button,#runConditionCombination')
      .forEach(el=>el.disabled=!conditionLoaded||conditionBusy||el.id==='runConditionCombination'&&!state.conditionExtra);
@@ -323,7 +326,10 @@
  function renderConditionSummaryResult(){
    const ready=conditionLoaded,result=conditionTools.analyze(conditionRows,state.summaryCondition,conditionClasses());
    $('conditionSelectedName').textContent=`${state.summaryCondition} の成績`;
-   $('conditionSample').textContent=ready?`n = ${result.overall.n}頭`:'';
+   $('conditionSample').textContent=ready?`n=${result.overall.n}頭（完走）`:'';
+   const excluded=ready?conditionExcludedText(result.overall):'';
+   $('conditionExcluded').textContent=excluded?`集計対象外：${excluded}`:'';
+   $('conditionExcluded').hidden=!excluded;
    $('conditionSummaryEmpty').textContent=conditionError||(ready?'該当データなし':'集計中…');
    $('conditionSummaryEmpty').hidden=ready&&result.overall.n>0;
    $('conditionMetrics').hidden=!ready||!result.overall.n;
@@ -359,10 +365,11 @@
  }
  function renderCombination(){const keys=[state.summaryCondition,state.conditionExtra];
    const result=conditionTools.summarize(conditionRows,keys),name=keys.map(esc).join(' × ');
+   const excluded=conditionExcludedText(result);
    $('conditionCombinationResult').hidden=false;
-   $('conditionCombinationResult').innerHTML=`<h3>${name} の成績 <small>n = ${result.n}頭</small></h3>${result.n?
+   $('conditionCombinationResult').innerHTML=`<h3>${name} の成績 <small>n=${result.n}頭（完走）</small></h3>${result.n?
      `<div class="condition-metrics"><div class="condition-metric"><small>複勝圏（1～3着）</small><b>${result.placedPercentage.toFixed(1)}%</b><span>${result.placed}頭 / ${result.n}頭</span></div><div class="condition-metric"><small>着外（4着以下）</small><b>${result.otherPercentage.toFixed(1)}%</b><span>${result.other}頭 / ${result.n}頭</span></div></div>`:
-     '<p class="condition-none">該当データなし　n=0</p>'}`;
+     '<p class="condition-none">該当データなし　n=0</p>'}${excluded?`<p class="condition-excluded">集計対象外：${esc(excluded)}</p>`:''}`;
  }
  async function summary(){
    $('summary').classList.toggle('suitability-summary-view',state.summaryMode==='suitability');

@@ -508,6 +508,8 @@ nav{grid-template-columns:repeat(4,minmax(0,1fr))}
 #summary #conditionCombinationResult h3{margin:0 0 8px;font-size:15px}
 #summary #conditionCombinationResult h3 small{font-size:12px;color:#c5d3c5}
 #summary .condition-none{color:#c7d4c6}
+#summary .condition-excluded{margin:8px 0 0;color:#c7d4c6;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+#summary .condition-breakdown h2 small{font-size:12px;font-weight:400;color:#bdcabe;white-space:nowrap}
 @media(max-width:390px){#summary .condition-summary-choices button{font-size:11px}#summary .condition-stat strong,#summary .condition-stat span{font-size:10px}}
 
 /* Keep the suitability 4 x 6 matrix in view on portrait phones. */
