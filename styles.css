@@ -39,3 +39,17 @@
 .phase-uphill{--phase:#ef6d68;--phase-border:#8a4542;--phase-bg:#351817;--phase-glow:rgba(239,109,104,.14)}.phase-downhill{--phase:#63a9e8;--phase-border:#3e6f98;--phase-bg:#142b3d;--phase-glow:rgba(99,169,232,.14)}.phase-corner{--phase:#62be72;--phase-border:#407d4a;--phase-bg:#17351d;--phase-glow:rgba(98,190,114,.14)}.phase-straight{--phase:#e6c65a;--phase-border:#897735;--phase-bg:#383014;--phase-glow:rgba(230,198,90,.14)}.phase-goal{--phase:#e978aa;--phase-border:#914b6c;--phase-bg:#3b1828;--phase-glow:rgba(233,120,170,.14)}
 .structure-summary{margin:4px 0 0;padding-top:14px;border-top:1px solid #26352a;color:#c8d8c4;font-size:13px;font-weight:700;line-height:1.7}
 @media(max-width:390px){.structure-phase{flex-basis:164px;min-height:184px;padding-left:15px;padding-right:14px}.structure-phase h3{font-size:18px}.structure-phase p{font-size:11px}}
+/* CPL-DEV HOME panoramas: show the original compositions without cropping. */
+#loginView .login-card{max-width:608px}
+#loginView .entrance-visual,#homeView .home-visual{display:block;width:100%;height:auto;max-width:100%;border-radius:16px;background:#12100e}
+#loginView .entrance-copy{max-width:420px;margin:14px auto 0}
+#loginView .entrance-copy .mark{font-size:26px}
+#loginView .entrance-copy h1{font-size:18px;margin:4px 0}
+#loginView .entrance-copy p{margin:0 0 14px}
+#loginView .entrance-copy .error{margin:10px 0 0}
+#homeView .home-title p{margin-bottom:12px;color:#c5cec3;line-height:1.5}
+#homeView .home-visual{margin:0 0 14px}
+#homeView .home-entry{display:block;min-height:54px;margin:0 0 18px;padding:14px 18px;background:#1c3027;border-color:#63816e;text-align:center}
+#homeView .home-entry small{color:#c5cec3}
+#homeView .home-entry:focus-visible{outline:2px solid #dce8d5;outline-offset:3px}
+@media(max-width:480px){#loginView .entrance-visual,#homeView .home-visual{width:calc(100% + 24px);max-width:none;margin-left:-12px;margin-right:-12px;border-radius:12px}#homeView .home-visual{margin-bottom:14px}}
