@@ -361,7 +361,7 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .summary-mode-switch span,#summary .summary-mode-switch button{display:grid;place-items:center;min-height:32px;padding:2px 6px;border:0;border-radius:6px;font-size:14px;font-weight:700}
 #summary .summary-mode-switch .active{background:#315e4d;color:#f1f5ed}
 #summary .summary-mode-switch button:disabled{background:transparent;color:#89978a;opacity:1;cursor:default}
-#summary:not(.suitability-summary-view) .summary-mode-switch{display:none}
+#summary .summary-mode-switch button{cursor:pointer}
 #summary .card{background:var(--summary-surface);box-shadow:none;border:1px solid #36483a}
 #summary .summary-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;padding:14px;margin:0 0 10px}
 #summary .summary-filters label{min-width:0;color:#b5c2b5;font-size:13px}
@@ -453,3 +453,45 @@ nav{grid-template-columns:repeat(4,minmax(0,1fr))}
  #summary #suitabilitySummaryPanel #matrix .label{font-size:11px;line-height:1.25}
  #summary #suitabilitySummaryPanel #matrix .matrix-head{min-width:0;font-size:11px;line-height:1.25;word-break:normal;overflow-wrap:anywhere;align-self:end}
 }
+
+/* State research summary Ver.1.0; state panel only. */
+#summary #conditionSummaryPanel .card{padding:14px;margin:0 0 10px}
+#summary .condition-summary-select strong{display:block;margin-bottom:8px;font-size:15px}
+#summary .condition-summary-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#summary .condition-summary-choices button{min-width:0;min-height:44px;padding:7px 5px;background:#2d3b32;border-color:#526657;color:#e5ebe2;font-size:13px}
+#summary .condition-summary-choices button.active{background:#305641;border-color:#87b99a;box-shadow:inset 0 0 0 1px #87b99a}
+#summary .condition-summary-heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 12px;margin-top:5px}
+#summary .condition-summary-heading strong{font-size:16px}
+#summary .condition-summary-heading span{font-size:13px;color:#bdcabe}
+#summary .condition-metrics{margin-top:10px}
+#summary #conditionSummaryPanel [hidden]{display:none!important}
+#summary #conditionSummaryPanel[hidden]{display:none!important}
+#summary #conditionSummaryPanel .condition-summary-select{padding:11px 14px;margin-bottom:7px}
+#summary .condition-summary-select h2{margin:0 0 8px;font-size:15px}
+#summary .condition-summary-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#summary .condition-summary-choices button{min-height:44px;padding:6px 3px;font-size:12px}
+#summary #conditionSummaryPanel .condition-summary-main{padding:14px}
+#summary .condition-summary-heading{justify-content:space-between}
+#summary .condition-summary-heading strong{font-size:17px}
+#summary .condition-summary-main .summary-empty{min-height:68px}
+#summary .condition-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#summary .condition-metric{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:108px;padding:10px 5px;border:1px solid #526a56;border-radius:10px;background:#304539;text-align:center}
+#summary .condition-metric small{font-size:12px;color:#c3d3c3}
+#summary .condition-metric b{font-size:26px;line-height:1.4;color:#eef1e8}
+#summary .condition-metric span{font-size:12px;color:#cfddcf}
+#summary .condition-breakdown h2,#summary .condition-combination h2{margin:0 0 10px;font-size:16px}
+#summary .condition-popularity-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#summary .condition-class-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#summary .condition-stat{display:flex;flex-direction:column;justify-content:center;min-height:80px;padding:7px 3px;border:1px solid #526657;border-radius:8px;background:#2b3b32;text-align:center}
+#summary .condition-stat strong{font-size:11px;line-height:1.25}
+#summary .condition-stat b{font-size:18px;line-height:1.4}
+#summary .condition-stat span{font-size:11px;color:#c3d0c1}
+#summary #conditionCombinationResult{display:grid;gap:10px}
+#summary .condition-combination-card{min-width:0;padding:10px;border:1px solid #49604d;border-radius:8px}
+#summary .condition-combination-card .condition-metric{min-height:76px;padding:6px 4px}
+#summary .condition-combination-card .condition-metric b{font-size:22px}
+#summary #conditionCombinationResult h3{margin:0 0 8px;font-size:15px}
+#summary #conditionCombinationResult h3 small{font-size:12px;color:#c5d3c5}
+#summary .condition-none{color:#c7d4c6}
+#summary .condition-excluded{margin:8px 0 0;color:#c7d4c6;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+@media(max-width:390px){#summary .condition-summary-choices button{font-size:11px}#summary .condition-stat strong,#summary .condition-stat span{font-size:10px}}
