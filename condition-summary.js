@@ -38,5 +38,12 @@
         Number(row.popularity)>=band.min&&Number(row.popularity)<=band.max),[])})),
       classes:classValues.map(label=>({label,...summarize(matching.filter(row=>row.races?.race_class===label),[])}))};
   }
-  return Object.freeze({choices,popularityBands,classNames,has,summarize,analyze});
+  function combinations(rows,key){
+    const matching=rows.filter(row=>has(row,key));
+    return choices.filter(other=>other!==key).flatMap(other=>{
+      const observed=matching.filter(row=>has(row,other));
+      return observed.length?[{key,otherState:other,observed:observed.length,...summarize(observed,[])}]:[];
+    });
+  }
+  return Object.freeze({choices,popularityBands,classNames,has,summarize,analyze,combinations});
 });
