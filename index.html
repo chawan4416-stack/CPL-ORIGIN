@@ -10,6 +10,7 @@
 #homeView .home-entry small{color:#c5cec3}
 #homeView .home-entry:focus-visible{outline:2px solid #dce8d5;outline-offset:3px}
 @media(max-width:480px){#loginView .entrance-visual,#homeView .home-visual{width:calc(100% + 24px);max-width:none;margin-left:-12px;margin-right:-12px;border-radius:12px}#homeView .home-visual{margin-bottom:14px}}
+#app.auth-pending>.topbar{display:none}
 #app:has(#loginView:not(.hidden)) .topbar{display:none}
 #loginView.center{display:grid;place-items:center;min-height:calc(100svh - 40px);padding-top:max(24px, env(safe-area-inset-top));padding-bottom:max(24px, env(safe-area-inset-bottom))}
 #loginView .entrance-frame{width:100%}
@@ -20,8 +21,8 @@
 #loginView .google-login:disabled{opacity:.55;cursor:not-allowed}
 #loginView #configError{margin:12px 0 0}
 @media(max-width:480px){#loginView .entrance-frame{width:calc(100% + 24px);margin-left:-12px;margin-right:-12px}#loginView .entrance-frame .entrance-visual{border-radius:12px}}</style></head>
-<body><main id="app" class="app"><header class="topbar"><div class="brand">CPL</div><button id="logout" class="text-button hidden">ログアウト</button></header>
-<section id="loginView" class="view center"><div class="login-card"><div class="entrance-frame"><img class="entrance-visual" src="assets/cpl-login-entrance-no-button.png?v=20261002-login-3" width="2069" height="760" alt="夜のCPL研究室の入口に並ぶ馬と研究員。中央にCPLの名称" decoding="async"></div><button id="login" class="google-login" type="button"><svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.24c0-.78-.07-1.53-.2-2.24H12v4.26h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.38Z"/><path fill="#34A853" d="M12 21.72c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.59-1.98.94-3.31.94-2.54 0-4.7-1.72-5.47-4.03H3.3v2.5A9.73 9.73 0 0 0 12 21.72Z"/><path fill="#FBBC05" d="M6.53 13.85a5.85 5.85 0 0 1 0-3.7v-2.5H3.3a9.73 9.73 0 0 0 0 8.7l3.23-2.5Z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.72.49 3.73 1.46l2.8-2.8A9.36 9.36 0 0 0 12 2.28a9.73 9.73 0 0 0-8.7 5.37l3.23 2.5c.77-2.31 2.93-4.03 5.47-4.03Z"/></svg><span>Googleでログイン</span></button><p id="configError" class="error hidden"></p></div></section>
+<body><main id="app" class="app auth-pending"><header class="topbar"><div class="brand">CPL</div><button id="logout" class="text-button hidden">ログアウト</button></header>
+<section id="loginView" class="view center hidden"><div class="login-card"><div class="entrance-frame"><img class="entrance-visual" src="assets/cpl-login-entrance-no-button.png?v=20261002-login-3" width="2069" height="760" alt="夜のCPL研究室の入口に並ぶ馬と研究員。中央にCPLの名称" decoding="async"></div><button id="login" class="google-login" type="button"><svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.24c0-.78-.07-1.53-.2-2.24H12v4.26h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.38Z"/><path fill="#34A853" d="M12 21.72c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.59-1.98.94-3.31.94-2.54 0-4.7-1.72-5.47-4.03H3.3v2.5A9.73 9.73 0 0 0 12 21.72Z"/><path fill="#FBBC05" d="M6.53 13.85a5.85 5.85 0 0 1 0-3.7v-2.5H3.3a9.73 9.73 0 0 0 0 8.7l3.23-2.5Z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.72.49 3.73 1.46l2.8-2.8A9.36 9.36 0 0 0 12 2.28a9.73 9.73 0 0 0-8.7 5.37l3.23 2.5c.77-2.31 2.93-4.03 5.47-4.03Z"/></svg><span>Googleでログイン</span></button><p id="configError" class="error hidden"></p></div></section>
     <section id="homeView" class="view hidden">
       <div class="home-title"><h1>研究室</h1><p>適性と状態を、レースの事実から記録します。</p></div>
       <img class="home-visual" src="assets/cpl-home-paddock.jpg?v=20261002-home-1" width="1536" height="564" alt="夜のCPL研究室とパドックを見渡す風景" decoding="async">
@@ -37,11 +38,13 @@
     login.disabled=true;
     message.textContent='正式環境の設定を確認できません。';
     message.classList.remove('hidden');
+    show(null);
     return;
   }
   const db=window.supabase.createClient(window.CPL_SUPABASE_URL,window.CPL_SUPABASE_KEY,
     {auth:{storageKey:`cpl-web-${ref}-research-v1-auth`}});
   function show(session) {
+    $('app').classList.remove('auth-pending');
     $('loginView').classList.toggle('hidden',!!session);
     $('homeView').classList.toggle('hidden',!session);
     logout.classList.toggle('hidden',!session);
@@ -54,7 +57,7 @@
   logout.addEventListener('click',()=>db.auth.signOut());
   db.auth.onAuthStateChange((event,session)=>{if(event!=='TOKEN_REFRESHED')show(session);});
   db.auth.getSession().then(({data,error})=>{
-    if(error){message.textContent=`セッション取得失敗: ${error.message}`;message.classList.remove('hidden');}
+    if(error){message.textContent=`セッション取得失敗: ${error.message}`;message.classList.remove('hidden');show(null);}
     else show(data.session);
   });
 })();</script></body></html>
