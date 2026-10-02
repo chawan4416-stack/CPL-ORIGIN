@@ -53,3 +53,50 @@ Site URL／allow-listのDashboard実値は2026-10-02の読取経路では取得�
 - live table/routine/sequence grantsとdefault privilegesを照合
 - RLSによるユーザー分離をテスト用ユーザーで確認
 - 既存の本番研究データを破壊する試験は行わない
+
+
+## Git tag `v1.0.0` を手動作成する場合
+
+2026-10-02時点でGitHubに `v1.0.0` はなく、接続済みGitHub APIではtag作成ができなかった。端末のGitHub認証情報を作ったり要求したりしない方針のため、tagは未作成。手動で実施する場合は、正しいリポジトリのローカルcloneで以下を行う。
+
+1. originが `chawan4416-stack/CPL-ORIGIN` を指すことを確認し、`git fetch origin supabase-v1` を実行。
+2. `git cat-file -e f481363ba48a5a701a32013ec7c7e5e141190699^{commit}` が成功することを確認。
+3. `git ls-remote --tags origin refs/tags/v1.0.0` でリモート同名tagがないことを確認する。存在する場合は中断し、上書きしない。
+4. ローカルにも同名tagがないことを確認する。存在する場合は対象commitを調べ、勝手に移動・削除しない。
+5. ない場合だけ以下を実行する。
+
+```sh
+git tag -a v1.0.0 f481363ba48a5a701a32013ec7c7e5e141190699 -m "CPL Ver.1.0 application baseline"
+git push origin refs/tags/v1.0.0
+```
+
+6. `git ls-remote --tags origin refs/tags/v1.0.0` と `git rev-parse v1.0.0^{commit}` を確認し、tagが上記baselineを指すことを照合する。
+
+**`-f` / force pushは使わない。** この手順はアプリケーションブランチを動かさない。
+
+
+## Git tag `v1.0.0` を手動作成する場合
+
+GitHub上では現時点でtagがなく、利用中のGitHub接続ではtag作成操作が提供されない。ローカルGitからもpush認証できなかったため未作成。作成時は完成記録内の「Git tag v1.0.0を手動作成する場合」の確認手順を使う。対象は必ず `f481363ba48a5a701a32013ec7c7e5e141190699`。同名tagがある場合は中断し、force pushしない。
+
+## 2026-10-02 最終分類と復元試験結果
+
+- **A — schema:** バックアップのカタログには11 public tablesの列、types/defaults相当の情報、PK/FK、69 constraints、26 indexes、11 RLS flags、23 policies、15 public functions/RPC、5 triggers、5 extensions、GRANTとdefault privilegesの値がある。直接実行可能な一括schema DDLではない。必要なDDLとowner設定をmigrationと照合して再構成する必要があり、その作業は未実施。
+- **B — data:** 11 public tables計476 rowsのJSON、空スキーマ向けのdata replay SQLあり。内訳はmaster_options 472、course_research 2、research_hypotheses 2、他8テーブル0。JSON/manifest/checksumと復元用payloadをローカル検査済み。PostgreSQLでのSQL実行はしていない。
+- **C — migration:** baseline repositoryに26 migration files、正式DB ledgerに13 records。0001–0015のledger entryがなく、0016/0017相当は別名で記録。2026-09-30の権限変更2件に対応するsource SQLも `supabase/migrations` にない。順次replayで現行DBを再現できるとは確認できない。既存migrationは変更しない。
+- **D — Supabase手動設定:** Google OAuth Provider/secret、Site URL、Redirect URL allow list、project keys/project URL、Auth Dashboard設定。秘密値はバックアップ・公開Gitに入れず、既存の安全な保管元から手動復旧する。
+- **E — 現バックアップから欠落:** `auth.users` 個人情報、秘密credential、Supabase Auth Dashboard設定のexport、native `pg_dump`、検証済みschema+data一括restore。
+
+### 試験先とnative dump
+
+作業環境に `postgres`、`initdb`、`pg_ctl`、`psql`、`pg_dump`、Docker、Podman、Supabase CLIは見つからず、ローカルDBでのrestore環境は利用できなかった。Supabase formal projectに既存のbranchもなかった。Supabase公式情報ではPreview Branchは別environmentだがcompute等のusage chargesが発生し得る。費用確認・branch作成は行わず、有料Supabase projectも作っていない。
+
+Supabase公式のplatform dump手順は `supabase db dump`、Docker内の `pg_dump`、DB接続文字列/passwordを必要とする。今回はCLI/DockerとDB接続credentialが利用できないため**native pg_dump未取得**。正式DB/CPL-DEVへDDL/DML/restoreは一切実行していない。
+
+### 復元可能な範囲・将来必要なもの
+
+現スナップショットから public dataは、同じschemaが別途用意された空のDBへ再投入できる形で保管されている。public schemaの構造・RLS・ACL定義の照合資料もある。一方、schema構築を行う完全SQLと実行済みrestore検証が不足しているため、「ZIPだけで即時・完全復旧できる」とは言えない。
+
+実復元が必要になったら、正式/DEVとは独立した使い捨て環境を先に確保する。追加課金が発生する環境を使う前に料金を明示確認する。完全なnative dumpを再取得する場合はSupabase CLI、Docker、DB接続文字列/passwordを安全なsecret入力経路で用意し、role/schema/data dumpを取得する。まずmigrationとlive catalogを照合してschema/ACLを再現し、次にdata replay、件数・RLS・policy・function・trigger・GRANTを比較する。Auth Provider、Site URL、Redirect URLsはDashboardで手動再設定・確認する。試験完了まで本番またはCPL-DEVへのrestoreは禁止。
+
+公式参照：<https://supabase.com/docs/guides/self-hosting/restore-from-platform> および <https://supabase.com/docs/guides/platform/manage-your-usage/branching>。
