@@ -82,7 +82,7 @@ Supabase project ref：`ekgislctkribtztazvsd`（PostgreSQL 17.6.1.166、ap-north
 
 ## migration監査
 
-完成基準commitのリポジトリには `supabase/migrations/0001_cpl_v1.sql`〜`0026_condition_focus_model.sql` の26ファイルがある。一方、live migration ledgerは13件で、0001〜0017の番号の行がなく、2026-09-30のTRUNCATE権限／default privileges関連2件は `supabase/migrations` 内に対応ファイルがない。DBのread-only snapshotは保存したが、migration replayのみで現行DBを再構成できるとは確認できていない。詳細は復元手順書の制約を参照。
+完成基準commitのリポジトリには `supabase/migrations/0001_cpl_v1.sql`〜`0026_condition_focus_model.sql` の26ファイルがある。一方、live migration ledgerは13件で、0001〜0015に対応するledger行がなく、0016・0017の変更は番号なしのmigration名で記録され、2026-09-30のTRUNCATE権限／default privileges関連2件は `supabase/migrations` 内に対応ファイルがない。DBのread-only snapshotは保存したが、migration replayのみで現行DBを再構成できるとは確認できていない。詳細は復元手順書の制約を参照。
 
 ## 正式公開asset照合
 
