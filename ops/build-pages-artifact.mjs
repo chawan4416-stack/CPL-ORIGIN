@@ -8,7 +8,7 @@ const output=process.argv[2]&&resolve(process.argv[2]);
 if(!output||output===root||output.startsWith(root+'/'))throw Error('An unused output directory outside the repository is required');
 try{await readdir(output);throw Error('Output directory must not exist');}
 catch(error){if(error.code!=='ENOENT')throw error;}
-const files=['index.html','research.html','research.css','research.js','suitability-summary.js','assets/horse-ink-diagram.webp','auth-return.js','supabase/config.js','privacy.html','assets/nakayama-turf-inner.png','assets/nakayama-turf-outer.png','assets/nakayama-dirt.png','assets/nakayama-course-3d-jra.jpg','assets/cpl-login-entrance-no-button.png','assets/cpl-home-paddock.jpg'];
+const files=['index.html','research.html','research.css','research.js','suitability-summary.js','assets/horse-ink-diagram.webp','auth-return.js','supabase/config.js','privacy.html','assets/nakayama-turf-inner.png','assets/nakayama-turf-outer.png','assets/nakayama-dirt.png','assets/nakayama-course-3d-jra.jpg','assets/cpl-login-entrance-no-button.png','assets/cpl-home-paddock.jpg','assets/cpl-app-icon-180.png'];
 const prodRef='ekgislctkribtztazvsd',devRef='kczisspagwqzdvaeemir';
 const config=await readFile(join(root,'supabase/config.js'),'utf8');
 const page=await readFile(join(root,'research.html'),'utf8');
