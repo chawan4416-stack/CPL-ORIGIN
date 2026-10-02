@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://ekgislctkribtztazvsd.supabase.co; object-src 'none'; base-uri 'self'">
+<title>CPL｜適性・状態研究</title><link rel="stylesheet" href="research.css?v=20261001-condition-v1"></head>
+<body><main class="app"><header><b>CPL <small>研究室</small></b><a href="index.html">HOME</a></header>
+<section id="auth"><h1>研究室</h1><p>Googleログインして研究を始めます。</p><button id="login">Googleでログイン</button></section>
+<section id="workspace" hidden><nav><button data-view="suitability">適性研究</button><button data-view="condition">状態研究</button><button data-view="summary">集計</button><button data-view="records">記録</button></nav>
+<div id="message" role="status" aria-live="polite" hidden><span id="messageText"></span><button id="messageDismiss" type="button" aria-label="通知を閉じる">閉じる</button></div>
+<section id="suitability" class="view"><div id="suitRace"></div><div id="suitHorseWork" hidden><div class="card suitability-card"><div id="horseTabs" class="tabs" aria-label="着順を選択"></div><div id="horseEditor"></div><button id="addHorse" class="secondary">＋ 同着馬を追加</button></div><button id="saveSuitability" class="primary">適性を保存</button></div></section>
+<section id="condition" class="view" hidden><div id="conditionRace"></div><div id="conditionWork" hidden>
+<div class="card condition-card"><div id="conditionResult"></div><div class="condition-group"><strong>気になった状態</strong><div id="conditionChoices" class="condition-choices"></div></div></div>
+<button id="saveCondition" class="primary">状態と結果を保存</button></div></section>
+<section id="summary" class="view" hidden><div class="summary-mode-switch" aria-label="集計種別"><button type="button" data-summary-mode="suitability" class="active" aria-pressed="true">適性</button><button type="button" data-summary-mode="condition" aria-pressed="false">状態</button></div>
+  <div id="filters" class="card summary-filters" aria-label="基本検索条件"></div>
+  <div id="suitabilitySummaryPanel"><div class="card summary-figure-card"><div class="summary-context"><strong id="summaryTitle"></strong><button id="runSuitabilitySummary" type="button" disabled>この条件で集計</button><span id="sample"></span></div>
+    <div id="summaryEmpty" class="summary-empty" hidden></div>
+    <div id="summaryVisual" hidden><div class="horse-art" id="horseArt" role="img" aria-label="胸前とトモの選択された組み合わせ">
+      <svg viewBox="0 0 1536 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs><mask id="horseBodyMask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1024" style="mask-type:alpha"><image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/></mask></defs>
+        <image href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
+        <!-- Fixed anatomical paths; only their fill colors change with the selected result. -->
+        <path id="horseChestFill" class="horse-patch" mask="url(#horseBodyMask)" d="M483 376 L478 397 L473 424 L472 456 L466 482 L468 505 L479 531 L497 547 L515 561 L531 565 L545 564 L566 554 L590 555 L609 555 L627 545 L642 531 L651 511 L658 489 L663 469 L664 447 L654 436 L639 425 L622 416 L603 407 L583 398 L561 387 L539 380 L518 373 L499 370 Z"/>
+        <path id="horseHindFill" class="horse-patch" mask="url(#horseBodyMask)" d="M997 273 L1011 263 L1035 254 L1062 246 L1090 242 L1117 243 L1145 249 L1172 257 L1198 269 L1222 284 L1244 301 L1262 320 L1275 340 L1282 362 L1285 386 L1283 412 L1279 443 L1271 482 L1260 518 L1242 550 L1220 567 L1200 568 L1186 560 L1171 552 L1157 547 L1139 542 L1120 540 L1105 537 L1089 530 L1078 519 L1066 508 L1051 495 L1037 480 L1025 463 L1014 442 L1006 420 L999 393 L994 366 L993 339 L994 312 Z"/>
+        <!-- The original ink sits above the fills, preserving contours and muscle hatching. -->
+        <image class="horse-ink-front" href="assets/horse-ink-diagram.webp" width="1536" height="1024"/>
+        <path class="horse-callout chest-callout" d="M301 686 L568 458"/><circle class="horse-dot chest-dot" cx="568" cy="458" r="9"/>
+        <path class="horse-callout hind-callout" d="M1312 158 L1154 382"/><circle class="horse-dot hind-dot" cx="1154" cy="382" r="9"/>
+      </svg><span class="horse-tag chest-tag"><small>胸前</small><b id="chestValue"></b></span><span class="horse-tag hind-tag"><small>トモ</small><b id="hindValue"></b></span>
+    </div></div>
+  </div>
+  <div id="topCombos" class="card summary-top" hidden><h2>上位の馬体組み合わせ</h2><div id="topComboList"></div></div>
+  <button id="detailsToggle" class="summary-details-button" type="button" hidden aria-expanded="false">詳細を見る <span aria-hidden="true">›</span></button>
+  <div id="summaryDetails" class="card summary-details" hidden><div class="suitability-detail-filters"><label>クラス<select id="suitabilityClassFilter"></select></label><label>人気<select id="suitabilityPopularityFilter"></select></label></div><p id="suitabilityDetailSample" class="detail-sample"></p><h2>胸前 × トモ　24通り</h2><div id="matrix"></div><h2 class="tone-heading">ハリ</h2><div id="suitabilityToneDetail"></div></div></div>
+  <div id="conditionSummaryPanel" hidden>
+    <div class="card condition-summary-select"><h2>状態を選択</h2><div id="summaryConditionChoices" class="condition-summary-choices" role="group" aria-label="研究する状態"></div></div>
+    <div class="card condition-summary-main"><div class="condition-summary-heading"><strong id="conditionSelectedName"></strong><span id="conditionSample"></span></div>
+      <div id="conditionSummaryEmpty" class="summary-empty"></div>
+      <div id="conditionMetrics" class="condition-metrics" hidden><div class="condition-metric"><small>複勝圏（1～3着）</small><b id="conditionPlaced"></b><span id="conditionPlacedCount"></span></div><div class="condition-metric"><small>着外（4着以下）</small><b id="conditionOther"></b><span id="conditionOtherCount"></span></div></div>
+      <p id="conditionExcluded" class="condition-excluded" hidden></p>
+    </div>
+    <div id="conditionPopularity" class="card condition-breakdown" hidden><h2>人気帯別 複勝圏率</h2><div id="conditionPopularityList" class="condition-popularity-list"></div></div>
+    <div id="conditionClasses" class="card condition-breakdown" hidden><h2>クラス別 複勝圏率</h2><div id="conditionClassList" class="condition-class-list"></div></div>
+    <div id="conditionCombination" class="card condition-combination" hidden><h2>状態の組み合わせ研究</h2>
+      <div id="conditionCombinationResult" hidden></div>
+    </div>
+  </div>
+</section>
+<section id="records" class="view" hidden><h1>研究記録</h1><div id="recordsList"></div><div class="account-actions"><button id="logout" class="secondary">ログアウト</button></div></section>
+</section></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script src="suitability-summary.js?v=20260930-65"></script><script src="research.js?v=20261001-condition-v1"></script></body></html>
