@@ -1,8 +1,60 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#090e0b"><title>CPL｜Chawan Paddock Labs</title>
-<link rel="stylesheet" href="research.css?v=20260929-38">
-<style>.home-panel{margin-top:clamp(38px,10vh,100px);padding:28px 22px}.home-panel h1{margin:0 0 12px}.home-panel p{color:#c5cec3;line-height:1.6}.home-entry{display:block;margin-top:30px;padding:18px;background:#315e4d;border:1px solid #63816e;border-radius:14px;color:#f1f0e7;text-align:center;text-decoration:none;font-weight:700}.home-entry:focus-visible{outline:2px solid #dce8d5;outline-offset:3px}</style></head>
-<body><main class="app"><header><b>CPL <small>Chawan Paddock Labs</small></b></header>
-<section class="card home-panel"><h1>研究室</h1><p>適性と状態を、レースの事実から記録します。</p><a class="home-entry" href="research.html">適性研究・状態研究へ</a></section></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script src="auth-return.js?v=20260929-1"></script></body></html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b0b0b"><title>CPL｜Chawan Paddock Labs</title>
+<style>*{box-sizing:border-box}html,body{margin:0;background:#0b0b0b;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}body{min-height:100vh}.app{max-width:640px;margin:auto;padding:0 16px 40px;overflow-x:hidden}.topbar{height:58px;display:flex;align-items:center;justify-content:space-between}.brand{font-weight:800;letter-spacing:.12em}.view{padding-top:12px}.hidden{display:none!important}.center{min-height:calc(100vh - 58px);display:grid;place-items:center}.login-card{width:100%;max-width:420px;text-align:center}.text-button{background:none;border:0;color:#aaa;font-size:13px}.home-title h1{margin:0;font-size:28px}.home-title p{margin:5px 0 18px;color:#888}.home-card{border:1px solid #242424;background:#141414;border-radius:16px;width:100%;text-align:left;padding:20px;margin:10px 0;color:#fff}.home-card span{display:block;font-size:18px;font-weight:800}.home-card small{display:block;margin-top:6px;color:#888}.home-link{display:block;text-decoration:none}.research-input{border-color:#355e2d}.error{color:#ff8b8b;font-size:13px;min-height:18px}
+@media(max-width:390px){.app{padding-left:12px;padding-right:12px}}
+#loginView .login-card{max-width:608px}
+#loginView .entrance-visual,#homeView .home-visual{display:block;width:100%;height:auto;max-width:100%;border-radius:16px;background:#12100e}
+#homeView .home-title p{margin-bottom:12px;color:#c5cec3;line-height:1.5}
+#homeView .home-visual{margin:0 0 14px}
+#homeView .home-entry{display:block;min-height:54px;margin:0;padding:14px 18px;background:#1c3027;border-color:#63816e;text-align:center}
+#homeView .home-entry small{color:#c5cec3}
+#homeView .home-entry:focus-visible{outline:2px solid #dce8d5;outline-offset:3px}
+@media(max-width:480px){#loginView .entrance-visual,#homeView .home-visual{width:calc(100% + 24px);max-width:none;margin-left:-12px;margin-right:-12px;border-radius:12px}#homeView .home-visual{margin-bottom:14px}}
+#app:has(#loginView:not(.hidden)) .topbar{display:none}
+#loginView.center{display:grid;place-items:center;min-height:calc(100svh - 40px);padding-top:max(24px, env(safe-area-inset-top));padding-bottom:max(24px, env(safe-area-inset-bottom))}
+#loginView .entrance-frame{width:100%}
+#loginView .entrance-frame .entrance-visual{display:block;width:100%;height:auto;max-width:100%;margin:0;border-radius:16px}
+#loginView .google-login{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-width:220px;max-width:calc(100% - 24px);min-height:52px;margin-top:clamp(44px,8svh,78px);padding:12px 22px;border:1px solid #626262;border-radius:999px;background:#151515;color:#fff;font-family:inherit;font-size:16px;font-weight:700;line-height:1.3;cursor:pointer;touch-action:manipulation}
+#loginView .google-icon{width:21px;height:21px;flex:0 0 21px}
+#loginView .google-login:focus-visible{outline:3px solid #fff;outline-offset:3px}
+#loginView .google-login:disabled{opacity:.55;cursor:not-allowed}
+#loginView #configError{margin:12px 0 0}
+@media(max-width:480px){#loginView .entrance-frame{width:calc(100% + 24px);margin-left:-12px;margin-right:-12px}#loginView .entrance-frame .entrance-visual{border-radius:12px}}</style></head>
+<body><main id="app" class="app"><header class="topbar"><div class="brand">CPL</div><button id="logout" class="text-button hidden">ログアウト</button></header>
+<section id="loginView" class="view center"><div class="login-card"><div class="entrance-frame"><img class="entrance-visual" src="assets/cpl-login-entrance-no-button.png?v=20261002-login-3" width="2069" height="760" alt="夜のCPL研究室の入口に並ぶ馬と研究員。中央にCPLの名称" decoding="async"></div><button id="login" class="google-login" type="button"><svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.24c0-.78-.07-1.53-.2-2.24H12v4.26h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.38Z"/><path fill="#34A853" d="M12 21.72c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.59-1.98.94-3.31.94-2.54 0-4.7-1.72-5.47-4.03H3.3v2.5A9.73 9.73 0 0 0 12 21.72Z"/><path fill="#FBBC05" d="M6.53 13.85a5.85 5.85 0 0 1 0-3.7v-2.5H3.3a9.73 9.73 0 0 0 0 8.7l3.23-2.5Z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.72.49 3.73 1.46l2.8-2.8A9.36 9.36 0 0 0 12 2.28a9.73 9.73 0 0 0-8.7 5.37l3.23 2.5c.77-2.31 2.93-4.03 5.47-4.03Z"/></svg><span>Googleでログイン</span></button><p id="configError" class="error hidden"></p></div></section>
+    <section id="homeView" class="view hidden">
+      <div class="home-title"><h1>研究室</h1><p>適性と状態を、レースの事実から記録します。</p></div>
+      <img class="home-visual" src="assets/cpl-home-paddock.jpg?v=20261002-home-1" width="1536" height="564" alt="夜のCPL研究室とパドックを見渡す風景" decoding="async">
+      <a class="home-card research-input home-link home-entry" href="research.html"><span>適性研究・状態研究へ</span><small>CPL 研究室に入る</small></a>
+    </section>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script>(() => {
+  'use strict';
+  const ref='ekgislctkribtztazvsd';
+  const $=id=>document.getElementById(id);
+  const login=$('login'), logout=$('logout'), message=$('configError');
+  if (!window.supabase || window.CPL_SUPABASE_URL!==`https://${ref}.supabase.co` ||
+      !/^sb_publishable_[A-Za-z0-9_-]+$/.test(window.CPL_SUPABASE_KEY||'')) {
+    login.disabled=true;
+    message.textContent='正式環境の設定を確認できません。';
+    message.classList.remove('hidden');
+    return;
+  }
+  const db=window.supabase.createClient(window.CPL_SUPABASE_URL,window.CPL_SUPABASE_KEY,
+    {auth:{storageKey:`cpl-web-${ref}-research-v1-auth`}});
+  function show(session) {
+    $('loginView').classList.toggle('hidden',!!session);
+    $('homeView').classList.toggle('hidden',!session);
+    logout.classList.toggle('hidden',!session);
+  }
+  login.addEventListener('click',async()=>{
+    const {error}=await db.auth.signInWithOAuth({provider:'google',
+      options:{redirectTo:new URL('./',location.href).href}});
+    if(error){message.textContent=`Googleログイン失敗: ${error.message}`;message.classList.remove('hidden');}
+  });
+  logout.addEventListener('click',()=>db.auth.signOut());
+  db.auth.onAuthStateChange((event,session)=>{if(event!=='TOKEN_REFRESHED')show(session);});
+  db.auth.getSession().then(({data,error})=>{
+    if(error){message.textContent=`セッション取得失敗: ${error.message}`;message.classList.remove('hidden');}
+    else show(data.session);
+  });
+})();</script></body></html>
