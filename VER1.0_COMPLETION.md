@@ -95,7 +95,19 @@ Supabase project ref：`ekgislctkribtztazvsd`（PostgreSQL 17.6.1.166、ap-north
 
 GitHub上の `v1.0.0` refを再確認したが、存在しなかった。現在のGitHub接続にはtag作成APIがなく、ローカルGitからのpushも認証できなかった。credentialの作成・要求は行わず、tagは未作成のまま。付与先は引き続き `f481363ba48a5a701a32013ec7c7e5e141190699` に限定する。文書コミットや最新HEADには付けない。
 
-ローカルGitを使う場合の最短手順は [復元手順書](docs/VER1.0_RESTORE.md#git-tag-v100-を手動作成する場合) に記載した。リモートに同名tagが見つかった場合は中断し、force pushしない。
+ローカルGitで手動作成する場合、対象リポジトリで次を実行する。リモートtag確認でrefが表示された場合、またはローカルに同名tagがある場合は中断し、上書きしない。
+
+```sh
+git fetch origin supabase-v1
+git cat-file -e f481363ba48a5a701a32013ec7c7e5e141190699^{commit}
+git ls-remote --tags origin refs/tags/v1.0.0
+# 上の確認で既存refが表示されず、ローカルにも同名tagがない場合だけ続行
+git tag -a v1.0.0 f481363ba48a5a701a32013ec7c7e5e141190699 -m "CPL Ver.1.0 application baseline"
+git push origin refs/tags/v1.0.0
+git rev-parse v1.0.0^{commit}
+```
+
+最後の出力が `f481363ba48a5a701a32013ec7c7e5e141190699` であることを確認する。`-f` や force pushは使わない。詳細は[復元手順書](docs/VER1.0_RESTORE.md#git-tag-v100-を手動作成する場合)を参照。
 
 ### 復元環境・DB復元性
 
