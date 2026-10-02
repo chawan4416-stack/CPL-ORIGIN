@@ -87,3 +87,31 @@ Supabase project ref：`ekgislctkribtztazvsd`（PostgreSQL 17.6.1.166、ap-north
 ## 正式公開asset照合
 
 正式ブランチ `supabase-v1` のHEAD、成功済みPages workflow run 36962380984のsource SHA、公開HTML画面を確認し、いずれも `f481363ba48a5a701a32013ec7c7e5e141190699` と一致した。公開画面は完成済みCPLログイン画像と独立した「Googleでログイン」ボタンを表示。画像参照は `assets/cpl-login-entrance-no-button.png` と `assets/cpl-home-paddock.jpg`。この記録作成中に正式アプリ、Pages公開内容、DBは変更していない。
+
+
+## 2026-10-02 追記｜tagとDB復元性の最終確認
+
+### Git tag
+
+GitHub上の `v1.0.0` refを再確認したが、存在しなかった。現在のGitHub接続にはtag作成APIがなく、ローカルGitからのpushも認証できなかった。credentialの作成・要求は行わず、tagは未作成のまま。付与先は引き続き `f481363ba48a5a701a32013ec7c7e5e141190699` に限定する。文書コミットや最新HEADには付けない。
+
+ローカルGitを使う場合の最短手順は [復元手順書](docs/VER1.0_RESTORE.md#git-tag-v100-を手動作成する場合) に記載した。リモートに同名tagが見つかった場合は中断し、force pushしない。
+
+### 復元環境・DB復元性
+
+作業環境には `postgres`、`initdb`、`pg_ctl`、`psql`、`pg_dump`、Docker/Podman、Supabase CLIがなく、稼働中の一時PostgreSQLも確認できなかった。Supabase Preview BranchはDB/Auth等を持つ独立環境だが使用量課金があり得るため、作成・課金確認・restoreはいずれも行っていない。正式DBとCPL-DEVには引き続き一切書き込んでいない。
+
+| 分類 | 判定 |
+|---|---|
+| A. schema | public 11テーブルの列、RLS、constraint、index、policy、trigger、function/RPC、extension、GRANT/default privilegeはカタログ化済み。単独で流せる完全なschema DDL/pg_dumpではなく、スキーマ復元はmigrationと照合しながらの手動再構成。 |
+| B. data | public 11テーブル、合計476行を保存。空スキーマへ投入するdata replay SQLを含む。スキーマ作成やAuthは行わず、実DBへの投入・復元試験は未実施。 |
+| C. migration | repositoryの26 SQL filesとlive ledger 13件の不整合が残る。migrationのみで再構成できると確認していない。 |
+| D. 手動設定 | Supabase DashboardのGoogle Provider、Site URL、Redirect URL allow list、プロジェクト固有の公開設定を手動照合する。OAuth secrets等は安全な保管元から戻す。 |
+| E. 現バックアップで再現できないもの | Auth users/個人情報、credential、Dashboard/Auth設定の完全なexport、native `pg_dump`、検証済みの一括schema+data restore。 |
+
+Supabase公式手順では `supabase db dump` は `pg_dump` をDocker containerで実行し、DB接続文字列・パスワードが必要とされている。今回それらのツールと安全な隔離先は利用できず、native `pg_dump` は未取得、restore testは未実施である。詳細と将来の安全な検証手順は復元手順書に記載した。
+
+- [Supabase: platform backupからのrestore手順](https://supabase.com/docs/guides/self-hosting/restore-from-platform)
+- [Supabase: preview branchの使用量・課金](https://supabase.com/docs/guides/platform/manage-your-usage/branching)
+
+したがって、Ver.1.0のアプリケーション完成基準は確定済みだが、バックアップは論理スナップショットまでであり、復元試験済みの災害復旧基盤とは判定しない。
