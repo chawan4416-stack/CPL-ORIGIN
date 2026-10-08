@@ -1,4 +1,4 @@
-:root{color-scheme:light;font-family:system-ui,-apple-system,sans-serif;background:#f3f0e8;color:#252a26}*{box-sizing:border-box}body{margin:0}.app{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px 60px}header{height:58px;display:flex;align-items:center;justify-content:space-between}header small{font-size:.64em;color:#667064}a{color:#315e4d}nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:sticky;top:0;background:#f3f0e8;padding:8px 0;z-index:2}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #9aa89c;background:#fff;border-radius:12px;padding:11px 10px;min-height:44px;color:#1f3f32}nav button{font-size:13px;padding:7px 2px}button.active,.choice.active,.tabs button.active{background:#315e4d;color:white;border-color:#315e4d}.primary{width:100%;background:#315e4d;color:white;font-weight:700;margin:12px 0}.secondary{margin:8px 0}.card{background:#fff;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #2d403011}h1{font-size:1.55rem;margin:18px 0 4px}h2{font-size:1.08rem;margin:0 0 12px}p{margin:5px 0 12px}.help{font-size:13px;color:#5d665d}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}label{display:block;font-size:13px;color:#4a594d}select,input[type=date]{display:block;width:100%;height:44px;margin-top:4px;border-radius:10px;border:1px solid #bbc4b7;background:white;padding:0 8px;color:#202820}.choices{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0}#horseTabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;position:sticky;top:60px;z-index:1;background:#fff;margin:0 -16px 12px;padding:8px 16px;scrollbar-width:thin;box-shadow:0 6px 8px -8px #243b2d}#horseTabs button{flex:0 0 calc((100% - 12px)/3);min-width:0;padding:5px 2px;line-height:1.15;font-weight:700}#horseTabs small{display:block;font-size:11px;font-weight:500;margin-top:3px}.choice{min-width:86px}.group{border-top:1px solid #e5e9e0;padding:10px 0}.group strong{display:block;margin-bottom:5px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.row h2{margin:0}.matrix-row{display:grid;grid-template-columns:82px repeat(6,minmax(0,1fr));gap:2px;margin:2px 0;align-items:stretch}.matrix-row button{font-size:11px;min-width:0;padding:4px 1px;min-height:48px;border-radius:6px}.matrix-row .label{font-size:12px;align-self:center}.matrix-head{font-size:10px;text-align:center;word-break:break-all}.matrix-row button[data-count="0"]{background:#f3f4f0;color:#666}#silhouette{width:50%;max-width:240px;margin:0 auto}#silhouette svg{width:100%;height:auto}#toneBreakdown{border-top:1px solid #ddd;padding-top:10px;margin-top:12px}.result-row{border-bottom:1px solid #e6e9df;padding:8px 0}#message{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(580px,calc(100vw - 24px));z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #a53327;border-radius:14px;background:#fff7f5;box-shadow:0 5px 24px #14251a44;color:#8e261e;font-size:15px;font-weight:700;line-height:1.45}#message[hidden]{display:none}#message.ok{color:#245340;border-color:#79a58d;background:#eff9f0}#message button{flex:0 0 auto;min-height:40px;padding:5px 10px;background:transparent;border-color:currentColor;color:inherit;font-size:13px}@media(max-width:390px){.app{padding-left:10px;padding-right:10px}.matrix-row{grid-template-columns:67px repeat(6,minmax(0,1fr))}.matrix-row button{font-size:10px}}
+:root{color-scheme:light;font-family:system-ui,-apple-system,sans-serif;background:#f3f0e8;color:#252a26}*{box-sizing:border-box}body{margin:0}.app{max-width:620px;margin:auto;padding:env(safe-area-inset-top) 16px 60px}header{height:58px;display:flex;align-items:center;justify-content:space-between}header small{font-size:.64em;color:#667064}a{color:#315e4d}nav{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:sticky;top:0;background:#f3f0e8;padding:8px 0;z-index:2}button,select,input{font:inherit}button{cursor:pointer;border:1px solid #9aa89c;background:#fff;border-radius:12px;padding:11px 10px;min-height:44px;color:#1f3f32}nav button{font-size:13px;padding:7px 2px}button.active,.choice.active,.tabs button.active{background:#315e4d;color:white;border-color:#315e4d}.primary{width:100%;background:#315e4d;color:white;font-weight:700;margin:12px 0}.secondary{margin:8px 0}.card{background:#fff;border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 10px #2d403011}h1{font-size:1.55rem;margin:18px 0 4px}h2{font-size:1.08rem;margin:0 0 12px}p{margin:5px 0 12px}.help{font-size:13px;color:#5d665d}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}label{display:block;font-size:13px;color:#4a594d}select,input[type=date]{display:block;width:100%;height:44px;margin-top:4px;border-radius:10px;border:1px solid #bbc4b7;background:white;padding:0 8px;color:#202820}.choices{display:flex;flex-wrap:wrap;gap:8px;margin:9px 0}#horseTabs{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;position:sticky;top:60px;z-index:1;background:#fff;margin:0 -16px 12px;padding:8px 16px;scrollbar-width:thin;box-shadow:0 6px 8px -8px #243b2d}#horseTabs button{flex:0 0 calc((100% - 12px)/3);min-width:0;padding:5px 2px;line-height:1.15;font-weight:700}#horseTabs small{display:block;font-size:11px;font-weight:500;margin-top:3px}.choice{min-width:86px}.group{border-top:1px solid #e5e9e0;padding:10px 0}.group strong{display:block;margin-bottom:5px}.row{display:flex;justify-content:space-between;align-items:center;gap:8px}.row h2{margin:0}.matrix-row{display:grid;grid-template-columns:82px repeat(3,minmax(0,1fr));gap:2px;margin:2px 0;align-items:stretch}.matrix-row button{font-size:11px;min-width:0;padding:4px 1px;min-height:48px;border-radius:6px}.matrix-row .label{font-size:12px;align-self:center}.matrix-head{font-size:10px;text-align:center;word-break:break-all}.matrix-row button[data-count="0"]{background:#f3f4f0;color:#666}#silhouette{width:50%;max-width:240px;margin:0 auto}#silhouette svg{width:100%;height:auto}.result-row{border-bottom:1px solid #e6e9df;padding:8px 0}#message{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(580px,calc(100vw - 24px));z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #a53327;border-radius:14px;background:#fff7f5;box-shadow:0 5px 24px #14251a44;color:#8e261e;font-size:15px;font-weight:700;line-height:1.45}#message[hidden]{display:none}#message.ok{color:#245340;border-color:#79a58d;background:#eff9f0}#message button{flex:0 0 auto;min-height:40px;padding:5px 10px;background:transparent;border-color:currentColor;color:inherit;font-size:13px}@media(max-width:390px){.app{padding-left:10px;padding-right:10px}.matrix-row{grid-template-columns:67px repeat(3,minmax(0,1fr))}.matrix-row button{font-size:10px}}
 /* Focus Design: keep the 44px touch targets and remove accumulated vertical spacing. */
 header{height:46px}
 header b{font-size:16px}
@@ -31,10 +31,8 @@ nav button{font-size:12px;padding:5px 2px}
 #suitability .group{padding:5px 0 4px}
 #suitability .group strong{font-size:14px;line-height:1.2;margin-bottom:4px}
 #suitability .focus-choices{display:grid;gap:6px}
-#suitability .chest-choices{grid-template-columns:repeat(4,minmax(0,1fr))}
-#suitability .tone-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
-#suitability .hind-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-#suitability .hind-pair+.hind-pair{margin-top:6px}
+#suitability .shape-choices,#suitability .texture-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+#suitability .density-choices{grid-template-columns:repeat(2,minmax(0,1fr))}
 #suitability .choice{min-width:0;min-height:44px;padding:6px 3px;font-size:14px;font-weight:650;background:#fff;color:#1f3f32;border-color:#9aa89c}
 #suitability .choice.active{background:#315e4d;color:#fff;border-color:#315e4d}
 #suitability #addHorse{border:0;background:transparent;min-height:44px;margin:0;padding:5px 3px;font-size:13px;text-decoration:underline}
@@ -131,7 +129,7 @@ select,input[type=date]{background:#252e28;border-color:#4c5f51;color:#f3f6f2}
 #suitability #saveSuitability:active{background:#214e37}
 .matrix-row button[data-count="0"]{background:#202822;color:#a5b3a7}
 #silhouette svg path{fill:#93a58f}
-#toneBreakdown{border-color:#3a493d}
+
 .result-row{border-color:#354239}
 /* Blue marks navigation and completion; green remains reserved for observed values. */
 nav button.active,#workspace:has(#suitability:not([hidden])) nav button.active{background:#183f5d;border-color:#5a97bf;color:#f3f8fc;box-shadow:inset 0 -2px 0 #83bce0}
@@ -235,8 +233,6 @@ button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid 
 #suitability .group{padding:3px 0 2px}
 #suitability .group strong{margin-bottom:3px}
 #suitability .focus-choices{gap:5px}
-#suitability .hind-pair{gap:6px}
-#suitability .hind-pair+.hind-pair{margin-top:4px}
 #suitability #addHorse{min-height:38px;padding:3px;margin:1px 0 0}
 #suitability #saveSuitability{min-height:54px;margin:4px 0 0}
 
@@ -257,7 +253,6 @@ body:has(#suitability:not([hidden]) #suitHorseWork:not([hidden])) header{height:
 #suitability .rank-popularity{padding:1px 6px}
 #suitability .popularity-grid button{min-height:36px}
 #suitability .group{padding:2px 0 1px}
-#suitability .hind-pair+.hind-pair{margin-top:3px}
 #suitability #addHorse{min-height:32px;padding:2px;margin:0}
 #suitability #saveSuitability{margin-top:2px}
 
@@ -414,11 +409,8 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .combo-row .combo-rank{font-weight:700;font-size:14px}
 #summary .combo-values{display:flex;gap:5px;align-items:center;min-width:0}
 #summary .combo-chip{display:flex;flex:0 1 auto;flex-direction:column;min-width:0;max-width:43%;padding:4px 7px;border-radius:7px;background:color-mix(in srgb,var(--chip-color) 34%,#25332b);color:#e8ede5;line-height:1.15;font-weight:750;text-align:center;font-size:14px;overflow:hidden;text-overflow:ellipsis}
-#summary .combo-chip[data-eval="シャープ−"]{--chip-color:#94C6D9}
 #summary .combo-chip[data-eval="シャープ"]{--chip-color:#468FB4}
-#summary .combo-chip[data-eval="厚−"]{--chip-color:#E8D78E}
 #summary .combo-chip[data-eval="厚"]{--chip-color:#EAA54D}
-#summary .combo-chip[data-eval="重厚−"]{--chip-color:#E7A0A8}
 #summary .combo-chip[data-eval="重厚"]{--chip-color:#C95F70}
 #summary .combo-chip small{font-size:10px;font-weight:600}
 #summary .combo-times{color:#c6d5c7;font-size:15px}
@@ -429,7 +421,7 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .summary-details-button span{font-size:23px;line-height:1}
 #summary .summary-details{padding:14px;margin:0 0 16px;overflow-x:auto}
 #summary .summary-details h2{font-size:16px}
-#summary .summary-details .matrix-row{grid-template-columns:72px repeat(6,minmax(40px,1fr));min-width:390px}
+#summary .summary-details .matrix-row{grid-template-columns:72px repeat(3,minmax(40px,1fr));min-width:390px}
 #summary .summary-details .matrix-row button{min-height:41px;padding:3px 1px;background:#354439;border-color:#4a5b4e;color:#e0e8dd;font-size:11px}
 #summary .summary-details .matrix-row button[data-count="0"]{color:#98a79a;background:#28352d}
 #summary .summary-details .matrix-head{font-size:11px;color:#becbbd}
@@ -438,23 +430,13 @@ body:has(#condition:not([hidden]) #conditionWork:not([hidden])) header{height:40
 #summary .condition-detail summary{cursor:pointer;min-height:40px}
 @media(max-width:390px){#summary .summary-filters{gap:8px;padding:11px}#summary.suitability-summary-view .summary-filters{gap:4px;padding:7px}#summary.suitability-summary-view .summary-filters label{font-size:9px}#summary.suitability-summary-view .summary-filters select{font-size:10px}#summary #suitabilitySummaryPanel .summary-context strong{font-size:15px}#summary .combo-row{grid-template-columns:32px minmax(0,1fr) auto;gap:5px;padding:6px}#summary .combo-chip{padding:4px 5px;font-size:13px}#summary .combo-count b{font-size:14px}}
 
+/* Condition summary shares the five filters; all new rules are scoped to its panel. */
 nav{grid-template-columns:repeat(4,minmax(0,1fr))}
 #summary .suitability-detail-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:10px}
 #summary .suitability-detail-filters label{min-width:0;color:#b5c2b5;font-size:13px}
 #summary .suitability-detail-filters select{height:44px;min-width:0;background:#303e33;border-color:#4b5e50;color:#e8ede5}
 #summary .detail-sample{margin:0 0 12px;color:#bdcabe;font-size:13px}
-#summary .tone-heading{margin:18px 0 4px}
-
-/* Keep the suitability 4 x 6 matrix in view on portrait phones. */
-@media(max-width:480px){
- #summary #suitabilitySummaryPanel #matrix{margin-inline:-12px}
- #summary #suitabilitySummaryPanel #matrix .matrix-row{grid-template-columns:44px repeat(6,minmax(0,1fr));min-width:0;column-gap:2px;margin-block:2px}
- #summary #suitabilitySummaryPanel #matrix .matrix-row button{padding:3px 0;font-family:Arial,sans-serif;font-size:11px;font-variant-numeric:tabular-nums;line-height:1.3}
- #summary #suitabilitySummaryPanel #matrix .label{font-size:11px;line-height:1.25}
- #summary #suitabilitySummaryPanel #matrix .matrix-head{min-width:0;font-size:11px;line-height:1.25;word-break:normal;overflow-wrap:anywhere;align-self:end}
-}
-
-/* State research summary Ver.1.0; state panel only. */
+#summary .axis-heading{margin:18px 0 4px}
 #summary #conditionSummaryPanel .card{padding:14px;margin:0 0 10px}
 #summary .condition-summary-select strong{display:block;margin-bottom:8px;font-size:15px}
 #summary .condition-summary-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -464,8 +446,29 @@ nav{grid-template-columns:repeat(4,minmax(0,1fr))}
 #summary .condition-summary-heading strong{font-size:16px}
 #summary .condition-summary-heading span{font-size:13px;color:#bdcabe}
 #summary .condition-metrics{margin-top:10px}
-#summary #conditionSummaryPanel [hidden]{display:none!important}
-#summary #conditionSummaryPanel[hidden]{display:none!important}
+#summary .condition-placed-hero{text-align:center;padding:10px 0 7px}
+#summary .condition-placed-hero small{display:block;color:#c7d4c6;font-size:14px}
+#summary .condition-placed-hero b{display:block;color:#e9eee4;font-size:34px;line-height:1.2}
+#summary .condition-places{display:flex;justify-content:center;gap:18px;padding:5px 0 11px;color:#c3d1c3;font-size:13px}
+#summary .condition-places b{margin-left:3px;color:#e9eee4;font-size:14px}
+#summary .condition-other-row{display:flex;align-items:baseline;justify-content:center;gap:14px;padding:10px 0 3px;border-top:1px solid #455a49;color:#c7d4c6;font-size:14px}
+#summary .condition-other-row b{color:#e9eee4;font-size:24px}
+#summary .condition-comparison{margin:0 0 10px}
+#summary .condition-comparison strong{display:block;margin-bottom:7px;font-size:14px}
+#summary .condition-comparison table{width:100%;border-collapse:collapse;font-size:14px;text-align:right}
+#summary .condition-comparison th,#summary .condition-comparison td{padding:6px 4px;border-bottom:1px solid #405345}
+#summary .condition-comparison th:first-child{text-align:left;font-weight:500}
+#summary .condition-comparison th{color:#c2d0c2}
+#summary .condition-advanced{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:15px}
+#summary .condition-advanced label{min-width:0;color:#b5c2b5;font-size:13px}
+#summary .condition-advanced select{width:100%;min-width:0;height:44px;background:#303e33;border-color:#526657;color:#e8ede5;font-size:16px}
+#summary .condition-summary-details h2{margin:0 0 9px;font-size:16px}
+#summary .condition-distribution-row{display:grid;grid-template-columns:36px minmax(0,1fr) 46px 52px;align-items:center;gap:7px;min-height:35px;font-size:13px}
+#summary .condition-distribution-track{height:8px;background:#303e34;border-radius:6px;overflow:hidden}
+#summary .condition-distribution-track span{display:block;height:100%;background:#80ad8b}
+#summary .condition-distribution-row b,#summary .condition-distribution-row em{text-align:right;font-style:normal;font-weight:500}
+#summary [hidden]{display:none!important}
+#summary #conditionSpecialCounts{margin:12px 0 0;color:#bdcbbc;font-size:13px}
 #summary #conditionSummaryPanel .condition-summary-select{padding:11px 14px;margin-bottom:7px}
 #summary .condition-summary-select h2{margin:0 0 8px;font-size:15px}
 #summary .condition-summary-choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
@@ -494,4 +497,37 @@ nav{grid-template-columns:repeat(4,minmax(0,1fr))}
 #summary #conditionCombinationResult h3 small{font-size:12px;color:#c5d3c5}
 #summary .condition-none{color:#c7d4c6}
 #summary .condition-excluded{margin:8px 0 0;color:#c7d4c6;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+#summary .condition-breakdown h2 small{font-size:12px;font-weight:400;color:#bdcabe;white-space:nowrap}
 @media(max-width:390px){#summary .condition-summary-choices button{font-size:11px}#summary .condition-stat strong,#summary .condition-stat span{font-size:10px}}
+
+/* Keep the suitability 4 x 6 matrix in view on portrait phones. */
+@media(max-width:480px){
+ #summary #suitabilitySummaryPanel #matrix{margin-inline:-12px}
+ #summary #suitabilitySummaryPanel #matrix .matrix-row{grid-template-columns:44px repeat(3,minmax(0,1fr));min-width:0;column-gap:2px;margin-block:2px}
+ #summary #suitabilitySummaryPanel #matrix .matrix-row button{padding:3px 0;font-family:Arial,sans-serif;font-size:11px;font-variant-numeric:tabular-nums;line-height:1.3}
+ #summary #suitabilitySummaryPanel #matrix .label{font-size:11px;line-height:1.25}
+ #summary #suitabilitySummaryPanel #matrix .matrix-head{min-width:0;font-size:11px;line-height:1.25;word-break:normal;overflow-wrap:anywhere;align-self:end}
+}
+
+/* Compact only the two explanatory axes; keep all button dimensions intact. */
+#suitability #horseEditor .tomo-axis{padding:1px 0 0}
+#suitability #horseEditor .tomo-axis strong{margin-bottom:2px}
+#suitability #horseEditor .tomo-axis .help{margin:3px 0 1px;font-size:12px;line-height:1.2}
+
+#suitability #popularityLabel{font-size:14px}
+
+/* Only the new ranking section; existing summary and input layouts stay intact. */
+.suitability-rankings{margin:16px 0 20px}
+.ranking-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.ranking-switch button{min-width:0;padding:10px 2px;font-size:13px}
+#suitabilityRankingResult .result-row strong,#suitabilityRankingResult .result-row span{display:block}
+#suitabilityRankingResult .result-row strong{font-size:14px;overflow-wrap:anywhere}
+#suitabilityRankingResult .result-row span{margin-top:4px;font-size:13px}
+.ranking-note{margin-top:12px;line-height:1.5}
+
+#suitabilityRankingResult h3{font-size:15px;margin:16px 0 4px}
+
+#suitabilityRankingResult .ranking-bar{display:block;width:100%;max-width:100%;height:6px;margin:8px 0 2px;border:0;border-radius:3px;overflow:hidden;appearance:none;background:#29352d;color:#829b89}
+#suitabilityRankingResult .ranking-bar::-webkit-progress-bar{background:#29352d;border-radius:3px}
+#suitabilityRankingResult .ranking-bar::-webkit-progress-value{background:#829b89;border-radius:3px}
+#suitabilityRankingResult .ranking-bar::-moz-progress-bar{background:#829b89;border-radius:3px}
