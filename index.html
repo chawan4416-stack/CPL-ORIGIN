@@ -20,13 +20,55 @@
 #loginView .google-login:focus-visible{outline:3px solid #fff;outline-offset:3px}
 #loginView .google-login:disabled{opacity:.55;cursor:not-allowed}
 #loginView #configError{margin:12px 0 0}
-@media(max-width:480px){#loginView .entrance-frame{width:calc(100% + 24px);margin-left:-12px;margin-right:-12px}#loginView .entrance-frame .entrance-visual{border-radius:12px}}</style></head>
+@media(max-width:480px){#loginView .entrance-frame{width:calc(100% + 24px);margin-left:-12px;margin-right:-12px}#loginView .entrance-frame .entrance-visual{border-radius:12px}}</style><link rel="stylesheet" href="course-quick-reference.css?v=20261116-1"></head>
 <body><main id="app" class="app auth-pending"><header class="topbar"><div class="brand">CPL</div><button id="logout" class="text-button hidden">ログアウト</button></header>
 <section id="loginView" class="view center hidden"><div class="login-card"><div class="entrance-frame"><img class="entrance-visual" src="assets/cpl-login-entrance-no-button.png?v=20261002-login-3" width="2069" height="760" alt="夜のCPL研究室の入口に並ぶ馬と研究員。中央にCPLの名称" decoding="async"></div><button id="login" class="google-login" type="button"><svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.24c0-.78-.07-1.53-.2-2.24H12v4.26h5.22a4.46 4.46 0 0 1-1.94 2.93v2.43h3.14c1.84-1.69 2.93-4.18 2.93-7.38Z"/><path fill="#34A853" d="M12 21.72c2.63 0 4.84-.87 6.45-2.35l-3.14-2.43c-.87.59-1.98.94-3.31.94-2.54 0-4.7-1.72-5.47-4.03H3.3v2.5A9.73 9.73 0 0 0 12 21.72Z"/><path fill="#FBBC05" d="M6.53 13.85a5.85 5.85 0 0 1 0-3.7v-2.5H3.3a9.73 9.73 0 0 0 0 8.7l3.23-2.5Z"/><path fill="#EA4335" d="M12 6.12c1.43 0 2.72.49 3.73 1.46l2.8-2.8A9.36 9.36 0 0 0 12 2.28a9.73 9.73 0 0 0-8.7 5.37l3.23 2.5c.77-2.31 2.93-4.03 5.47-4.03Z"/></svg><span>Googleでログイン</span></button><p id="configError" class="error hidden"></p></div></section>
     <section id="homeView" class="view hidden">
       <div class="home-title"><h1>研究室</h1><p>適性と状態を、レースの事実から記録します。</p></div>
       <img class="home-visual" src="assets/cpl-home-paddock.jpg?v=20261002-home-1" width="1536" height="564" alt="夜のCPL研究室とパドックを見渡す風景" decoding="async">
       <a class="home-card research-input home-link home-entry" href="research.html"><span>適性研究・状態研究へ</span><small>CPL 研究室に入る</small></a>
+      <section class="course-quick-reference" aria-labelledby="course-quick-reference-title">
+        <h2 id="course-quick-reference-title">内回り・外回り早見表</h2>
+        <div class="course-quick-tabs" role="tablist" aria-label="芝コースの競馬場">
+          <button id="course-quick-tab-nakayama" type="button" role="tab" aria-selected="false" aria-controls="course-quick-nakayama" tabindex="-1">中山</button>
+          <button id="course-quick-tab-kyoto" type="button" role="tab" aria-selected="true" aria-controls="course-quick-kyoto">京都</button>
+          <button id="course-quick-tab-hanshin" type="button" role="tab" aria-selected="false" aria-controls="course-quick-hanshin" tabindex="-1">阪神</button>
+          <button id="course-quick-tab-niigata" type="button" role="tab" aria-selected="false" aria-controls="course-quick-niigata" tabindex="-1">新潟</button>
+        </div>
+        <div id="course-quick-nakayama" role="tabpanel" aria-labelledby="course-quick-tab-nakayama" hidden>
+          <dl class="course-quick-rows">
+            <div><dt>内回りのみ</dt><dd><span>1800m</span><span>2000m</span><span>2500m</span><span>3600m</span></dd></div>
+            <div><dt>外回りのみ</dt><dd><span>1200m</span><span>1600m</span><span>2200m</span><span>2600m</span><span>4000m</span></dd></div>
+            <div><dt>両方あり</dt><dd>—</dd></div>
+            <div><dt>特殊</dt><dd><span>3200m（外→内）</span></dd></div>
+          </dl>
+        </div>
+        <div id="course-quick-kyoto" role="tabpanel" aria-labelledby="course-quick-tab-kyoto">
+          <dl class="course-quick-rows">
+            <div><dt>内回りのみ</dt><dd><span>1100m</span><span>1200m</span></dd></div>
+            <div><dt>外回りのみ</dt><dd><span>1800m</span><span>2200m</span><span>2400m</span><span>3000m</span><span>3200m</span></dd></div>
+            <div><dt>両方あり</dt><dd><span>1400m</span><span>1600m</span><span>2000m</span></dd></div>
+            <div><dt>特殊</dt><dd>—</dd></div>
+          </dl>
+        </div>
+        <div id="course-quick-hanshin" role="tabpanel" aria-labelledby="course-quick-tab-hanshin" hidden>
+          <dl class="course-quick-rows">
+            <div><dt>内回りのみ</dt><dd><span>1200m</span><span>2000m</span><span>2200m</span><span>3000m</span></dd></div>
+            <div><dt>外回りのみ</dt><dd><span>1600m</span><span>1800m</span><span>2400m</span><span>2600m</span></dd></div>
+            <div><dt>両方あり</dt><dd><span>1400m</span></dd></div>
+            <div><dt>特殊</dt><dd><span>3200m（外→内）</span></dd></div>
+          </dl>
+        </div>
+        <div id="course-quick-niigata" role="tabpanel" aria-labelledby="course-quick-tab-niigata" hidden>
+          <dl class="course-quick-rows">
+            <div><dt>内回りのみ</dt><dd><span>1200m</span><span>2200m</span><span>2400m</span></dd></div>
+            <div><dt>外回りのみ</dt><dd><span>1600m</span><span>1800m</span><span>3000m</span><span>3200m</span></dd></div>
+            <div><dt>両方あり</dt><dd><span>1400m</span><span>2000m</span></dd></div>
+            <div><dt>特殊</dt><dd><span>1000m（直線）</span></dd></div>
+          </dl>
+        </div>
+        <div class="course-quick-other"><b>内外の区別なし</b><span>東京・中京・福島・小倉・札幌・函館</span></div>
+      </section>
     </section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase/config.js?v=20260929-1"></script><script>(() => {
   'use strict';
@@ -60,4 +102,4 @@
     if(error){message.textContent=`セッション取得失敗: ${error.message}`;message.classList.remove('hidden');show(null);}
     else show(data.session);
   });
-})();</script></body></html>
+})();</script><script src="course-quick-reference.js?v=20261116-1"></script></body></html>

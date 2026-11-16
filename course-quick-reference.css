@@ -1,0 +1,17 @@
+/* HOME-only static reference. No shared layout or input styles. */
+.course-quick-reference{margin:20px 0 0;padding:16px;border:1px solid #284b38;border-radius:16px;background:#101713;color:#f5f5f5;min-width:0}
+.course-quick-reference h2{margin:0 0 14px;font-size:17px;font-weight:700;line-height:1.45}
+.course-quick-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px}
+.course-quick-tabs button{appearance:none;min-height:44px;min-width:0;padding:8px 0;border:1px solid #304336;border-radius:9px;background:#101210;color:#aeb9b1;font:inherit;font-size:14px;font-weight:700;cursor:pointer;touch-action:manipulation}
+.course-quick-tabs button[aria-selected="true"]{border-color:#628d6c;background:#23452f;color:#fff}
+.course-quick-tabs button:focus-visible{outline:2px solid #c7e3ce;outline-offset:2px}
+.course-quick-reference [role="tabpanel"][hidden]{display:none!important}
+.course-quick-rows{margin:0}
+.course-quick-rows>div{display:grid;grid-template-columns:78px minmax(0,1fr);gap:8px;padding:11px 0;border-bottom:1px solid #26342b}
+.course-quick-rows dt{font-size:12px;font-weight:600;line-height:1.7;color:#a7b8ac}
+.course-quick-rows dd{display:flex;flex-wrap:wrap;gap:5px 12px;min-width:0;margin:0;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+.course-quick-rows dd span{white-space:nowrap}
+.course-quick-other{display:grid;gap:5px;margin-top:12px;font-size:11px;line-height:1.6;color:#a7b8ac}
+.course-quick-other b{font-weight:600}
+.course-quick-other span{overflow-wrap:anywhere}
+@media(max-width:360px){.course-quick-reference{padding:14px 12px}.course-quick-rows>div{grid-template-columns:74px minmax(0,1fr);gap:6px}.course-quick-rows dd{gap:5px 10px}}
